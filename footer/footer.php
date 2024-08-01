@@ -40,7 +40,7 @@
             <!-- Footer Elements -->
             <!-- Copyright -->
             <div class="footer-copyright text-center py-3">© 2020 Copyright:
-               <a href="#"> Created By: Juniltoledo</a>
+               <a href="#"> Created By: Julius Maru</a>
             </div>
             <!-- Copyright -->
          </footer>
