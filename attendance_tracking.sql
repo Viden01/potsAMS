@@ -278,7 +278,7 @@ INSERT INTO `login_admin` (`id`, `name`, `email_address`, `user_password`, `user
 (1, 'Email Luis Nario', 'nario@gmail.com', '$2y$12$xxxzp5LySIAgobcyOnpp1uW6VzGdrZXTuqXrj3V7rA5ZP8RbpzNtW', 'Employee'),
 (3, 'jonhrey', 'dj@gmail.com', '$2y$12$YcN5/QpCFsV4U6FArIG9uOT/9iIX1zpD/kOfBR9eujbYumUEJuqL.', 'Employee'),
 (4, 'john doe', 'johndoe@yahoo.com', '$2y$12$uT.Q4rmJ5t3BUCFgN/DpROfoClDT6KY2d6X.R4Go4/KeXs55qs.Ey', 'Employee'),
-(5, 'Junil Toledo', 'user@gmail.com', '$2y$12$YQot8hdViq2Bn..NaOC8W..3Zou/ohIXhD.lEasZJDSxhoBP6EBKe', 'Employee');
+(5, 'Julius Maru', 'user@gmail.com', '$2y$12$YQot8hdViq2Bn..NaOC8W..3Zou/ohIXhD.lEasZJDSxhoBP6EBKe', 'Employee');
 
 --
 -- Indexes for dumped tables
