@@ -1,7 +1,7 @@
 <?php
 include '../../connection/db_conn.php';
 
-// Check if all required POST variables are set
+// Check if required POST variables are set
 if (isset($_POST['employee_id'], $_POST['status'])) {
     // Sanitize and validate input
     $employee = $conn->real_escape_string(strip_tags($_POST['employee_id']));
@@ -18,7 +18,7 @@ if (isset($_POST['employee_id'], $_POST['status'])) {
     $result = $stmt->get_result();
 
     if ($result->num_rows < 1) {
-        echo '<strong><i class="fas fa-times"></i>&nbsp;Employee not found!</strong>';
+        echo 'Error: Employee not found!';
     } else {
         $row = $result->fetch_assoc();
         $emp = htmlentities($row['emp_id']);
@@ -33,7 +33,7 @@ if (isset($_POST['employee_id'], $_POST['status'])) {
 
         if ($status == 'in') {
             if ($result->num_rows > 0) {
-                echo '<strong><i class="fas fa-times"></i>&nbsp;Attendance already recorded for today!</strong>';
+                echo 'Error: Attendance already recorded for today!';
             } else {
                 // Insert time in
                 $sql = "INSERT INTO employee_attendance (employee_id, date_attendance, time_in) VALUES (?, ?, ?)";
@@ -41,16 +41,16 @@ if (isset($_POST['employee_id'], $_POST['status'])) {
                 $stmt->bind_param('sss', $emp, $date, $time);
                 
                 if ($stmt->execute()) {
-                    echo '<strong><i class="fas fa-check"></i>&nbsp;&nbsp;Time In recorded successfully</strong>';
+                    echo 'Success: Time In recorded successfully';
                 } else {
-                    echo '<strong><i class="fas fa-times"></i>&nbsp;Insert Failed!</strong>';
+                    echo 'Error: Insert Failed!';
                 }
             }
         } else if ($status == 'out') {
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
                 if ($row['time_out'] != null) {
-                    echo '<strong><i class="fas fa-times"></i>&nbsp;Time Out already recorded for today!</strong>';
+                    echo 'Error: Time Out already recorded for today!';
                 } else {
                     // Update time out
                     $sql = "UPDATE employee_attendance SET time_out = ? WHERE employee_id = ? AND date_attendance = ?";
@@ -58,7 +58,7 @@ if (isset($_POST['employee_id'], $_POST['status'])) {
                     $stmt->bind_param('sss', $time, $emp, $date);
                     
                     if ($stmt->execute()) {
-                        echo '<strong><i class="fas fa-check"></i>&nbsp;&nbsp;Time Out recorded successfully</strong>';
+                        echo 'Success: Time Out recorded successfully';
                         
                         // Calculate hours
                         $time_in = new DateTime($row['time_in']);
@@ -79,15 +79,15 @@ if (isset($_POST['employee_id'], $_POST['status'])) {
                         $stmt->bind_param('dss', $total_hours, $emp, $date);
                         $stmt->execute();
                     } else {
-                        echo '<strong><i class="fas fa-times"></i>&nbsp;Update Failed!</strong>';
+                        echo 'Error: Update Failed!';
                     }
                 }
             } else {
-                echo '<strong><i class="fas fa-times"></i>&nbsp;No Time In recorded for today!</strong>';
+                echo 'Error: No Time In recorded for today!';
             }
         }
     }
 } else {
-    echo '<strong><i class="fas fa-times"></i>&nbsp;Missing required data!</strong>';
+    echo 'Error: Missing required data!';
 }
 ?>

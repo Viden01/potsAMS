@@ -9,7 +9,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('punch').addEventListener('submit', function (event) {
-                event.preventDefault(); // Prevents default form submission
+                event.preventDefault(); // Prevent default form submission
 
                 var employeeId = document.getElementById('employee_id').value;
                 var status = document.querySelector('select[name="status"]').value;
@@ -19,15 +19,20 @@
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onload = function () {
                     if (xhr.status === 200) {
-                        document.getElementById('alert-message-success').style.display = 'block';
-                        document.querySelector('#alert-message-success .message').innerText = xhr.responseText;
+                        var response = xhr.responseText;
+                        if (response.includes('Error')) {
+                            document.getElementById('alert-message-danger').style.display = 'block';
+                            document.querySelector('#alert-message-danger .message').innerText = response;
+                        } else {
+                            document.getElementById('alert-message-success').style.display = 'block';
+                            document.querySelector('#alert-message-success .message').innerText = response;
+                        }
                     } else {
                         document.getElementById('alert-message-danger').style.display = 'block';
-                        document.querySelector('#alert-message-danger .message').innerText = xhr.responseText;
+                        document.querySelector('#alert-message-danger .message').innerText = 'An error occurred. Please try again.';
                     }
                 };
-                xhr.send('employee_id=' + encodeURIComponent(employeeId) +
-                         '&status=' + encodeURIComponent(status));
+                xhr.send('employee_id=' + encodeURIComponent(employeeId) + '&status=' + encodeURIComponent(status));
             });
         });
     </script>
@@ -35,11 +40,11 @@
 <body>
     <div class="container mb-2">
         <!-- Footer -->
-        <footer class="page-footer mt-2" style="margin-bottom: 4px;background-color: #17a2b8;;font-size: 150%;">
+        <footer class="page-footer mt-2" style="margin-bottom: 4px; background-color: #17a2b8; font-size: 150%;">
             <div class="footer-copyright text-center py-2">
                 <p id="date"></p>
                 <font color="#ff9999">
-                    <p id="time" style="font-weight: bold;font-size: 250%;font-family:'digital-clock-font';"></p>
+                    <p id="time" style="font-weight: bold; font-size: 250%; font-family: 'digital-clock-font';"></p>
                 </font>
             </div>
         </footer>
@@ -47,7 +52,7 @@
         <div class="row">
             <div class="col-sm">
                 <!-- Card -->
-                <div class="card" style="border:1px solid #d4edda;height: 100%;width: 100%;background-color: #d4edda!important;">
+                <div class="card" style="border:1px solid #d4edda; height: 100%; width: 100%; background-color: #d4edda!important;">
                     <div id="alert-message-success" class="alert alert-success alert-dismissible mt20 text-center" style="display:none;">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <span class="result"><i class="fas fa-tachometer-alt"></i> <span class="message"></span></span>
