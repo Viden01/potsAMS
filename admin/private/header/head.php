@@ -64,12 +64,24 @@ if (!isset($_SESSION["email_address"])) {
                 <!-- main dropdown -->
                 <?php 
                 include '../connection/db_conn.php';
-                $id = $conn->real_escape_string($_SESSION['email_address']);
-                $r = $conn->query("SELECT * FROM login_admin where id = '$id'") or die (mysqli_error($con));
-                $row = $r->fetch_array();
-                $id = htmlentities($row['email_address']);
-                $ids = htmlentities($row['id']);
-                $name = htmlentities($row['name']);
+
+                if (isset($_SESSION['email_address'])) {
+                    $email = $conn->real_escape_string($_SESSION['email_address']);
+                    $r = $conn->query("SELECT * FROM login_admin WHERE email_address = '$email'") or die ($conn->error);
+
+                    if ($r->num_rows > 0) {
+                        $row = $r->fetch_array();
+                        $id = htmlentities($row['email_address']);
+                        $ids = htmlentities($row['id']);
+                        $name = htmlentities($row['name']);
+                    } else {
+                        // Handle case where no rows are returned
+                        $id = $ids = $name = "Unknown";
+                    }
+                } else {
+                    // Handle case where session variable is not set
+                    $id = $ids = $name = "Unknown";
+                }
                 ?>
                 <li class="dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
