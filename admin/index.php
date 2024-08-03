@@ -46,56 +46,14 @@
                 <button type="button" class="btn btn-lg btn-success btn-block submit" value="Login">Login</button>
               </fieldset>
             </form>
-            <hr>
-            <div class="text-center">
-              <a href="#" id="showCreateAccount">Create an Account</a>
-            </div>
           </div>
         </div>
-
-        <div class="login-panel panel panel-default" id="createAccountPanel" style="display:none;">
-          <div class="panel-heading">
-            <h3 class="panel-title">Create Account</h3>
-          </div>
-          <div class="panel-body">
-            <div id="createMsg"></div>
-            <form role="form" id="create_form_action" method="POST">
-              <fieldset>
-                <div class="form-group">
-                  <input class="form-control" placeholder="E-mail" alt="create_email_address" type="email" autocomplete="off">
-                </div>
-                <div class="form-group">
-                  <input class="form-control" placeholder="Password" alt="create_user_password" type="password" autocomplete="off">
-                </div>
-                <div class="form-group">
-                  <input class="form-control" placeholder="Confirm Password" alt="confirm_user_password" type="password" autocomplete="off">
-                </div>
-                <button type="button" class="btn btn-lg btn-primary btn-block createSubmit" value="Create Account">Create Account</button>
-              </fieldset>
-            </form>
-            <hr>
-            <div class="text-center">
-              <a href="#" id="showSignIn">Sign In</a>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
 
   <script>
     $(document).ready(function() {
-      $('#showCreateAccount').click(function() {
-        $('#signInPanel').hide();
-        $('#createAccountPanel').show();
-      });
-
-      $('#showSignIn').click(function() {
-        $('#createAccountPanel').hide();
-        $('#signInPanel').show();
-      });
-
       $('.submit').click(function(e) {
         e.preventDefault();
         const email_address = $('input[alt="email_address"]').val();
@@ -113,33 +71,6 @@
           },
           error: function(data) {
             $('#msg').html(data);
-          }
-        });
-      });
-
-      $('.createSubmit').click(function(e) {
-        e.preventDefault();
-        const email_address = $('input[alt="create_email_address"]').val();
-        const user_password = $('input[alt="create_user_password"]').val();
-        const confirm_password = $('input[alt="confirm_user_password"]').val();
-
-        if (user_password !== confirm_password) {
-          $('#createMsg').html('Passwords do not match.');
-          return;
-        }
-
-        $.ajax({
-          type: 'POST',
-          data: {
-            email_address: email_address,
-            user_password: user_password,
-          },
-          url: 'public/create_account_process.php',
-          success: function(data) {
-            $('#createMsg').html(data);
-          },
-          error: function(data) {
-            $('#createMsg').html(data);
           }
         });
       });
