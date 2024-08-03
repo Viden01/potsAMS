@@ -16,6 +16,14 @@
     .custom-offset {
       margin-left: 63%; /* Adjust this percentage to fine-tune the position */
     }
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .form-options a {
+      font-size: 0.9em;
+    }
   </style>
 </head>
 
@@ -38,10 +46,13 @@
                 <div class="form-group">
                   <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off">
                 </div>
-                <div class="checkbox">
-                  <label>
-                    <input name="remember" type="checkbox" value="Remember Me">Remember Me
-                  </label>
+                <div class="form-options">
+                  <div class="checkbox">
+                    <label>
+                      <input name="remember" type="checkbox" value="Remember Me">Remember Me
+                    </label>
+                  </div>
+                  <a href="#">Forgot Password?</a>
                 </div>
                 <button type="button" class="btn btn-lg btn-success btn-block submit" value="Login">Login</button>
               </fieldset>
