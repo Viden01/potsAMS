@@ -1,4 +1,17 @@
-<!-- Add -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Employee</title>
+    <!-- You may need to include Bootstrap CSS/JS here -->
+    <link rel="stylesheet" href="path/to/bootstrap.min.css">
+    <script src="path/to/jquery.min.js"></script>
+    <script src="path/to/bootstrap.min.js"></script>
+</head>
+<body>
+
+<!-- Add Modal -->
 <div class="modal fade" id="exampleModal">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -119,7 +132,12 @@ $(document).ready(function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('birth_date').setAttribute('max', today);
 
-    document.getElementById("employeeForm").addEventListener("submit", (e) =>{
+    // Restrict input to digits only in the mobile number field
+    document.getElementById('Mobile_number').addEventListener('input', function(e) {
+        this.value = this.value.replace(/\D/g, '');
+    });
+
+    document.getElementById("employeeForm").addEventListener("submit", (e) => {
         e.preventDefault(); // Prevent default form submission
 
         const mobileNumber = document.getElementById('Mobile_number').value;
@@ -171,3 +189,6 @@ function calculateAge() {
     }
 }
 </script>
+
+</body>
+</html>
