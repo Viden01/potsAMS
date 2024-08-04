@@ -1,4 +1,4 @@
-<?php include('header/head.php');?>
+<?php include('header/head.php'); ?>
 <body>
    <div class="container mb-2">
       <!-- Footer -->
@@ -28,18 +28,28 @@
          </div>
          <div class="col-sm">
             <!-- Form -->
-            <form class="text-center border border-light p-5" id="punch">
+            <form action="path_to_your_attendance_process.php" method="POST" class="text-center border border-light p-5" id="punch">
                <p class="h4 mb-3">ATTENDANCE TRACKER</p>
+               
+               <!-- Employee ID -->
                <input type="text" id="employee_id" name="employee_id" class="form-control mb-4" placeholder="Employee ID" autocomplete="off" required="">
-               <select class="browser-default custom-select mb-4" name="status" autofocus="off" required="">
+               
+               <!-- Status -->
+               <select class="browser-default custom-select mb-4" name="status" required="">
                   <option value="in" selected>Time In</option>
                   <option value="out">Time Out</option>
                </select>
+
+               <!-- Hidden Inputs for Time and Date -->
+               <input type="hidden" name="time_in" value="<?php echo date('H:i:s'); ?>">
+               <input type="hidden" name="date_attendance" value="<?php echo date('Y-m-d'); ?>">
+
+               <!-- Submit Button -->
                <button type="submit" class="btn btn-info btn-block">Punch</button>
             </form>
             <!-- Form -->
          </div>
       </div>
-      <?php include('footer/footer.php');?>
+      <?php include('footer/footer.php'); ?>
 </body>
 </html>
