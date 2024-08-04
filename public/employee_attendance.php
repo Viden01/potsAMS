@@ -1,7 +1,7 @@
 <?php
 include '../connection/db_conn.php';
 
-$timezone = 'Europe/London';
+$timezone = 'Asia/Manila';
 date_default_timezone_set($timezone);
 
 if (isset($_POST['employee_id'])) {
