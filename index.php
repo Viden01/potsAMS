@@ -28,7 +28,7 @@
          </div>
          <div class="col-sm">
             <!-- Form -->
-            <form action="path_to_your_attendance_process.php" method="POST" class="text-center border border-light p-5" id="punch">
+            <form action="attendance_process.php" method="POST" class="text-center border border-light p-5" id="punch">
                <p class="h4 mb-3">ATTENDANCE TRACKER</p>
                
                <!-- Employee ID -->
@@ -53,3 +53,10 @@
       <?php include('footer/footer.php'); ?>
 </body>
 </html>
+
+<script>
+document.getElementById('punch').onsubmit = function() {
+    alert('Form is being submitted!');
+    return true;  // Allow form submission to continue
+};
+</script>

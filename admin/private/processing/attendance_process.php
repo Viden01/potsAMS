@@ -1,11 +1,23 @@
 <?php
+// Enable error reporting for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include '../../connection/db_conn.php';
 
+// Debug: Check if form data is being received
+echo "<pre>";
+print_r($_POST);
+echo "</pre>";
+
+// Sanitize and retrieve POST data
 $employee = $conn->real_escape_string(strip_tags($_POST['employee_id']));
 $date = $conn->real_escape_string(strip_tags($_POST['date_attendance']));
 $status = $_POST['status'];
 $time = date('H:i:s');
 
+// Handle time_in or time_out based on status
 if ($status == 'in') {
     $time_in = $time;
     $time_out = null;
@@ -13,6 +25,13 @@ if ($status == 'in') {
     $time_in = null;
     $time_out = $time;
 }
+
+// Debug: Check variable values
+echo "Employee ID: $employee<br>";
+echo "Date: $date<br>";
+echo "Status: $status<br>";
+echo "Time In: $time_in<br>";
+echo "Time Out: $time_out<br>";
 
 $sql = "SELECT * FROM employee_records WHERE employee_id = '$employee'";
 $query = $conn->query($sql);
