@@ -57,8 +57,8 @@
                         }
 
                         while($row = $query->fetch_assoc()){
-                            // Determine if the employee has not yet clocked out
-                            $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : 'Not Clocked Out';
+                            // Set time_out to 00:00 if not clocked out
+                            $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '00:00';
                             $status = ($row['status']) ? '<button type="" class="btn btn-success btn-xs"><i class="fa fa-user-clock"></i> On Time</button>' : '<button type="" class="btn btn-danger btn-xs">Late</button>';
                             echo "
                                 <tr>
