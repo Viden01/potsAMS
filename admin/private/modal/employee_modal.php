@@ -137,8 +137,14 @@ $(document).ready(function() {
         this.value = this.value.replace(/\D/g, '');
     });
 
-    document.getElementById("employeeForm").addEventListener("submit", (e) => {
+    document.getElementById("employeeForm").addEventListener("submit", function(e) {
         e.preventDefault(); // Prevent default form submission
+
+        const age = document.getElementById('age').value;
+        if (age < 18) {
+            $('#msg').html('<div class="alert alert-warning">Employees must be at least 18 years old.</div>');
+            return false;
+        }
 
         const mobileNumber = document.getElementById('Mobile_number').value;
         const mobileNumberPattern = /^\d{11}$/;
@@ -184,6 +190,13 @@ function calculateAge() {
             age--;
         }
         document.getElementById('age').value = age;
+
+        // Check if age is below 18
+        if (age < 18) {
+            $('#msg').html('<div class="alert alert-warning">Employees must be at least 18 years old.</div>');
+        } else {
+            $('#msg').html(''); // Clear any previous messages
+        }
     } else {
         document.getElementById('age').value = '';
     }
