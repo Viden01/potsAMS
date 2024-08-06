@@ -83,6 +83,7 @@
     </div>
     <?php include 'modal/attendance_edit_modal.php'; ?>
     <?php include 'modal/attendance_del_modal.php'; ?>
+
     <script>
         $(function(){
             /////////delete//////////////
@@ -105,6 +106,22 @@
                     $('#del_employee').html(response2.first_name+' '+response2.last_name);
                     $('#del_timein').html(response2.time_in);
                     $('#del_timeout').html(response2.time_out);
+                }
+            });
+        }
+
+        // Add this section to handle 30 minutes advance time-in logic
+        function recordTimeIn(employee_id) {
+            $.ajax({
+                url: 'attendance_timein_process.php', // This is the PHP file you will create to handle the process
+                type: 'POST',
+                data: { employee_id: employee_id },
+                success: function(response) {
+                    alert(response);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.log("Failed: " + status + " " + error);
                 }
             });
         }
@@ -148,3 +165,52 @@
 </body>
 
 </html>
+
+<?php
+// This is the code that you will place in 'attendance_timein_process.php'
+include('connection/db_conn.php'); // Assuming this is your database connection file
+
+// Assuming you have the employee_id from the form submission
+$employee_id = $_POST['employee_id'];
+$current_time = date('H:i:s');
+
+// Fetch the employee's scheduled time
+$sql = "SELECT employee_schedule.time_in AS scheduled_time_in FROM employee_records 
+        LEFT JOIN employee_schedule ON employee_records.schedule_id = employee_schedule.id
+        WHERE employee_records.emp_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $employee_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+
+$scheduled_time_in = $row['scheduled_time_in'];
+
+// Calculate the 30-minute advance
+$scheduled_time_minus_30 = date('H:i:s', strtotime($scheduled_time_in . ' -30 minutes'));
+
+// Determine the time_in
+if ($current_time >= $scheduled_time_minus_30 && $current_time <= $scheduled_time_in) {
+    // Allow time-in 30 minutes before the scheduled time
+    $time_in = $current_time;
+} else {
+    // Use the actual current time
+    $time_in = $current_time;
+}
+
+// Insert the time-in record
+$sql = "INSERT INTO employee_attendance (employee_id, time_in, date_attendance, status) VALUES (?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$date_attendance = date('Y-m-d');
+$status = ($time_in <= $scheduled_time_in) ? 1 : 0; // 1 for on-time, 0 for late
+$stmt->bind_param("isss", $employee_id, $time_in, $date_attendance, $status);
+
+if ($stmt->execute()) {
+    echo 'Attendance recorded successfully!';
+} else {
+    echo 'Error recording attendance!';
+}
+
+$stmt->close();
+$conn->close();
+?>
