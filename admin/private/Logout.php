@@ -5,7 +5,7 @@ include '../connection/db_conn.php';
 // this is logout page when user click button logout in system page
 
 session_start();
-  date_default_timezone_set("Europe/London");
+  date_default_timezone_set("Asia/Manila");
   $time = date("M-d-Y h:i A",strtotime("+0 HOURS"));
 
  $email = $_SESSION['email_address'];
