@@ -8,7 +8,7 @@
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                  
                 </div>
                 <!--End Page Header -->
             </div>
@@ -17,7 +17,7 @@
                 <!-- Welcome -->
                 <div class="col-lg-12">
                     <div class="alert alert-info">
-                        <i class="fa fa-folder-open"></i><b>&nbsp;Hello ! </b>Welcome Back <b><?php echo ucwords(htmlentities($name)); ?></b>
+                        
                     </div>
                 </div>
                 <!--end  Welcome -->
