@@ -40,7 +40,7 @@ if (isset($_GET['range'])) {
         <?php else: ?>
             <div class="col-lg-12">
                 <div class="alert alert-info">
-                    <i class="fa fa-folder-open"></i><b>&nbsp;Hello ! </b>Welcome Back <b><?php echo ucwords(htmlentities($name)); ?></b>
+                    
                 </div>
             </div>
             <div class="form-row">
