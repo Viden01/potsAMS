@@ -1,5 +1,12 @@
-<?php include('header/head.php');?>
+<?php include('header/head.php'); ?>
 <body>
+   <!-- Disable right-click -->
+   <script>
+      document.addEventListener('contextmenu', function(e) {
+         e.preventDefault();
+      });
+   </script>
+
    <div class="container mb-2">
       <!-- Footer -->
       <footer class="page-footer mt-2" style="margin-bottom: 4px;background-color: #17a2b8;;font-size: 150%;">
@@ -40,6 +47,6 @@
             <!-- Form -->
          </div>
       </div>
-      <?php include('footer/footer.php');?>
+      <?php include('footer/footer.php'); ?>
 </body>
 </html>
