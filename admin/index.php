@@ -12,9 +12,17 @@
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <!-- Disable right-click -->
+  <script>
+    document.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+    });
+  </script>
+
   <style>
     .custom-offset {
-      margin-left: 63%; /* Adjust this percentage to fine-tune the position */
+      margin-left: 63%;
     }
     .form-options {
       display: flex;
@@ -25,23 +33,22 @@
       font-size: 0.9em;
     }
     .modal {
-      display: none; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 1; /* Sit on top */
+      display: none;
+      position: fixed;
+      z-index: 1;
       left: 0;
       top: 0;
-      width: 100%; /* Full width */
-      height: 100%; /* Full height */
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgb(0,0,0); /* Fallback color */
-      background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
     }
     .modal-content {
       background-color: #fefefe;
-      margin: 15% auto; /* 15% from the top and centered */
+      margin: 15% auto;
       padding: 20px;
       border: 1px solid #888;
-      width: 80%; /* Could be more or less, depending on screen size */
+      width: 80%;
     }
     .close {
       color: #aaa;
@@ -59,7 +66,6 @@
 </head>
 
 <body style="background-image: url('picture1.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; height: 100vh;">
-
   <div class="container">
     <div class="row" style="padding-top: 10%">
       <div class="col-md-4 custom-offset">
@@ -96,8 +102,6 @@
 
   <!-- The Modal -->
   <div id="forgotPasswordModal" class="modal">
-
-    <!-- Modal content -->
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Forgot Password</h2>
@@ -118,38 +122,26 @@
         <button type="button" class="btn btn-primary" id="resetPasswordBtn">Submit</button>
       </form>
     </div>
-
   </div>
 
   <script>
-    // Get the modal
     var modal = document.getElementById("forgotPasswordModal");
-
-    // Get the button that opens the modal
     var btn = document.getElementById("forgotPasswordLink");
-
-    // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
 
-    // When the user clicks the button, open the modal 
     btn.onclick = function(e) {
       e.preventDefault();
       modal.style.display = "block";
     }
-
-    // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
       modal.style.display = "none";
     }
-
-    // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
       if (event.target == modal) {
         modal.style.display = "none";
       }
     }
 
-    // Submit forgot password form via AJAX
     $('#resetPasswordBtn').click(function(e) {
       e.preventDefault();
       var forgot_email = $('input[name="forgot_email"]').val();
@@ -169,7 +161,7 @@
           old_password: old_password,
           new_password: new_password
         },
-        url: 'public/reset_password_process.php', // Add your process URL here
+        url: 'public/reset_password_process.php',
         success: function(data) {
           alert('Your password has been reset successfully.');
           modal.style.display = "none";
@@ -180,7 +172,6 @@
       });
     });
 
-    // Login button action
     $('.submit').click(function(e) {
       e.preventDefault();
       const email_address = $('input[alt="email_address"]').val();
