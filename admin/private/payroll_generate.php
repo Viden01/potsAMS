@@ -1,10 +1,9 @@
 <?php
 include '../connection/db_conn.php';
 
+// Function to generate the row content for the payroll
 function generateRow($from, $to, $conn, $deduction) {
     $contents = '';
-
-    // Corrected SQL to fetch rate_per_hour from employee_position
     $sql = "SELECT employee_records.*, 
                    employee_position.rate_per_hour, 
                    SUM(TIME_TO_SEC(TIMEDIFF(time_out, time_in))) / 3600 AS total_hours, 
@@ -15,16 +14,13 @@ function generateRow($from, $to, $conn, $deduction) {
             WHERE date_attendance BETWEEN '$from' AND '$to' 
             GROUP BY employee_attendance.employee_id 
             ORDER BY employee_records.last_name ASC, employee_records.first_name ASC";
-
     $query = $conn->query($sql);
     if (!$query) {
         die("Error in SQL query: " . $conn->error);
     }
     $total = 0;
-
     while ($row = $query->fetch_assoc()) {
         $empid = $row['emp_id'];
-
         // Fetch cash advance
         $casql = "SELECT SUM(amount) AS cashamount FROM employee_cashadvance WHERE employee_id='$empid' AND date_created BETWEEN '$from' AND '$to'";
         $caquery = $conn->query($casql);
@@ -34,26 +30,12 @@ function generateRow($from, $to, $conn, $deduction) {
         $carow = $caquery->fetch_assoc();
         $cashadvance = isset($carow['cashamount']) ? $carow['cashamount'] : 0;
 
-        // Ensure values are fetched correctly
+        // Calculate gross, deductions, and net pay
         $rate_per_hour = isset($row['rate_per_hour']) ? $row['rate_per_hour'] : 0;
         $total_hours = isset($row['total_hours']) ? $row['total_hours'] : 0;
-
-        // Calculate gross, deductions, and net pay
         $gross = $rate_per_hour * $total_hours;
         $total_deduction = $deduction + $cashadvance;
         $net = $gross - $total_deduction;
-
-        // Commenting out var_dump to avoid interference with PDF generation
-        /*
-        var_dump([
-            "Employee ID" => $empid,
-            "Rate per Hour" => $rate_per_hour,
-            "Total Hours Worked" => $total_hours,
-            "Gross Pay" => $gross,
-            "Total Deduction" => $total_deduction,
-            "Net Pay" => $net,
-        ]);
-        */
 
         $total += $net;
 
@@ -74,11 +56,13 @@ function generateRow($from, $to, $conn, $deduction) {
     return $contents;
 }
 
+// Get date range from POST data
 $range = $_POST['date_range'];
 $ex = explode(' - ', $range);
 $from = date('Y-m-d', strtotime($ex[0]));
 $to = date('Y-m-d', strtotime($ex[1]));
 
+// Get total deductions
 $sql = "SELECT SUM(amount) as total_amount FROM employee_deductions";
 $query = $conn->query($sql);
 if (!$query) {
@@ -90,6 +74,7 @@ $deduction = isset($drow['total_amount']) ? $drow['total_amount'] : 0;
 $from_title = date('M d, Y', strtotime($ex[0]));
 $to_title = date('M d, Y', strtotime($ex[1]));
 
+// Include TCPDF library and set up PDF document
 require_once('../tcpdf/config/tcpdf_config.php'); 
 require_once('../tcpdf/tcpdf.php');   
 $pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);  
@@ -129,5 +114,18 @@ $content .= generateRow($from, $to, $conn, $deduction);
 $content .= '</table>';  
 
 $pdf->writeHTML($content);  
-$pdf->Output('payroll.pdf', 'I');
+
+// Save PDF to a temporary file
+$tempfile = 'temp_payroll.pdf';
+$pdf->Output($tempfile, 'F');
+
+// Use JavaScript to open the PDF and print automatically
+echo "
+    <script>
+        var pdfWindow = window.open('$tempfile', '_blank');
+        pdfWindow.onload = function() {
+            pdfWindow.print();  // Trigger print dialog when PDF is loaded
+        };
+    </script>
+";
 ?>
