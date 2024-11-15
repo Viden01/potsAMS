@@ -1,207 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Employee</title>
-    <!-- You may need to include Bootstrap CSS/JS here -->
-    <link rel="stylesheet" href="path/to/bootstrap.min.css">
-    <script src="path/to/jquery.min.js"></script>
-    <script src="path/to/bootstrap.min.js"></script>
-</head>
-<body>
-
 <!-- Add Modal -->
 <div class="modal fade" id="exampleModal">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <h4 class="modal-title"><b>Add Employee</b></h4>
-          </div>
-         <form method="POST" enctype="multipart/form-data" id="employeeForm">
-            <div class="modal-body">
-               <div id="msg"></div>
-               <div class="form-row">
-                  <div class="form-group col-md-5">
-                     <label for="Firstname">Firstname</label>
-                     <input type="text" class="form-control" alt="first_name" name="first_name" autocomplete="off" required="">
-                  </div>
-                  <div class="form-group col-md-2">
-                     <label for="Middlename">Middlename</label>
-                     <input type="text" class="form-control" alt="middle_name" name="middle_name" autocomplete="off">
-                  </div>
-                  <div class="form-group col-md-5">
-                     <label for="Lastname">Lastname</label>
-                     <input type="text" class="form-control" alt="last_name" name="last_name" autocomplete="off" required="">
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-md-12">
-                     <label for="CompleteAddress">Complete Address</label>
-                     <input type="text" class="form-control" alt="complete_address" name="complete_address" autocomplete="off">
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-md-6">
-                     <label for="Birthday">Birthday</label>
-                     <input type="date" class="form-control" alt="birth_date" name="birth_date" id="birth_date" autocomplete="off" onchange="calculateAge()">
-                  </div>
-                  <div class="form-group col-md-6">
-                     <label for="Age">Age</label>
-                     <input type="text" class="form-control" alt="age" name="age" id="age" readonly>
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-md-6">
-                     <label for="MobileNumber">Mobile Number</label>
-                     <input type="text" class="form-control" id="Mobile_number" name="Mobile_number" maxlength="11" autocomplete="off" required>
-                  </div>
-                  <div class="form-group col-md-6">
-                     <label for="Gender">Gender</label>
-                     <select class="form-control" id="gender" name="gender">
-                        <option value="Male" selected>Male</option>
-                        <option value="Female">Female</option>
-                     </select>
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-md-6">
-                     <label for="Position">Position</label>
-                     <select class="form-control" id="position_id" name="position_id" required>
-                     <?php
-                        include '../connection/db_conn.php';
-                         $sql = "SELECT * FROM employee_position";
-                         $query = $conn->query($sql);
-                         while($prow = $query->fetch_assoc()){
-                           echo "
-                             <option value='".htmlspecialchars($prow['id'])."'>".htmlspecialchars($prow['emp_position'])."</option>
-                           ";
-                         }
-                        ?>
-                     </select>
-                  </div>
-                  <div class="form-group col-md-6">
-                     <label for="MaritalStatus">Marital Status</label>
-                     <select class="form-control" id="marital_status" name="marital_status">
-                        <option value="Single">Single</option>
-                        <option value="Married">Married</option>
-                        <option value="Widow/er">Widow/er</option>
-                        <option value="Anulled">Anulled</option>
-                        <option value="Legally Separated">Legally Separated</option>
-                     </select>
-                  </div>
-               </div>
-               <div class="form-row">
-                  <div class="form-group col-md-6">
-                     <label for="Schedule">Schedule</label>
-                     <select class="form-control" id="schedule_id" name="schedule_id">
-                        <?php
-                           include '../connection/db_conn.php';
-                            $sql = "SELECT * FROM employee_schedule";
-                            $query = $conn->query($sql);
-                            while($srow = $query->fetch_assoc()){
-                              echo "
-                                <option value='".htmlspecialchars($srow['id'])."'>".htmlspecialchars($srow['time_in']).' - '.htmlspecialchars($srow['time_out'])."</option>
-                              ";
-                            }
-                           ?>
-                     </select>
-                  </div>
-                  <div class="form-group col-md-6">
-                     <label for="Profile">Profile</label>
-                     <input type="file" id="profile_pic" name="profile_pic">
-                  </div>
-               </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Employee</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <div class="modal-footer">
-               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-               <button type="submit" class="btn btn-primary" id="addemp">Add</button>
-            </div>
-         </form>
-      </div>
-   </div>
+            <form method="POST" enctype="multipart/form-data" id="employeeForm">
+                <div class="modal-body">
+                    <div id="msg"></div>
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label>Firstname</label>
+                            <input type="text" class="form-control" name="first_name" required>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label>Middlename</label>
+                            <input type="text" class="form-control" name="middle_name">
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label>Lastname</label>
+                            <input type="text" class="form-control" name="last_name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label>Complete Address</label>
+                            <input type="text" class="form-control" name="complete_address">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Birthday</label>
+                            <input type="date" class="form-control" id="birth_date" name="birth_date" onchange="calculateAge()" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Age</label>
+                            <input type="text" class="form-control" id="age" name="age" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Mobile Number</label>
+                            <input type="text" class="form-control" id="Mobile_number" name="Mobile_number" maxlength="11" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Gender</label>
+                            <select class="form-control" name="gender">
+                                <option value="Male" selected>Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Position</label>
+                            <select class="form-control" name="position_id" required>
+                                <?php
+                                include '../connection/db_conn.php';
+                                $sql = "SELECT * FROM employee_position";
+                                $query = $conn->query($sql);
+                                while ($row = $query->fetch_assoc()) {
+                                    echo "<option value='{$row['id']}'>{$row['emp_position']}</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Marital Status</label>
+                            <select class="form-control" name="marital_status">
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Widow/er">Widow/er</option>
+                                <option value="Anulled">Anulled</option>
+                                <option value="Legally Separated">Legally Separated</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label>Schedule</label>
+                            <select class="form-control" name="schedule_id">
+                                <?php
+                                $sql = "SELECT * FROM employee_schedule";
+                                $query = $conn->query($sql);
+                                while ($row = $query->fetch_assoc()) {
+                                    echo "<option value='{$row['id']}'>{$row['time_in']} - {$row['time_out']}</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Profile</label>
+                            <input type="file" name="profile_pic">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
-<!--end Add Modal -->
 
-<script type="text/javascript">
-$(document).ready(function() {
-    // Set max date for the birthday input to today's date
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('birth_date').setAttribute('max', today);
-
-    // Restrict input to digits only in the mobile number field
-    document.getElementById('Mobile_number').addEventListener('input', function(e) {
-        this.value = this.value.replace(/\D/g, '');
-    });
-
-    document.getElementById("employeeForm").addEventListener("submit", function(e) {
-        e.preventDefault(); // Prevent default form submission
-
-        const age = document.getElementById('age').value;
-        if (age < 18) {
-            $('#msg').html('<div class="alert alert-warning">Employees must be at least 18 years old.</div>');
-            return false;
-        }
-
-        const mobileNumber = document.getElementById('Mobile_number').value;
-        const mobileNumberPattern = /^\d{11}$/;
-        if (!mobileNumberPattern.test(mobileNumber)) {
-            alert('Please enter exactly 11 digits for the mobile number.');
-            return false;
-        }
-
-        const form = document.getElementById('employeeForm');
-        var data = new FormData(form);
-
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('employeeForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const form = new FormData(this);
         $.ajax({
             url: 'processing/employee_process.php',
-            type: "POST",
-            data: data,
+            type: 'POST',
+            data: form,
             processData: false,
             contentType: false,
-            success: function(response) {
-                if (response.startsWith("warning:")) {
-                    $('#msg').html('<div class="alert alert-warning">' + response.substring(8) + '</div>');
-                } else {
-                    $('#msg').html('<div class="alert alert-success">Employee added successfully!</div>');
-                    setTimeout(function() {
-                        location.reload();
-                    }, 2000);
+            success: function (response) {
+                $('#msg').html(response);
+                if (response.includes('successfully')) {
+                    setTimeout(() => location.reload(), 2000);
                 }
-            },
-            error: function(xhr, status, error) {
-                console.log("Failed: " + status + " " + error);
             }
         });
     });
-});
 
-function calculateAge() {
-    const birthDateInput = document.getElementById('birth_date').value;
-    if (birthDateInput) {
-        const birthDate = new Date(birthDateInput);
+    // Calculate Age
+    document.getElementById('birth_date').addEventListener('change', function () {
+        const birthDate = new Date(this.value);
         const today = new Date();
         let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDifference = today.getMonth() - birthDate.getMonth();
-        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
             age--;
         }
-        document.getElementById('age').value = age;
-
-        // Check if age is below 18
-        if (age < 18) {
-            $('#msg').html('<div class="alert alert-warning">Employees must be at least 18 years old.</div>');
-        } else {
-            $('#msg').html(''); // Clear any previous messages
-        }
-    } else {
-        document.getElementById('age').value = '';
-    }
-}
+        document.getElementById('age').value = age < 0 ? '' : age;
+    });
+});
 </script>
-
-</body>
-</html>
