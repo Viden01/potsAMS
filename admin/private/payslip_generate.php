@@ -40,7 +40,7 @@ $y_position = 10;
 $sql = "SELECT employee_records.*, 
                SUM(TIME_TO_SEC(TIMEDIFF(time_out, time_in))) / 3600 AS total_hours, 
                employee_attendance.employee_id AS emp_id, 
-               employee_position.rate_per_hour  -- Ensure this field is included
+               employee_position.rate_per_hour
         FROM employee_attendance 
         LEFT JOIN employee_records ON employee_records.emp_id = employee_attendance.employee_id 
         LEFT JOIN employee_position ON employee_position.id = employee_records.position_id 
@@ -52,9 +52,6 @@ $query = $conn->query($sql);
 $total = 0;
 
 while ($row = $query->fetch_assoc()) {
-    // Debugging line
-    var_dump($row);  
-
     if ($y_position > 250) {  // Check if we need a new page
         $pdf->AddPage();
         $y_position = 10;  // Reset y position
@@ -73,7 +70,6 @@ while ($row = $query->fetch_assoc()) {
     $carow = $caquery->fetch_assoc();
     $cashadvance = isset($carow['cashamount']) ? $carow['cashamount'] : 0;
 
-    // Ensure 'rate_per_hour' exists in $row
     $rate_per_hour = isset($row['rate_per_hour']) ? $row['rate_per_hour'] : 0;
     $total_hours = isset($row['total_hours']) ? $row['total_hours'] : 0;
 
@@ -81,14 +77,12 @@ while ($row = $query->fetch_assoc()) {
     $total_deduction = $deduction + $cashadvance;
     $net = $gross - $total_deduction;
 
-    // Round amounts to two decimal places
     $gross = round($gross, 2);
     $total_deduction = round($total_deduction, 2);
     $net = round($net, 2);
 
-    // Format total hours as H:i:s
     $total_seconds = $total_hours * 3600;  // Convert hours to seconds
-    $formatted_hours = gmdate("H:i:s", $total_seconds);  // Convert seconds to H:i:s format
+    $formatted_hours = gmdate("H:i:s", $total_seconds);
 
     $contents = '
         <h2 align="center">Phonics Online Tutorial Services - ESL</h2>
@@ -142,8 +136,11 @@ while ($row = $query->fetch_assoc()) {
     $pdf->SetY($y_position + 25); // Move content down after logo
     $pdf->writeHTML($contents);
 
-    $y_position += 110; // Move y position for the next payslip, adjust as necessary
+    $y_position += 110; // Adjust y position for the next payslip
 }
+
+// Add JavaScript to trigger the print dialog
+$pdf->IncludeJS("print();");
 
 // End output buffering and get contents
 ob_end_clean();
