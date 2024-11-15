@@ -142,10 +142,10 @@ while ($row = $query->fetch_assoc()) {
 // End output buffering and get contents
 ob_end_clean();
 
-// Output the PDF to the browser and trigger print dialog
+// Output the PDF to the browser for direct printing
 $pdf->Output('payslip.pdf', 'I');
 
-// Trigger print dialog using JavaScript
+// Automatically trigger the print dialog in the browser (works only if browser allows)
 echo "<script type='text/javascript'>
     window.onload = function() {
         window.print();
