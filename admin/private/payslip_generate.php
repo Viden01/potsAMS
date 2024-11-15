@@ -139,10 +139,16 @@ while ($row = $query->fetch_assoc()) {
     $y_position += 110; // Adjust y position for the next payslip
 }
 
-// Add JavaScript to trigger the print dialog
-$pdf->IncludeJS("print();");
-
 // End output buffering and get contents
 ob_end_clean();
+
+// Output the PDF to the browser and trigger print dialog
 $pdf->Output('payslip.pdf', 'I');
+
+// Trigger print dialog using JavaScript
+echo "<script type='text/javascript'>
+    window.onload = function() {
+        window.print();
+    }
+</script>";
 ?>
