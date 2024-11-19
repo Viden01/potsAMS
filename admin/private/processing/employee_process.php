@@ -1,16 +1,6 @@
 <?php
 include '../../connection/db_conn.php';
 
-// Function to parse the complete address into Barangay, Municipality, and City
-function parseAddress($address) {
-    $parts = array_map('trim', explode(',', $address));
-    return [
-        'barangay' => $parts[0] ?? '',
-        'municipality' => $parts[1] ?? '',
-        'city' => $parts[2] ?? ''
-    ];
-}
-
 // Collecting form data
 $first_name = ucfirst(trim($_POST['first_name']));
 $middle_name = ucfirst(trim($_POST['middle_name']));
