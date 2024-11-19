@@ -24,13 +24,21 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-12">
-                            <label>Complete Address</label>
-                            <input type="text" class="form-control" name="complete_address">
+                        <div class="form-group col-md-4">
+                            <label>Barangay</label>
+                            <input type="text" class="form-control" name="barangay" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>Municipality</label>
+                            <input type="text" class="form-control" name="municipality" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label>City</label>
+                            <input type="text" class="form-control" name="city" required>
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <label>Birthday</label>
                             <input type="date" class="form-control" id="birth_date" name="birth_date" onchange="calculateAge()" required>
                         </div>
