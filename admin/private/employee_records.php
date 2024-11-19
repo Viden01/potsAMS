@@ -23,9 +23,7 @@ include '../connection/db_conn.php';
                     <th>ID</th>
                     <th>Profile</th>
                     <th>Full Name</th>
-                    <th>Barangay</th>
-                    <th>Municipality</th>
-                    <th>City</th>
+                    <th>Address</th>
                     <th>Birthday</th>
                     <th>Mobile Number</th>
                     <th>Gender</th>
@@ -37,9 +35,8 @@ include '../connection/db_conn.php';
             <tbody>
                 <?php
                 $sql = "SELECT 
-                            e.employee_id, e.first_name, e.middle_name, e.last_name, 
-                            e.barangay, e.municipality, e.city, e.birth_date, 
-                            e.Mobile_number, e.gender, p.emp_position, 
+                            e.employee_id, e.first_name, e.middle_name, e.last_name, e.complete_address, 
+                            e.birth_date, e.Mobile_number, e.gender, p.emp_position, 
                             s.time_in, s.time_out, e.profile_pic
                         FROM employee_records e
                         LEFT JOIN employee_position p ON e.position_id = p.id
@@ -51,9 +48,7 @@ include '../connection/db_conn.php';
                             <td>{$row['employee_id']}</td>
                             <td><img src='{$row['profile_pic']}' alt='Profile' style='width: 50px; height: 50px; border-radius: 50%;'></td>
                             <td>{$row['first_name']} {$row['middle_name']} {$row['last_name']}</td>
-                            <td>{$row['barangay']}</td>
-                            <td>{$row['municipality']}</td>
-                            <td>{$row['city']}</td>
+                            <td>{$row['complete_address']}</td>
                             <td>{$row['birth_date']}</td>
                             <td>{$row['Mobile_number']}</td>
                             <td>{$row['gender']}</td>

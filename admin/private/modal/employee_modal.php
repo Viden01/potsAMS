@@ -24,30 +24,26 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label>Barangay</label>
-                            <input type="text" class="form-control" name="barangay" required>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label>Municipality</label>
-                            <input type="text" class="form-control" name="municipality" required>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label>City</label>
-                            <input type="text" class="form-control" name="city" required>
+                        <div class="form-group col-md-12">
+                            <label>Complete Address</label>
+                            <input type="text" class="form-control" name="complete_address">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Birthday</label>
-                            <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+                            <input type="date" class="form-control" id="birth_date" name="birth_date" onchange="calculateAge()" required>
                         </div>
+                        <div class="form-group col-md-6">
+                            <label>Age</label>
+                            <input type="text" class="form-control" id="age" name="age" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Mobile Number</label>
                             <input type="text" class="form-control" id="Mobile_number" name="Mobile_number" maxlength="11" required>
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Gender</label>
                             <select class="form-control" name="gender">
@@ -55,6 +51,8 @@
                                 <option value="Female">Female</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Position</label>
                             <select class="form-control" name="position_id" required>
@@ -68,8 +66,6 @@
                                 ?>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Marital Status</label>
                             <select class="form-control" name="marital_status">
@@ -80,6 +76,8 @@
                                 <option value="Legally Separated">Legally Separated</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Schedule</label>
                             <select class="form-control" name="schedule_id">
@@ -92,9 +90,7 @@
                                 ?>
                             </select>
                         </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-12">
+                        <div class="form-group col-md-6">
                             <label>Profile</label>
                             <input type="file" name="profile_pic">
                         </div>
@@ -108,3 +104,37 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('employeeForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const form = new FormData(this);
+        $.ajax({
+            url: 'processing/employee_process.php',
+            type: 'POST',
+            data: form,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#msg').html(response);
+                if (response.includes('successfully')) {
+                    setTimeout(() => location.reload(), 2000);
+                }
+            }
+        });
+    });
+
+    // Calculate Age
+    document.getElementById('birth_date').addEventListener('change', function () {
+        const birthDate = new Date(this.value);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        document.getElementById('age').value = age < 0 ? '' : age;
+    });
+});
+</script>
