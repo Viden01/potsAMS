@@ -108,24 +108,3 @@
         </div>
     </div>
 </div>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('employeeForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const form = new FormData(this);
-        $.ajax({
-            url: 'processing/employee_process.php',
-            type: 'POST',
-            data: form,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                $('#msg').html(response);
-                if (response.includes('successfully')) {
-                    setTimeout(() => location.reload(), 2000);
-                }
-            }
-        });
-    });
-});
-</script>
