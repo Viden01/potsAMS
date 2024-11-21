@@ -66,10 +66,7 @@ include '../connection/db_conn.php';
     </div>
 
     <!-- Include Employee Modal -->
-    <?php 
-    // Update the include path as needed
-    include '../modals/employee_modal.php'; 
-    ?>
+    <?php include 'employee_modal.php'; ?>
 
     <script>
         // Handle Delete
