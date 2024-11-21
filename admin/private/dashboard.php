@@ -44,7 +44,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
     <div class="row">
       <div class="col-lg-3">
         <div class="alert alert-success text-center">
-          <i class="fa fa-users fa-3x"></i>&nbsp;<b><?php echo $row1['emp_id']; ?></b> Employee
+          <i class="fa fa-users fa-3x"></i>&nbsp;<b><?php echo $row1['emp_id']; ?></b> Memberss
         </div>
       </div>
       <div class="col-lg-3">
