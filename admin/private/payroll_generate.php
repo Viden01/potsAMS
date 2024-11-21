@@ -113,26 +113,10 @@ $content .= generateRow($from, $to, $conn, $deduction);
 $content .= '</table>';  
 
 $pdf->writeHTML($content);  
-$pdfOutput = $pdf->Output('payroll.pdf', 'S'); // Save as string
+$filename = '/tmp/payroll.pdf'; // Path to save the file
+$pdf->Output($filename, 'F'); // Save to the file system
 
+// Print the PDF using system command
+exec("lp $filename"); // For Unix/Linux
+// exec("print /D:\\YourPrinterName $filename"); // For Windows
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Print Payslip</title>
-    <script>
-        function printPayslip() {
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = 'data:application/pdf;base64,<?php echo base64_encode($pdfOutput); ?>';
-            document.body.appendChild(iframe);
-            iframe.onload = function() {
-                iframe.contentWindow.print();
-            };
-        }
-    </script>
-</head>
-<body onload="printPayslip();">
-    <h1>Generating Payslip...</h1>
-</body>
-</html>
