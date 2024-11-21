@@ -4,9 +4,7 @@ include '../../connection/db_conn.php';
 $first_name = ucfirst(trim($_POST['first_name']));
 $middle_name = ucfirst(trim($_POST['middle_name']));
 $last_name = ucfirst(trim($_POST['last_name']));
-$barangay = trim($_POST['barangay']);
-$municipality = trim($_POST['municipality']);
-$city = trim($_POST['city']);
+$complete_address = trim($_POST['complete_address']);
 $birth_date = $_POST['birth_date'];
 $Mobile_number = $_POST['Mobile_number'];
 $gender = $_POST['gender'];
@@ -31,21 +29,14 @@ if ($stmt->get_result()->num_rows > 0) {
 
 $employee_id = strtoupper(substr(md5(uniqid()), 0, 6));
 
-$sql = "INSERT INTO employee_records 
-        (employee_id, first_name, middle_name, last_name, barangay, municipality, city, birth_date, Mobile_number, gender, position_id, marital_status, schedule_id, profile_pic, date_created)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+$sql = "INSERT INTO employee_records (employee_id, first_name, middle_name, last_name, complete_address, birth_date, Mobile_number, gender, position_id, marital_status, schedule_id, profile_pic, date_created)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param(
-    'ssssssssssssss', 
-    $employee_id, $first_name, $middle_name, $last_name, 
-    $barangay, $municipality, $city, 
-    $birth_date, $Mobile_number, $gender, 
-    $position_id, $marital_status, $schedule_id, $fileName
-);
+$stmt->bind_param('ssssssssssss', $employee_id, $first_name, $middle_name, $last_name, $complete_address, $birth_date, $Mobile_number, $gender, $position_id, $marital_status, $schedule_id, $fileName);
 
 if ($stmt->execute()) {
     echo '<div class="alert alert-success">Employee added successfully!</div>';
 } else {
-    echo '<div class="alert alert-danger">Error: ' . $stmt->error . '</div>';
+    echo '<div class="alert alert-danger">Failed to add employee.</div>';
 }

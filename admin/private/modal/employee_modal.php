@@ -24,23 +24,15 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-4">
-                            <label>Barangay</label>
-                            <input type="text" class="form-control" name="barangay" required>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label>Municipality</label>
-                            <input type="text" class="form-control" name="municipality" required>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label>City</label>
-                            <input type="text" class="form-control" name="city" required>
+                        <div class="form-group col-md-12">
+                            <label>Complete Address</label>
+                            <input type="text" class="form-control" name="complete_address">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Birthday</label>
-                            <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+                            <input type="date" class="form-control" id="birth_date" name="birth_date" onchange="calculateAge()" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label>Age</label>
@@ -112,3 +104,37 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('employeeForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const form = new FormData(this);
+        $.ajax({
+            url: 'processing/employee_process.php',
+            type: 'POST',
+            data: form,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#msg').html(response);
+                if (response.includes('successfully')) {
+                    setTimeout(() => location.reload(), 2000);
+                }
+            }
+        });
+    });
+
+    // Calculate Age
+    document.getElementById('birth_date').addEventListener('change', function () {
+        const birthDate = new Date(this.value);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        document.getElementById('age').value = age < 0 ? '' : age;
+    });
+});
+</script>
