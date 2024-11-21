@@ -66,7 +66,14 @@ include '../connection/db_conn.php';
     </div>
 
     <!-- Include Employee Modal -->
-    <?php include 'employee_modal.php'; ?>
+    <?php 
+    $modal_path = 'employee_modal.php';
+    if (file_exists($modal_path)) {
+        include $modal_path;
+    } else {
+        echo "<div class='alert alert-danger'>Error: Cannot find the employee_modal.php file.</div>";
+    }
+    ?>
 
     <script>
         // Handle Delete
