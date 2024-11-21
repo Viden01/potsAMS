@@ -1,4 +1,7 @@
-<?php include('header/head.php');?>
+<?php 
+include('header/head.php');
+date_default_timezone_set('Asia/Manila'); // Set timezone to Asia/Manila
+?>
 <?php include('header/sidebar_menu.php');?>
 
 <!-- end navbar side -->
