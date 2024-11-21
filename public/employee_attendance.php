@@ -27,12 +27,6 @@ if (isset($_POST['employee_id'])) {
         $schedule_start = $srow['time_in'];
         $grace_period_start = date('H:i:s', strtotime($schedule_start . ' -30 minutes'));
 
-        // Debugging output
-        error_log("Employee ID: $employee_ID");
-        error_log("Current Time: $current_time");
-        error_log("Scheduled Start: $schedule_start");
-        error_log("Grace Period Start: $grace_period_start");
-
         if ($status == 'in') {
             // Check if employee has already timed in today
             $sql = "SELECT * FROM employee_attendance WHERE employee_id = '$id' AND date_attendance = '$date_now' AND time_in IS NOT NULL";
@@ -41,20 +35,14 @@ if (isset($_POST['employee_id'])) {
                 $output['error'] = true;
                 $output['message'] = 'You have already timed in for today';
             } else {
-                // Check if current time is within the allowed range to clock in
-                if ($current_time < $grace_period_start) {
-                    $output['error'] = true;
-                    $output['message'] = 'Your scheduled time to clock in is not yet reached. You can clock in at ' . $grace_period_start;
+                // Allow clock-in regardless of scheduled time
+                $logstatus = ($current_time > $schedule_start) ? 0 : 1;  // Adjust for late clock-in if needed
+                $sql = "INSERT INTO employee_attendance (employee_id, date_attendance, time_in, status) VALUES ('$id', '$date_now', NOW(), '$logstatus')";
+                if ($conn->query($sql)) {
+                    $output['message'] = '<b>Time in: </b> ' . date('h:i A / M-d-Y', strtotime($current_time)) . ' <br><img src="' . (!empty(strip_tags($row["profile_pic"])) ? ''.substr(strip_tags($row['profile_pic']),7)  : './images/no_image.jpg') . '" width="300px" height="200px" style="box-shadow: 5px 5px #888888;"> <p style="font-size: 100%;font-weight: bold;"> Employee name: ' . ucwords(strip_tags($row['first_name'] . ' ' . $row['last_name'])) . '</p>';
                 } else {
-                    // Insert time-in record
-                    $logstatus = ($current_time > $schedule_start) ? 0 : 1;
-                    $sql = "INSERT INTO employee_attendance (employee_id, date_attendance, time_in, status) VALUES ('$id', '$date_now', NOW(), '$logstatus')";
-                    if ($conn->query($sql)) {
-                        $output['message'] = '<b>Time in: </b> ' . date('h:i A / M-d-Y', strtotime($current_time)) . ' <br><img src="' . (!empty(strip_tags($row["profile_pic"])) ? ''.substr(strip_tags($row['profile_pic']),7)  : './images/no_image.jpg') . '" width="300px" height="200px" style="box-shadow: 5px 5px #888888;"> <p style="font-size: 100%;font-weight: bold;"> Employee name: ' . ucwords(strip_tags($row['first_name'] . ' ' . $row['last_name'])) . '</p>';
-                    } else {
-                        $output['error'] = true;
-                        $output['message'] = $conn->error;
-                    }
+                    $output['error'] = true;
+                    $output['message'] = $conn->error;
                 }
             }
         } else {
