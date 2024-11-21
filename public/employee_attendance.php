@@ -25,13 +25,11 @@ if (isset($_POST['employee_id'])) {
         $squery = $conn->query($sql);
         $srow = $squery->fetch_assoc();
         $schedule_start = $srow['time_in'];
-        $grace_period_start = date('H:i:s', strtotime($schedule_start . ' -30 minutes'));
 
         // Debugging output
         error_log("Employee ID: $employee_ID");
         error_log("Current Time: $current_time");
         error_log("Scheduled Start: $schedule_start");
-        error_log("Grace Period Start: $grace_period_start");
 
         if ($status == 'in') {
             // Check if employee has already timed in today
@@ -41,10 +39,10 @@ if (isset($_POST['employee_id'])) {
                 $output['error'] = true;
                 $output['message'] = 'You have already timed in for today';
             } else {
-                // Check if current time is within the allowed range to clock in
-                if ($current_time < $grace_period_start) {
+                // Check if current time is within the scheduled time
+                if ($current_time < $schedule_start) {
                     $output['error'] = true;
-                    $output['message'] = 'Your scheduled time to clock in is not yet reached. You can clock in at ' . $grace_period_start;
+                    $output['message'] = 'Your scheduled time to clock in is not yet reached. You can clock in at ' . $schedule_start;
                 } else {
                     // Insert time-in record
                     $logstatus = ($current_time > $schedule_start) ? 0 : 1;
