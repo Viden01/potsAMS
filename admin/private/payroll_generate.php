@@ -4,7 +4,6 @@ include '../connection/db_conn.php';
 function generateRow($from, $to, $conn, $deduction) {
     $contents = '';
 
-    // Corrected SQL to fetch rate_per_hour from employee_position
     $sql = "SELECT employee_records.*, 
                    employee_position.rate_per_hour, 
                    SUM(TIME_TO_SEC(TIMEDIFF(time_out, time_in))) / 3600 AS total_hours, 
@@ -25,7 +24,6 @@ function generateRow($from, $to, $conn, $deduction) {
     while ($row = $query->fetch_assoc()) {
         $empid = $row['emp_id'];
 
-        // Fetch cash advance
         $casql = "SELECT SUM(amount) AS cashamount FROM employee_cashadvance WHERE employee_id='$empid' AND date_created BETWEEN '$from' AND '$to'";
         $caquery = $conn->query($casql);
         if (!$caquery) {
@@ -34,26 +32,12 @@ function generateRow($from, $to, $conn, $deduction) {
         $carow = $caquery->fetch_assoc();
         $cashadvance = isset($carow['cashamount']) ? $carow['cashamount'] : 0;
 
-        // Ensure values are fetched correctly
         $rate_per_hour = isset($row['rate_per_hour']) ? $row['rate_per_hour'] : 0;
         $total_hours = isset($row['total_hours']) ? $row['total_hours'] : 0;
 
-        // Calculate gross, deductions, and net pay
         $gross = $rate_per_hour * $total_hours;
         $total_deduction = $deduction + $cashadvance;
         $net = $gross - $total_deduction;
-
-        // Commenting out var_dump to avoid interference with PDF generation
-        /*
-        var_dump([
-            "Employee ID" => $empid,
-            "Rate per Hour" => $rate_per_hour,
-            "Total Hours Worked" => $total_hours,
-            "Gross Pay" => $gross,
-            "Total Deduction" => $total_deduction,
-            "Net Pay" => $net,
-        ]);
-        */
 
         $total += $net;
 
@@ -107,7 +91,7 @@ $pdf->SetAutoPageBreak(TRUE, 10);
 $pdf->SetFont('helvetica', '', 11);  
 $pdf->AddPage();  
 
-$logoPath = 'picture2.jpg';  // Adjust the path to the logo image
+$logoPath = 'picture2.jpg'; 
 if (file_exists($logoPath)) {
     $pdf->Image($logoPath, 15, 10, 20, 20, 'JPG', '', 'T', false, 300, '', false, false, 0, false, false, false);
 }
@@ -129,5 +113,26 @@ $content .= generateRow($from, $to, $conn, $deduction);
 $content .= '</table>';  
 
 $pdf->writeHTML($content);  
-$pdf->Output('payroll.pdf', 'I');
+$pdfOutput = $pdf->Output('payroll.pdf', 'S'); // Save as string
+
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Print Payslip</title>
+    <script>
+        function printPayslip() {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = 'data:application/pdf;base64,<?php echo base64_encode($pdfOutput); ?>';
+            document.body.appendChild(iframe);
+            iframe.onload = function() {
+                iframe.contentWindow.print();
+            };
+        }
+    </script>
+</head>
+<body onload="printPayslip();">
+    <h1>Generating Payslip...</h1>
+</body>
+</html>
