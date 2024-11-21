@@ -47,5 +47,5 @@ $stmt->bind_param(
 if ($stmt->execute()) {
     echo '<div class="alert alert-success">Employee added successfully!</div>';
 } else {
-    echo '<div class="alert alert-danger">Failed to add employee.</div>';
+    echo '<div class="alert alert-danger">Error: ' . $stmt->error . '</div>';
 }
