@@ -112,11 +112,6 @@ $content .= '
 $content .= generateRow($from, $to, $conn, $deduction);  
 $content .= '</table>';  
 
-$pdf->writeHTML($content);  
-$filename = '/tmp/payroll.pdf'; // Path to save the file
-$pdf->Output($filename, 'F'); // Save to the file system
-
-// Print the PDF using system command
-exec("lp $filename"); // For Unix/Linux
-// exec("print /D:\\YourPrinterName $filename"); // For Windows
-?>
+// Save the PDF content to output
+$pdf->writeHTML($content);
+$pdf->Output('payroll.pdf', 'I'); // Open directly in the browser
