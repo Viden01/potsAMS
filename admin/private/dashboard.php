@@ -87,7 +87,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
             label: 'Count',
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
-            borderColor: ['#388e3c', '#1976d2', '#f57c00', '#d32f2f'],
+            borderColor: ['#36454F', '#36454F', '#36454F', '#36454F'],
             borderWidth: 1
           }]
         },
