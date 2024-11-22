@@ -35,7 +35,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
   <style>
     /* Adjust padding for the alert boxes */
     .alert {
-      padding: 20px;
+      padding: 5px;
     }
 
     .alert-success, .alert-info, .alert-warning, .alert-danger {
