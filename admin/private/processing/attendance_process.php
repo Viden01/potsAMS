@@ -3,14 +3,14 @@ include '../../connection/db_conn.php';
 
 // Sanitize and process POST data
 $employee = $conn->real_escape_string(strip_tags($_POST['employee_id']));
-$time_in = $conn->real_escape_string(strip_tags($_POST['time_in']));
 $date = $conn->real_escape_string(strip_tags($_POST['date_attendance']));
-$time_in = date('H:i:s', strtotime($time_in));
-$time_out = $conn->real_escape_string(strip_tags($_POST['time_out']));
-$time_out = date('H:i:s', strtotime($time_out));
 
-// Check if the employee exists
-$sql = "SELECT * FROM  employee_records WHERE employee_id = '$employee'";
+// Capture current time for time in/out
+$time_in = date('H:i:s');  // Capture current time when clocking in
+$time_out = date('H:i:s'); // Capture current time when clocking out
+
+// Get employee record
+$sql = "SELECT * FROM employee_records WHERE employee_id = '$employee'";
 $query = $conn->query($sql);
 
 if ($query->num_rows < 1) {
@@ -46,7 +46,7 @@ if ($query->num_rows < 1) {
         // Check if employee is on time
         $logstatus = ($time_in > $scherow['time_in']) ? 0 : 1;
 
-        // Insert attendance record
+        // Insert attendance record with current time
         $sql = "INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, status) 
                 VALUES ('$emp', '$date', '$time_in', '$time_out', '$logstatus')";
         if ($conn->query($sql)) {
