@@ -15,8 +15,14 @@ $row3 = $query3->fetch_array();
 $query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysqli_error($conn));
 $row4 = $query4->fetch_array();
 
+// Fetch payroll data (for example, employee salaries)
+$query5 = $conn->query("SELECT SUM(salary) AS total_payroll FROM employee_payroll") or die(mysqli_error($conn));
+$row5 = $query5->fetch_array();
+
 $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
+$total_payroll = $row5['total_payroll'];
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -73,10 +79,10 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       </div>
     </div>
 
-    <!-- New Row for Line Chart -->
+    <!-- Payroll Total Chart -->
     <div class="row">
       <div class="col-lg-12">
-        <canvas id="dashboardLineChart"></canvas>
+        <canvas id="payrollChart"></canvas>
       </div>
     </div>
   </div>
@@ -85,9 +91,8 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
     document.addEventListener('DOMContentLoaded', function() {
       var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
       var pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
-      var lineCtx = document.getElementById('dashboardLineChart').getContext('2d');
+      var payrollCtx = document.getElementById('payrollChart').getContext('2d');
 
-      // Bar Chart
       var barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
@@ -109,7 +114,6 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
         }
       });
 
-      // Pie Chart
       var pieChart = new Chart(pieCtx, {
         type: 'pie',
         data: {
@@ -156,17 +160,18 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
         }
       });
 
-      // Line Chart
-      var lineChart = new Chart(lineCtx, {
+      // Payroll Chart (Line Chart)
+      var payrollChart = new Chart(payrollCtx, {
         type: 'line',
         data: {
-          labels: ['Employee Records', 'Attendance', 'Schedule', 'Logged History'],
+          labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4'],  // Replace with your dynamic monthly data
           datasets: [{
-            label: 'Report Count',
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            fill: false,
-            borderColor: '#2196f3',
-            tension: 0.1
+            label: 'Total Payroll',
+            data: [<?php echo $total_payroll; ?>],  // Dynamically fetch monthly payroll data
+            borderColor: '#ff9800',
+            backgroundColor: 'rgba(255, 152, 0, 0.2)',
+            fill: true,
+            borderWidth: 2
           }]
         },
         options: {
