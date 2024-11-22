@@ -4,7 +4,6 @@ include '../connection/db_conn.php';
 function generateRow($from, $to, $conn, $deduction) {
     $contents = '';
 
-    // Corrected SQL to fetch rate_per_hour from employee_position
     $sql = "SELECT employee_records.*, 
                    employee_position.rate_per_hour, 
                    SUM(TIME_TO_SEC(TIMEDIFF(time_out, time_in))) / 3600 AS total_hours, 
@@ -43,18 +42,6 @@ function generateRow($from, $to, $conn, $deduction) {
         $total_deduction = $deduction + $cashadvance;
         $net = $gross - $total_deduction;
 
-        // Commenting out var_dump to avoid interference with PDF generation
-        /*
-        var_dump([
-            "Employee ID" => $empid,
-            "Rate per Hour" => $rate_per_hour,
-            "Total Hours Worked" => $total_hours,
-            "Gross Pay" => $gross,
-            "Total Deduction" => $total_deduction,
-            "Net Pay" => $net,
-        ]);
-        */
-
         $total += $net;
 
         $contents .= '
@@ -74,10 +61,9 @@ function generateRow($from, $to, $conn, $deduction) {
     return $contents;
 }
 
-$range = $_POST['date_range'];
-$ex = explode(' - ', $range);
-$from = date('Y-m-d', strtotime($ex[0]));
-$to = date('Y-m-d', strtotime($ex[1]));
+// Automatically set the date range from current date to 15 days prior
+$to = date('Y-m-d');
+$from = date('Y-m-d', strtotime('-15 days'));
 
 $sql = "SELECT SUM(amount) as total_amount FROM employee_deductions";
 $query = $conn->query($sql);
@@ -87,8 +73,8 @@ if (!$query) {
 $drow = $query->fetch_assoc();
 $deduction = isset($drow['total_amount']) ? $drow['total_amount'] : 0;
 
-$from_title = date('M d, Y', strtotime($ex[0]));
-$to_title = date('M d, Y', strtotime($ex[1]));
+$from_title = date('M d, Y', strtotime($from));
+$to_title = date('M d, Y', strtotime($to));
 
 require_once('../tcpdf/config/tcpdf_config.php'); 
 require_once('../tcpdf/tcpdf.php');   
