@@ -15,14 +15,8 @@ $row3 = $query3->fetch_array();
 $query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysqli_error($conn));
 $row4 = $query4->fetch_array();
 
-// Fetch payroll data (for example, employee salaries)
-$query5 = $conn->query("SELECT SUM(salary) AS total_payroll FROM employee_payroll") or die(mysqli_error($conn));
-$row5 = $query5->fetch_array();
-
 $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
-$total_payroll = $row5['total_payroll'];
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,20 +72,12 @@ $total_payroll = $row5['total_payroll'];
         <canvas id="dashboardPieChart"></canvas>
       </div>
     </div>
-
-    <!-- Payroll Total Chart -->
-    <div class="row">
-      <div class="col-lg-12">
-        <canvas id="payrollChart"></canvas>
-      </div>
-    </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
       var pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
-      var payrollCtx = document.getElementById('payrollChart').getContext('2d');
 
       var barChart = new Chart(barCtx, {
         type: 'bar',
@@ -155,29 +141,6 @@ $total_payroll = $row5['total_payroll'];
                   return tooltipItem.label + ': ' + percentage;
                 }
               }
-            }
-          }
-        }
-      });
-
-      // Payroll Chart (Line Chart)
-      var payrollChart = new Chart(payrollCtx, {
-        type: 'line',
-        data: {
-          labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4'],  // Replace with your dynamic monthly data
-          datasets: [{
-            label: 'Total Payroll',
-            data: [<?php echo $total_payroll; ?>],  // Dynamically fetch monthly payroll data
-            borderColor: '#ff9800',
-            backgroundColor: 'rgba(255, 152, 0, 0.2)',
-            fill: true,
-            borderWidth: 2
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
             }
           }
         }
