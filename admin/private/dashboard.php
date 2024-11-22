@@ -30,28 +30,6 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-
-  <!-- Custom Styles for Padding -->
-  <style>
-    /* Adjust padding for the alert boxes */
-    .alert {
-      padding: 5px;
-    }
-
-    .alert-success, .alert-info, .alert-warning, .alert-danger {
-      padding: 25px;
-    }
-
-    /* Optional: You can adjust the icon size */
-    .alert .fa {
-      font-size: 30px;
-    }
-
-    /* Optional: Adjust the font size for the number */
-    .alert b {
-      font-size: 20px;
-    }
-  </style>
 </head>
 <body>
   <?php include('header/sidebar_menu.php'); ?>
