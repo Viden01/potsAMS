@@ -9,77 +9,103 @@
 
    <div class="container mb-2">
       <!-- Footer -->
-      <footer class="page-footer mt-2" style="margin-bottom: 4px; background-color: #17a2b8; font-size: 150%;">
+      <footer class="page-footer mt-2" style="margin-bottom: 4px;background-color: #17a2b8;;font-size: 150%;">
          <div class="footer-copyright text-center py-2">
             <p id="date"></p>
             <font color="#ff9999">
-               <p id="time" style="font-weight: bold; font-size: 250%; font-family: 'digital-clock-font';"></p>
+               <p id="time" style="font-weight: bold;font-size: 250%;font-family:'digital-clock-font';"></p>
             </font>
          </div>
       </footer>
-
+      <!-- Footer -->
       <div class="row">
          <div class="col-sm">
-            <div class="card" style="border:1px solid #d4edda; background-color: #d4edda!important;">
-               <!-- Messages -->
+            <!-- Card -->
+            <div class="card" style="border:1px solid #d4edda;height: 100%;width: 100%;background-color: #d4edda!important;">
                <div id="alert-message-success" class="alert alert-success alert-dismissible mt20 text-center" style="display:none;">
                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                  <span class="result"><i class="fas fa-check"></i> <span class="message"></span></span>
+                  <span class="result"><i class="fas fa-tachometer-alt"></i> <span class="message"></span></span>
                </div>
                <div id="alert-message-danger" class="alert alert-danger alert-dismissible mt20 text-center" style="display:none;">
                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                  <span class="result"><i class="fa fa-warning"></i> <span class="message"></span></span>
+                  <span class="result"><i class="icon fa fa-warning"></i> <span class="message"></span></span>
                </div>
             </div>
+            <!-- Card -->
          </div>
          <div class="col-sm">
-            <!-- Attendance Form with Selfie Capture -->
-            <form class="text-center border border-light p-5" id="punch" enctype="multipart/form-data" method="POST" action="process_attendance.php">
+            <!-- Form -->
+            <form class="text-center border border-light p-5" id="punch" method="POST" enctype="multipart/form-data">
                <p class="h4 mb-3">ATTENDANCE TRACKER</p>
-               <input type="text" id="employee_id" name="employee_id" class="form-control mb-4" placeholder="Employee ID" required>
-               <select class="browser-default custom-select mb-4" name="status" required>
+               
+               <!-- Employee ID -->
+               <input type="text" id="employee_id" name="employee_id" class="form-control mb-4" placeholder="Employee ID" autocomplete="off" required="">
+
+               <!-- Status: Time In or Time Out -->
+               <select class="browser-default custom-select mb-4" name="status" autofocus="off" required="">
                   <option value="in" selected>Time In</option>
                   <option value="out">Time Out</option>
                </select>
 
-               <!-- Selfie Input -->
-               <input type="file" id="selfie" name="selfie" accept="image/*" capture="environment" class="form-control mb-4" required>
+               <!-- Geocam: Take Selfie and Capture Location -->
+               <div class="mb-4">
+                  <video id="video" width="300" height="200" autoplay></video><br>
+                  <button type="button" id="capture" class="btn btn-primary btn-block">Capture Selfie</button>
+                  <canvas id="canvas" style="display:none;"></canvas>
+               </div>
+               
+               <!-- Hidden Inputs for Selfie and Location -->
+               <input type="hidden" id="location" name="location" value="">
+               <input type="hidden" id="selfie" name="selfie" value="">
 
-               <!-- Hidden Inputs for Geolocation -->
-               <input type="hidden" id="latitude" name="latitude">
-               <input type="hidden" id="longitude" name="longitude">
-
-               <button type="submit" class="btn btn-info btn-block" id="submit-btn">Submit Attendance</button>
+               <button type="submit" class="btn btn-info btn-block" id="submitButton" disabled>Punch</button>
             </form>
+            <!-- Form -->
          </div>
       </div>
    </div>
 
-   <?php include('footer/footer.php'); ?>
-
-   <!-- JavaScript to Get Geolocation -->
    <script>
-      document.getElementById('punch').addEventListener('submit', function(event) {
-         event.preventDefault();  // Prevent default form submission
+      // Get video stream from camera
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const captureButton = document.getElementById('capture');
+      const submitButton = document.getElementById('submitButton');
+      const locationInput = document.getElementById('location');
+      const selfieInput = document.getElementById('selfie');
 
-         const selfieInput = document.getElementById('selfie');
-         if (!selfieInput.files.length) {
-            alert('Please take a selfie.');
-            return;
-         }
-         
+      // Get user media (video) for webcam
+      navigator.mediaDevices.getUserMedia({ video: true })
+         .then((stream) => {
+            video.srcObject = stream;
+         })
+         .catch((err) => {
+            console.log("Error accessing the camera: " + err);
+         });
+
+      // Capture selfie
+      captureButton.addEventListener('click', () => {
+         // Draw current frame on canvas
+         const context = canvas.getContext('2d');
+         context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+         // Convert canvas image to base64 string
+         const selfieData = canvas.toDataURL('image/jpeg');
+         selfieInput.value = selfieData;
+
+         // Get geolocation
          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-               document.getElementById('latitude').value = position.coords.latitude;
-               document.getElementById('longitude').value = position.coords.longitude;
+            navigator.geolocation.getCurrentPosition(function(position) {
+               const latitude = position.coords.latitude;
+               const longitude = position.coords.longitude;
                
-               // Submit the form once the location is ready
-               this.submit();
-            }, error => {
-               alert('Geolocation access denied. Attendance cannot be recorded without location.');
+               locationInput.value = latitude + ',' + longitude;
+
+               // Enable the submit button after selfie and location are captured
+               submitButton.disabled = false;
             });
          } else {
-            alert('Geolocation is not supported by this browser.');
+            alert("Geolocation is not supported by this browser.");
          }
       });
    </script>
