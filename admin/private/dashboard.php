@@ -72,13 +72,22 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
         <canvas id="dashboardPieChart"></canvas>
       </div>
     </div>
+
+    <!-- New Row for Line Chart -->
+    <div class="row">
+      <div class="col-lg-12">
+        <canvas id="dashboardLineChart"></canvas>
+      </div>
+    </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
       var pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
+      var lineCtx = document.getElementById('dashboardLineChart').getContext('2d');
 
+      // Bar Chart
       var barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
@@ -100,6 +109,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
         }
       });
 
+      // Pie Chart
       var pieChart = new Chart(pieCtx, {
         type: 'pie',
         data: {
@@ -141,6 +151,28 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
                   return tooltipItem.label + ': ' + percentage;
                 }
               }
+            }
+          }
+        }
+      });
+
+      // Line Chart
+      var lineChart = new Chart(lineCtx, {
+        type: 'line',
+        data: {
+          labels: ['Employee Records', 'Attendance', 'Schedule', 'Logged History'],
+          datasets: [{
+            label: 'Report Count',
+            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
+            fill: false,
+            borderColor: '#2196f3',
+            tension: 0.1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
             }
           }
         }
