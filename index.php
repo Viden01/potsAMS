@@ -8,6 +8,7 @@
    </script>
 
    <div class="container mb-2">
+      <!-- Footer -->
       <footer class="page-footer mt-2" style="margin-bottom: 4px; background-color: #17a2b8; font-size: 150%;">
          <div class="footer-copyright text-center py-2">
             <p id="date"></p>
@@ -33,10 +34,10 @@
          </div>
          <div class="col-sm">
             <!-- Attendance Form with Selfie Capture -->
-            <form class="text-center border border-light p-5" id="punch" enctype="multipart/form-data">
+            <form class="text-center border border-light p-5" id="punch" enctype="multipart/form-data" method="POST" action="process_attendance.php">
                <p class="h4 mb-3">ATTENDANCE TRACKER</p>
-               <input type="text" id="employee_id" name="employee_id" class="form-control mb-4" placeholder="Employee ID" required="">
-               <select class="browser-default custom-select mb-4" name="status" required="">
+               <input type="text" id="employee_id" name="employee_id" class="form-control mb-4" placeholder="Employee ID" required>
+               <select class="browser-default custom-select mb-4" name="status" required>
                   <option value="in" selected>Time In</option>
                   <option value="out">Time Out</option>
                </select>
@@ -59,15 +60,23 @@
    <!-- JavaScript to Get Geolocation -->
    <script>
       document.getElementById('punch').addEventListener('submit', function(event) {
-         event.preventDefault();
+         event.preventDefault();  // Prevent default form submission
 
+         const selfieInput = document.getElementById('selfie');
+         if (!selfieInput.files.length) {
+            alert('Please take a selfie.');
+            return;
+         }
+         
          if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                document.getElementById('latitude').value = position.coords.latitude;
                document.getElementById('longitude').value = position.coords.longitude;
-               this.submit(); // Submit form after location is fetched
-            }, () => {
-               alert('Geolocation access denied.');
+               
+               // Submit the form once the location is ready
+               this.submit();
+            }, error => {
+               alert('Geolocation access denied. Attendance cannot be recorded without location.');
             });
          } else {
             alert('Geolocation is not supported by this browser.');
