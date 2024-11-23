@@ -31,10 +31,12 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <style>
-    /* CSS to make the donut chart smaller */
+    /* Adjust donut chart size */
     #dashboardDonutChart {
-      width: 300px;   /* Set the width */
-      height: 300px;  /* Set the height */
+      width: 100%; /* Take full width */
+      height: 350px; /* Set the height */
+      max-width: 500px; /* Max width for responsiveness */
+      margin: 0 auto; /* Center the chart */
     }
 
     /* Modern Card Style */
@@ -83,6 +85,16 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
     /* Hover effects for modern alert boxes */
     .alert-modern:hover {
       background: linear-gradient(135deg, #2575fc, #6a11cb);
+    }
+
+    /* Animation for hover effect on donut chart */
+    .donut-chart-container {
+      transition: all 0.5s ease-in-out;
+    }
+
+    .donut-chart-container:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
@@ -138,7 +150,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       <div class="col-lg-6">
         <canvas id="dashboardBarChart"></canvas>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-6 donut-chart-container">
         <canvas id="dashboardDonutChart"></canvas> <!-- Donut Chart -->
       </div>
     </div>
@@ -147,7 +159,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
-      var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d'); // New context for donut chart
+      var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
 
       var barChart = new Chart(barCtx, {
         type: 'bar',
@@ -171,20 +183,25 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       });
 
       var donutChart = new Chart(donutCtx, {
-        type: 'doughnut',  // Donut chart type
+        type: 'doughnut',
         data: {
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
+            backgroundColor: [
+              'rgba(76, 175, 80, 0.8)',  // Green
+              'rgba(33, 150, 243, 0.8)', // Blue
+              'rgba(255, 152, 0, 0.8)',  // Orange
+              'rgba(244, 67, 54, 0.8)'   // Red
+            ],
             borderColor: ['#fff', '#fff', '#fff', '#fff'],
-            borderWidth: 1
+            borderWidth: 3
           }]
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false,  // Allow custom height
-          aspectRatio: 1,  // Aspect ratio for the chart (1 = square)
+          maintainAspectRatio: false,
+          aspectRatio: 1,
           plugins: {
             datalabels: {
               formatter: function(value, context) {
