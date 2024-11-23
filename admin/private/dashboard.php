@@ -2,7 +2,7 @@
 include('header/head.php');
 include('../connection/db_conn.php');
 
-// Fetch data from the database
+// Fetch data from database
 $query1 = $conn->query("SELECT COUNT(*) AS emp_id FROM employee_records") or die(mysqli_error($conn));
 $row1 = $query1->fetch_array();
 
@@ -66,9 +66,7 @@ $row4 = $query4->fetch_array();
         <canvas id="dashboardBarChart"></canvas>
       </div>
       <div class="col-lg-6">
-        <div style="width: 70%; margin: auto;"> <!-- Adjusted container for smaller size -->
-          <canvas id="dashboardDonutChart"></canvas>
-        </div>
+        <canvas id="dashboardDonutChart"></canvas>
       </div>
     </div>
   </div>
@@ -84,7 +82,7 @@ $row4 = $query4->fetch_array();
           datasets: [{
             label: 'Count',
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#FFE87C', '#6667AB', '#B048B5'],
+            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
             borderWidth: 0
           }]
         },
@@ -111,16 +109,37 @@ $row4 = $query4->fetch_array();
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#FFE87C', '#6667AB', '#B048B5'],
-            hoverOffset: 10
+            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
+            hoverOffset: 10  // Pop effect on hover
           }]
         },
         options: {
           responsive: true,
-          cutout: '60%', // Keeps the donut effect
+          cutout: '70%', // Donut hole size
           plugins: {
             legend: {
               position: 'bottom'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  const dataset = tooltipItem.dataset;
+                  const currentValue = dataset.data[tooltipItem.dataIndex];
+                  const total = dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((currentValue / total) * 100).toFixed(2) + '%';
+                  return `${tooltipItem.label}: ${percentage}`;
+                }
+              }
+            }
+          },
+          onClick: (event, elements) => {
+            if (elements.length > 0) {
+              const index = elements[0].index;
+              const activeSegment = donutChart.getDatasetMeta(0).data[index];
+              
+              // Toggle "pop" effect
+              activeSegment.options.hoverOffset = activeSegment.options.hoverOffset ? 0 : 20;
+              donutChart.update();
             }
           }
         }
