@@ -129,9 +129,9 @@ $row4 = $query4->fetch_array();
         const ctx = chart.ctx;
         ctx.save();
         ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-        ctx.shadowBlur = 20;
+        ctx.shadowBlur = 100;
         ctx.shadowOffsetX = 5;
-        ctx.shadowOffsetY = 5;
+        ctx.shadowOffsetY = 10;
         ctx.restore();
       }
     }]
