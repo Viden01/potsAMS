@@ -112,12 +112,12 @@ $row4 = $query4->fetch_array();
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
-            hoverOffset: 0
+            hoverOffset: 10
           }]
         },
         options: {
           responsive: true,
-          cutout: '70%', // Keeps the donut effect
+          cutout: '60%', // Keeps the donut effect
           plugins: {
             legend: {
               position: 'bottom'
