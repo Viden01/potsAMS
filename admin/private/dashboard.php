@@ -62,8 +62,9 @@ $row4 = $query4->fetch_array();
   </style>
 </head>
 <body>
+  <!-- Sidebar and Navbar (Unchanged) -->
   <?php include('header/sidebar_menu.php'); ?>
-
+  
   <div id="page-wrapper">
     <div class="row">
       <div class="col-lg-12">
