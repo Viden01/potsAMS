@@ -106,42 +106,34 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
-            borderColor: ['#fff', '#fff', '#fff', '#fff'],
-            borderWidth: 1
+            backgroundColor: ['#81C784', '#64B5F6', '#FFD54F', '#E57373'],  // Softer colors
+            borderWidth: 2,
+            borderColor: '#ffffff',
+            hoverOffset: 10  // Enlarges segment on hover
           }]
         },
         options: {
           responsive: true,
           plugins: {
             datalabels: {
-              formatter: function(value, context) {
-                var total = context.chart.data.datasets[0].data.reduce(function(a, b) {
-                  return a + b;
-                }, 0);
-                var percentage = ((value / total) * 100).toFixed(2) + '%';
-                return percentage;
-              },
-              color: '#fff',
+              color: '#333',
               font: {
-                weight: 'bold'
+                weight: 'bold',
+                size: 14
               },
-              anchor: 'end',
-              align: 'end'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(tooltipItem) {
-                  var dataset = tooltipItem.dataset;
-                  var currentValue = dataset.data[tooltipItem.dataIndex];
-                  var total = dataset.data.reduce(function(a, b) {
-                    return a + b;
-                  }, 0);
-                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
-                  return tooltipItem.label + ': ' + percentage;
-                }
-              }
+              formatter: (value, context) => {
+                let percentage = ((value / context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0)) * 100).toFixed(1);
+                return `${context.chart.data.labels[context.dataIndex]}: ${percentage}%`;
+              },
+              align: 'end',
+              anchor: 'end'
             }
+          },
+          layout: {
+            padding: 20
+          },
+          animation: {
+            animateScale: true  // Smooth scaling animation
           }
         }
       });
