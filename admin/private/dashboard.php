@@ -115,7 +115,7 @@ $row4 = $query4->fetch_array();
         },
         options: {
           responsive: true,
-          cutout: '70%', // Donut hole size
+          cutout: '50%', // Donut hole size
           plugins: {
             legend: {
               position: 'bottom'
