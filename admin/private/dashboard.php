@@ -69,7 +69,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
         <canvas id="dashboardBarChart"></canvas>
       </div>
       <div class="col-lg-6">
-        <canvas id="dashboardPieChart"></canvas>
+        <canvas id="dashboardDonutChart"></canvas> <!-- Change ID to match donut chart -->
       </div>
     </div>
   </div>
@@ -77,7 +77,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
-      var pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
+      var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d'); // New context for donut chart
 
       var barChart = new Chart(barCtx, {
         type: 'bar',
@@ -100,8 +100,8 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
         }
       });
 
-      var pieChart = new Chart(pieCtx, {
-        type: 'pie',
+      var donutChart = new Chart(donutCtx, {
+        type: 'doughnut',  // Change from 'pie' to 'doughnut'
         data: {
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
