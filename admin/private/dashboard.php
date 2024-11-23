@@ -26,43 +26,9 @@ $row4 = $query4->fetch_array();
   <link href="private/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
-  <style>
-    .data-card {
-      padding: 20px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      text-align: center;
-      margin: 10px;
-    }
-    .data-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-    }
-    .data-icon {
-      font-size: 3rem;
-      color: #fff;
-      padding: 15px;
-      border-radius: 50%;
-      margin-bottom: 10px;
-    }
-    .card-title {
-      font-size: 1.4rem;
-      font-weight: bold;
-    }
-    .card-value {
-      font-size: 2rem;
-      color: #333;
-    }
-    .bg-green { background: #4caf50; }
-    .bg-blue { background: #2196f3; }
-    .bg-orange { background: #ff9800; }
-    .bg-red { background: #f44336; }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <!-- Sidebar and Navbar (Unchanged) -->
   <?php include('header/sidebar_menu.php'); ?>
 
   <div id="page-wrapper">
@@ -74,57 +40,39 @@ $row4 = $query4->fetch_array();
 
     <div class="row">
       <div class="col-lg-3">
-        <div class="data-card">
-          <div class="data-icon bg-green">
-            <i class="fa fa-users"></i>
-          </div>
-          <div class="card-title">Employees</div>
-          <div class="card-value"><?php echo $row1['emp_id']; ?></div>
+        <div class="alert alert-success text-center">
+          <i class="fa fa-users fa-3x"></i>&nbsp;<b><?php echo $row1['emp_id']; ?></b> Employee
         </div>
       </div>
       <div class="col-lg-3">
-        <div class="data-card">
-          <div class="data-icon bg-blue">
-            <i class="fa fa-file"></i>
-          </div>
-          <div class="card-title">Attendance Records</div>
-          <div class="card-value"><?php echo $row2['id']; ?></div>
+        <div class="alert alert-info text-center">
+          <i class="fa fa-file fa-3x"></i>&nbsp;<b><?php echo $row2['id']; ?></b> Attendance records
         </div>
       </div>
       <div class="col-lg-3">
-        <div class="data-card">
-          <div class="data-icon bg-orange">
-            <i class="fa fa-history"></i>
-          </div>
-          <div class="card-title">Schedules</div>
-          <div class="card-value"><?php echo $row3['ids']; ?></div>
+        <div class="alert alert-warning text-center">
+          <i class="fa fa-history fa-3x"></i>&nbsp;<b><?php echo $row3['ids']; ?></b> Schedule
         </div>
       </div>
       <div class="col-lg-3">
-        <div class="data-card">
-          <div class="data-icon bg-red">
-            <i class="fa fa-eye"></i>
-          </div>
-          <div class="card-title">Logged History</div>
-          <div class="card-value"><?php echo $row4['log_id']; ?></div>
+        <div class="alert alert-danger text-center">
+          <i class="fa fa-eye fa-3x"></i>&nbsp;<b><?php echo $row4['log_id']; ?></b> Logged history
         </div>
       </div>
     </div>
 
-    <!-- Charts (Keep both existing chart setup) -->
     <div class="row">
       <div class="col-lg-6">
         <canvas id="dashboardBarChart"></canvas>
       </div>
       <div class="col-lg-6">
-        <div style="width: 70%; margin: auto;">
+        <div style="width: 70%; margin: auto;"> <!-- Adjusted container for smaller size -->
           <canvas id="dashboardDonutChart"></canvas>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Bar Chart Setup
@@ -182,7 +130,5 @@ $row4 = $query4->fetch_array();
 
   <script src="assets/plugins/jquery-1.10.2.js"></script>
   <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
-  <!-- Sidebar Menu (Unchanged) -->
-  <script src="private/assets/js/sidebar-menu.js"></script> <!-- Ensure this is correctly referenced -->
 </body>
 </html>
