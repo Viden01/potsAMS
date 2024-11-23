@@ -36,6 +36,54 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       width: 300px;   /* Set the width */
       height: 300px;  /* Set the height */
     }
+
+    /* Modern Card Style */
+    .dashboard-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-card i {
+      font-size: 3rem;
+      color: #4caf50;
+    }
+
+    .dashboard-card b {
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .alert-modern {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      border-radius: 10px;
+      padding: 15px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .alert-modern i {
+      font-size: 2rem;
+    }
+
+    .alert-modern .value {
+      font-size: 2.5rem;
+    }
+
+    /* Hover effects for modern alert boxes */
+    .alert-modern:hover {
+      background: linear-gradient(135deg, #2575fc, #6a11cb);
+    }
   </style>
 </head>
 <body>
@@ -49,24 +97,39 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
     </div>
 
     <div class="row">
+      <!-- Employee -->
       <div class="col-lg-3">
-        <div class="alert alert-success text-center">
-          <i class="fa fa-users fa-3x"></i>&nbsp;<b><?php echo $row1['emp_id']; ?></b> Employee
+        <div class="alert-modern" style="background-color: #4caf50;">
+          <i class="fa fa-users"></i>
+          <div class="value"><?php echo $row1['emp_id']; ?></div>
+          <div>Employees</div>
         </div>
       </div>
+
+      <!-- Attendance Records -->
       <div class="col-lg-3">
-        <div class="alert alert-info text-center">
-          <i class="fa fa-file fa-3x"></i>&nbsp;<b><?php echo $row2['id']; ?></b> Attendance records
+        <div class="alert-modern" style="background-color: #2196f3;">
+          <i class="fa fa-file"></i>
+          <div class="value"><?php echo $row2['id']; ?></div>
+          <div>Attendance Records</div>
         </div>
       </div>
+
+      <!-- Schedule -->
       <div class="col-lg-3">
-        <div class="alert alert-warning text-center">
-          <i class="fa fa-history fa-3x"></i>&nbsp;<b><?php echo $row3['ids']; ?></b> Schedule
+        <div class="alert-modern" style="background-color: #ff9800;">
+          <i class="fa fa-history"></i>
+          <div class="value"><?php echo $row3['ids']; ?></div>
+          <div>Schedule</div>
         </div>
       </div>
+
+      <!-- Logged History -->
       <div class="col-lg-3">
-        <div class="alert alert-danger text-center">
-          <i class="fa fa-eye fa-3x"></i>&nbsp;<b><?php echo $row4['log_id']; ?></b> Logged history
+        <div class="alert-modern" style="background-color: #f44336;">
+          <i class="fa fa-eye"></i>
+          <div class="value"><?php echo $row4['log_id']; ?></div>
+          <div>Logged History</div>
         </div>
       </div>
     </div>
