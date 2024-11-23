@@ -76,13 +76,16 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      // Bar Chart Context
+      var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
       var pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
 
+      // Gradient Colors for Bar Chart
       var gradientColors = [
-        pieCtx.createLinearGradient(0, 0, 0, 400),
-        pieCtx.createLinearGradient(0, 0, 0, 400),
-        pieCtx.createLinearGradient(0, 0, 0, 400),
-        pieCtx.createLinearGradient(0, 0, 0, 400)
+        barCtx.createLinearGradient(0, 0, 0, 400),
+        barCtx.createLinearGradient(0, 0, 0, 400),
+        barCtx.createLinearGradient(0, 0, 0, 400),
+        barCtx.createLinearGradient(0, 0, 0, 400)
       ];
 
       gradientColors[0].addColorStop(0, '#81C784');
@@ -97,14 +100,55 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       gradientColors[3].addColorStop(0, '#E57373');
       gradientColors[3].addColorStop(1, '#F44336');
 
-      var pieChart = new Chart(pieCtx, {
+      // Bar Chart
+      new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
+          datasets: [{
+            label: 'Count',
+            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
+            backgroundColor: gradientColors,
+            borderWidth: 0,
+            hoverBackgroundColor: '#00000055'  // Slight highlight on hover
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                font: {
+                  size: 14
+                }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false  // Hide legend for simplicity
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + context.raw;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Pie Chart with similar design as before (already optimized)
+      new Chart(pieCtx, {
         type: 'pie',
         data: {
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: gradientColors,  // Use gradient colors
-            hoverOffset: 10  // Enlarges segment on hover
+            backgroundColor: gradientColors,
+            hoverOffset: 10
           }]
         },
         options: {
@@ -122,17 +166,6 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
               },
               align: 'end',
               anchor: 'end'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(tooltipItem) {
-                  var dataset = tooltipItem.dataset;
-                  var currentValue = dataset.data[tooltipItem.dataIndex];
-                  var total = dataset.data.reduce((a, b) => a + b, 0);
-                  var percentage = ((currentValue / total) * 100).toFixed(2);
-                  return `${tooltipItem.label}: ${currentValue} (${percentage}%)`;
-                }
-              }
             }
           }
         }
