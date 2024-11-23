@@ -33,10 +33,10 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
   <style>
     /* Adjust donut chart size */
     #dashboardDonutChart {
-      width: 100%; /* Take full width */
-      height: 350px; /* Set the height */
-      max-width: 500px; /* Max width for responsiveness */
-      margin: 0 auto; /* Center the chart */
+      width: 100%;
+      height: 350px;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     /* Modern Card Style */
@@ -82,12 +82,10 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       font-size: 2.5rem;
     }
 
-    /* Hover effects for modern alert boxes */
     .alert-modern:hover {
       background: linear-gradient(135deg, #2575fc, #6a11cb);
     }
 
-    /* Animation for hover effect on donut chart */
     .donut-chart-container {
       transition: all 0.5s ease-in-out;
     }
@@ -95,6 +93,17 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
     .donut-chart-container:hover {
       transform: scale(1.05);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Modern Bar Chart */
+    .bar-chart {
+      border-radius: 10px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .bar-chart .bar {
+      border: none;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -168,15 +177,47 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
           datasets: [{
             label: 'Count',
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
-            borderColor: ['#388e3c', '#1976d2', '#f57c00', '#d32f2f'],
-            borderWidth: 1
+            backgroundColor: [
+              'rgba(72, 132, 239, 0.7)',  // Cool Blue
+              'rgba(120, 233, 177, 0.7)', // Mint Green
+              'rgba(255, 153, 122, 0.7)', // Soft Coral
+              'rgba(168, 115, 247, 0.7)'  // Lavender Purple
+            ],
+            borderColor: 'transparent',
+            borderWidth: 0,
+            hoverBackgroundColor: [
+              'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
+              'rgba(120, 233, 177, 1)', // Hover effect Mint Green
+              'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
+              'rgba(168, 115, 247, 1)'  // Hover effect Lavender Purple
+            ],
+            hoverBorderWidth: 0
           }]
         },
         options: {
-          scales: {
-            y: {
-              beginAtZero: true
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            datalabels: {
+              color: '#fff',
+              font: {
+                weight: 'bold'
+              },
+              anchor: 'end',
+              align: 'end'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  var dataset = tooltipItem.dataset;
+                  var currentValue = dataset.data[tooltipItem.dataIndex];
+                  var total = dataset.data.reduce(function(a, b) {
+                    return a + b;
+                  }, 0);
+                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
+                  return tooltipItem.label + ': ' + percentage;
+                }
+              }
             }
           }
         }
@@ -194,14 +235,12 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
               'rgba(255, 153, 122, 0.7)', // Soft Coral
               'rgba(168, 115, 247, 0.7)'  // Lavender Purple
             ],
-            borderColor: ['#fff', '#fff', '#fff', '#fff'],
-            borderWidth: 2
+            borderWidth: 0
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          aspectRatio: 1,
           plugins: {
             datalabels: {
               formatter: function(value, context) {
