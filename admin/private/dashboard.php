@@ -31,66 +31,58 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <style>
+    /* CSS to make the donut chart smaller */
+    #dashboardDonutChart {
+      width: 300px;   /* Set the width */
+      height: 300px;  /* Set the height */
+    }
+
     /* Modern Card Style */
     .dashboard-card {
-      background-color: #fff;
+      background-color: #ffffff;
       border-radius: 12px;
       padding: 20px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease-in-out;
+      transition: transform 0.3s ease-in-out;
       text-align: center;
       margin-bottom: 20px;
-      height: 120px;
     }
     .dashboard-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     }
+
     .dashboard-card i {
       font-size: 3rem;
-      transition: color 0.3s ease-in-out;
+      color: #4caf50;
     }
-    .dashboard-card:hover i {
-      color: #fff;
-    }
+
     .dashboard-card b {
-      font-size: 2rem;
+      font-size: 1.5rem;
       color: #333;
-      font-weight: bold;
-    }
-    .dashboard-card p {
-      font-size: 1.2rem;
-      color: #777;
     }
 
-    /* Color Scheme */
-    .card-emp { background-color: #4caf50; }
-    .card-attendance { background-color: #2196f3; }
-    .card-schedule { background-color: #ff9800; }
-    .card-history { background-color: #f44336; }
-
-    /* Data Value styling */
-    .data-value {
-      font-size: 2rem;
+    .alert-modern {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
       color: white;
+      border-radius: 10px;
+      padding: 15px;
       font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
-    /* Animation for the cards */
-    .animate {
-      animation: fadeInUp 1s ease-out forwards;
+    .alert-modern i {
+      font-size: 2rem;
     }
 
-    /* Fade-in Animation */
-    @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .alert-modern .value {
+      font-size: 2.5rem;
+    }
+
+    /* Hover effects for modern alert boxes */
+    .alert-modern:hover {
+      background: linear-gradient(135deg, #2575fc, #6a11cb);
     }
   </style>
 </head>
@@ -107,37 +99,37 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
     <div class="row">
       <!-- Employee -->
       <div class="col-lg-3">
-        <div class="dashboard-card card-emp animate">
+        <div class="alert-modern" style="background-color: #4caf50;">
           <i class="fa fa-users"></i>
-          <div class="data-value"><?php echo $row1['emp_id']; ?></div>
-          <p>Employees</p>
+          <div class="value"><?php echo $row1['emp_id']; ?></div>
+          <div>Employees</div>
         </div>
       </div>
 
       <!-- Attendance Records -->
       <div class="col-lg-3">
-        <div class="dashboard-card card-attendance animate">
+        <div class="alert-modern" style="background-color: #2196f3;">
           <i class="fa fa-file"></i>
-          <div class="data-value"><?php echo $row2['id']; ?></div>
-          <p>Attendance Records</p>
+          <div class="value"><?php echo $row2['id']; ?></div>
+          <div>Attendance Records</div>
         </div>
       </div>
 
       <!-- Schedule -->
       <div class="col-lg-3">
-        <div class="dashboard-card card-schedule animate">
+        <div class="alert-modern" style="background-color: #ff9800;">
           <i class="fa fa-history"></i>
-          <div class="data-value"><?php echo $row3['ids']; ?></div>
-          <p>Schedule</p>
+          <div class="value"><?php echo $row3['ids']; ?></div>
+          <div>Schedule</div>
         </div>
       </div>
 
       <!-- Logged History -->
       <div class="col-lg-3">
-        <div class="dashboard-card card-history animate">
+        <div class="alert-modern" style="background-color: #f44336;">
           <i class="fa fa-eye"></i>
-          <div class="data-value"><?php echo $row4['log_id']; ?></div>
-          <p>Logged History</p>
+          <div class="value"><?php echo $row4['log_id']; ?></div>
+          <div>Logged History</div>
         </div>
       </div>
     </div>
