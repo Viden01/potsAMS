@@ -112,7 +112,7 @@ $row4 = $query4->fetch_array();
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
-            hoverOffset: 10
+            hoverOffset: 0
           }]
         },
         options: {
