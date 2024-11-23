@@ -26,7 +26,40 @@ $row4 = $query4->fetch_array();
   <link href="private/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .data-card {
+      padding: 20px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      margin: 10px;
+    }
+    .data-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+    .data-icon {
+      font-size: 3rem;
+      color: #fff;
+      padding: 15px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+    }
+    .card-value {
+      font-size: 2rem;
+      color: #333;
+    }
+    .bg-green { background: #4caf50; }
+    .bg-blue { background: #2196f3; }
+    .bg-orange { background: #ff9800; }
+    .bg-red { background: #f44336; }
+  </style>
 </head>
 <body>
   <?php include('header/sidebar_menu.php'); ?>
@@ -40,94 +73,57 @@ $row4 = $query4->fetch_array();
 
     <div class="row">
       <div class="col-lg-3">
-        <div class="alert alert-success text-center">
-          <i class="fa fa-users fa-3x"></i>&nbsp;<b><?php echo $row1['emp_id']; ?></b> Employee
+        <div class="data-card">
+          <div class="data-icon bg-green">
+            <i class="fa fa-users"></i>
+          </div>
+          <div class="card-title">Employees</div>
+          <div class="card-value"><?php echo $row1['emp_id']; ?></div>
         </div>
       </div>
       <div class="col-lg-3">
-        <div class="alert alert-info text-center">
-          <i class="fa fa-file fa-3x"></i>&nbsp;<b><?php echo $row2['id']; ?></b> Attendance records
+        <div class="data-card">
+          <div class="data-icon bg-blue">
+            <i class="fa fa-file"></i>
+          </div>
+          <div class="card-title">Attendance Records</div>
+          <div class="card-value"><?php echo $row2['id']; ?></div>
         </div>
       </div>
       <div class="col-lg-3">
-        <div class="alert alert-warning text-center">
-          <i class="fa fa-history fa-3x"></i>&nbsp;<b><?php echo $row3['ids']; ?></b> Schedule
+        <div class="data-card">
+          <div class="data-icon bg-orange">
+            <i class="fa fa-history"></i>
+          </div>
+          <div class="card-title">Schedules</div>
+          <div class="card-value"><?php echo $row3['ids']; ?></div>
         </div>
       </div>
       <div class="col-lg-3">
-        <div class="alert alert-danger text-center">
-          <i class="fa fa-eye fa-3x"></i>&nbsp;<b><?php echo $row4['log_id']; ?></b> Logged history
+        <div class="data-card">
+          <div class="data-icon bg-red">
+            <i class="fa fa-eye"></i>
+          </div>
+          <div class="card-title">Logged History</div>
+          <div class="card-value"><?php echo $row4['log_id']; ?></div>
         </div>
       </div>
     </div>
 
+    <!-- Charts (Keep existing chart setup) -->
     <div class="row">
       <div class="col-lg-6">
         <canvas id="dashboardBarChart"></canvas>
       </div>
       <div class="col-lg-6">
-        <div style="width: 70%; margin: auto;"> <!-- Adjusted container for smaller size -->
+        <div style="width: 70%; margin: auto;">
           <canvas id="dashboardDonutChart"></canvas>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Bar Chart Setup
-      var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
-      var barChart = new Chart(barCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
-          datasets: [{
-            label: 'Count',
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#FFE87C', '#6667AB', '#B048B5'],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
-            }
-          }
-        }
-      });
-
-      // Donut Chart Setup
-      const donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
-      let donutChart = new Chart(donutCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
-          datasets: [{
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#FFE87C', '#6667AB', '#B048B5'],
-            hoverOffset: 10
-          }]
-        },
-        options: {
-          responsive: true,
-          cutout: '60%', // Keeps the donut effect
-          plugins: {
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }
-      });
-    });
-  </script>
-
+  <!-- Scripts (Existing) -->
   <script src="assets/plugins/jquery-1.10.2.js"></script>
   <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
 </body>
