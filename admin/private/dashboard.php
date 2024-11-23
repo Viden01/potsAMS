@@ -14,6 +14,8 @@ $row3 = $query3->fetch_array();
 
 $query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysqli_error($conn));
 $row4 = $query4->fetch_array();
+
+$total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -27,6 +29,7 @@ $row4 = $query4->fetch_array();
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </head>
 <body>
   <?php include('header/sidebar_menu.php'); ?>
@@ -66,15 +69,16 @@ $row4 = $query4->fetch_array();
         <canvas id="dashboardBarChart"></canvas>
       </div>
       <div class="col-lg-6">
-        <canvas id="dashboardDonutChart"></canvas>
+        <canvas id="dashboardPieChart"></canvas>
       </div>
     </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Bar Chart Setup
       var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
+      var pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
+
       var barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
@@ -83,63 +87,60 @@ $row4 = $query4->fetch_array();
             label: 'Count',
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
-            borderWidth: 0
+            borderColor: ['#388e3c', '#1976d2', '#f57c00', '#d32f2f'],
+            borderWidth: 1
           }]
         },
         options: {
-          responsive: true,
           scales: {
             y: {
               beginAtZero: true
-            }
-          },
-          plugins: {
-            legend: {
-              display: false
             }
           }
         }
       });
 
-      // Donut Chart Setup
-      const donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
-      let donutChart = new Chart(donutCtx, {
-        type: 'doughnut',
+      var pieChart = new Chart(pieCtx, {
+        type: 'pie',
         data: {
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
-            hoverOffset: 10  // Pop effect on hover
+            borderColor: ['#fff', '#fff', '#fff', '#fff'],
+            borderWidth: 1
           }]
         },
         options: {
           responsive: true,
-          cutout: '70%', // Donut hole size
           plugins: {
-            legend: {
-              position: 'bottom'
+            datalabels: {
+              formatter: function(value, context) {
+                var total = context.chart.data.datasets[0].data.reduce(function(a, b) {
+                  return a + b;
+                }, 0);
+                var percentage = ((value / total) * 100).toFixed(2) + '%';
+                return percentage;
+              },
+              color: '#fff',
+              font: {
+                weight: 'bold'
+              },
+              anchor: 'end',
+              align: 'end'
             },
             tooltip: {
               callbacks: {
                 label: function(tooltipItem) {
-                  const dataset = tooltipItem.dataset;
-                  const currentValue = dataset.data[tooltipItem.dataIndex];
-                  const total = dataset.data.reduce((a, b) => a + b, 0);
-                  const percentage = ((currentValue / total) * 100).toFixed(2) + '%';
-                  return `${tooltipItem.label}: ${percentage}`;
+                  var dataset = tooltipItem.dataset;
+                  var currentValue = dataset.data[tooltipItem.dataIndex];
+                  var total = dataset.data.reduce(function(a, b) {
+                    return a + b;
+                  }, 0);
+                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
+                  return tooltipItem.label + ': ' + percentage;
                 }
               }
-            }
-          },
-          onClick: (event, elements) => {
-            if (elements.length > 0) {
-              const index = elements[0].index;
-              const activeSegment = donutChart.getDatasetMeta(0).data[index];
-              
-              // Toggle "pop" effect
-              activeSegment.options.hoverOffset = activeSegment.options.hoverOffset ? 0 : 20;
-              donutChart.update();
             }
           }
         }
@@ -149,5 +150,8 @@ $row4 = $query4->fetch_array();
 
   <script src="assets/plugins/jquery-1.10.2.js"></script>
   <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
+  <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
+  <script src="assets/plugins/pace/pace.js"></script>
+  <script src="assets/scripts/siminta.js"></script>
 </body>
 </html>
