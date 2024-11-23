@@ -189,13 +189,13 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: [
-              'rgba(76, 175, 80, 0.8)',  // Green
-              'rgba(33, 150, 243, 0.8)', // Blue
-              'rgba(255, 152, 0, 0.8)',  // Orange
-              'rgba(244, 67, 54, 0.8)'   // Red
+              'rgba(72, 132, 239, 0.7)',  // Cool Blue
+              'rgba(120, 233, 177, 0.7)', // Mint Green
+              'rgba(255, 153, 122, 0.7)', // Soft Coral
+              'rgba(168, 115, 247, 0.7)'  // Lavender Purple
             ],
             borderColor: ['#fff', '#fff', '#fff', '#fff'],
-            borderWidth: 3
+            borderWidth: 2
           }]
         },
         options: {
