@@ -84,7 +84,7 @@ $row4 = $query4->fetch_array();
           datasets: [{
             label: 'Count',
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#2196f3', '#6667AB', '#B048B5'],
+            backgroundColor: ['#4caf50', '#FFE87C', '#6667AB', '#B048B5'],
             borderWidth: 0
           }]
         },
@@ -111,7 +111,7 @@ $row4 = $query4->fetch_array();
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#2196f3', '#6667AB', '#B048B5'],
+            backgroundColor: ['#4caf50', '#FFE87C', '#6667AB', '#B048B5'],
             hoverOffset: 10
           }]
         },
