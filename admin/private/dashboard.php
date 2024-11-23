@@ -110,7 +110,7 @@ $row4 = $query4->fetch_array();
       </div>
     </div>
 
-    <!-- Charts (Keep existing chart setup) -->
+    <!-- Charts (Keep both existing chart setup) -->
     <div class="row">
       <div class="col-lg-6">
         <canvas id="dashboardBarChart"></canvas>
@@ -123,7 +123,62 @@ $row4 = $query4->fetch_array();
     </div>
   </div>
 
-  <!-- Scripts (Existing) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Bar Chart Setup
+      var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
+      var barChart = new Chart(barCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
+          datasets: [{
+            label: 'Count',
+            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
+            backgroundColor: ['#4caf50', '#FFE87C', '#6667AB', '#B048B5'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      });
+
+      // Donut Chart Setup
+      const donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
+      let donutChart = new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
+          datasets: [{
+            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
+            backgroundColor: ['#4caf50', '#FFE87C', '#6667AB', '#B048B5'],
+            hoverOffset: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          cutout: '60%', // Keeps the donut effect
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    });
+  </script>
+
   <script src="assets/plugins/jquery-1.10.2.js"></script>
   <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
 </body>
