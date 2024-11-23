@@ -103,29 +103,40 @@ $row4 = $query4->fetch_array();
         }
       });
 
-      // Donut Chart Setup
-      const donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
-      let donutChart = new Chart(donutCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
-          datasets: [{
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#B048B5'],
-            hoverOffset: 10
-          }]
-        },
-        options: {
-          responsive: true,
-          cutout: '60%', // Keeps the donut effect
-          plugins: {
-            legend: {
-              position: 'bottom'
-            }
-          }
+   // Donut Chart Setup
+   const donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
+  let donutChart = new Chart(donutCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
+      datasets: [{
+        data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
+        backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
+        hoverOffset: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          position: 'bottom'
         }
-      });
-    });
+      }
+    },
+    plugins: [{
+      beforeDraw: function(chart) {
+        const ctx = chart.ctx;
+        ctx.save();
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+        ctx.shadowBlur = 20;
+        ctx.shadowOffsetX = 5;
+        ctx.shadowOffsetY = 5;
+        ctx.restore();
+      }
+    }]
+  });
+});
   </script>
 
   <script src="assets/plugins/jquery-1.10.2.js"></script>
