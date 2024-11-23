@@ -76,29 +76,26 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
       var pieCtx = document.getElementById('dashboardPieChart').getContext('2d');
 
-      var barChart = new Chart(barCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
-          datasets: [{
-            label: 'Count',
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
-            borderColor: ['#388e3c', '#1976d2', '#f57c00', '#d32f2f'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
-        }
-      });
+      var gradientColors = [
+        pieCtx.createLinearGradient(0, 0, 0, 400),
+        pieCtx.createLinearGradient(0, 0, 0, 400),
+        pieCtx.createLinearGradient(0, 0, 0, 400),
+        pieCtx.createLinearGradient(0, 0, 0, 400)
+      ];
+
+      gradientColors[0].addColorStop(0, '#81C784');
+      gradientColors[0].addColorStop(1, '#4CAF50');
+
+      gradientColors[1].addColorStop(0, '#64B5F6');
+      gradientColors[1].addColorStop(1, '#2196F3');
+
+      gradientColors[2].addColorStop(0, '#FFD54F');
+      gradientColors[2].addColorStop(1, '#FFB74D');
+
+      gradientColors[3].addColorStop(0, '#E57373');
+      gradientColors[3].addColorStop(1, '#F44336');
 
       var pieChart = new Chart(pieCtx, {
         type: 'pie',
@@ -106,9 +103,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: ['#81C784', '#64B5F6', '#FFD54F', '#E57373'],  // Softer colors
-            borderWidth: 2,
-            borderColor: '#ffffff',
+            backgroundColor: gradientColors,  // Use gradient colors
             hoverOffset: 10  // Enlarges segment on hover
           }]
         },
@@ -127,13 +122,18 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
               },
               align: 'end',
               anchor: 'end'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  var dataset = tooltipItem.dataset;
+                  var currentValue = dataset.data[tooltipItem.dataIndex];
+                  var total = dataset.data.reduce((a, b) => a + b, 0);
+                  var percentage = ((currentValue / total) * 100).toFixed(2);
+                  return `${tooltipItem.label}: ${currentValue} (${percentage}%)`;
+                }
+              }
             }
-          },
-          layout: {
-            padding: 20
-          },
-          animation: {
-            animateScale: true  // Smooth scaling animation
           }
         }
       });
