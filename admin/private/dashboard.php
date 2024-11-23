@@ -30,6 +30,13 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <style>
+    /* CSS to make the donut chart smaller */
+    #dashboardDonutChart {
+      width: 300px;   /* Set the width */
+      height: 300px;  /* Set the height */
+    }
+  </style>
 </head>
 <body>
   <?php include('header/sidebar_menu.php'); ?>
@@ -69,7 +76,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
         <canvas id="dashboardBarChart"></canvas>
       </div>
       <div class="col-lg-6">
-        <canvas id="dashboardDonutChart"></canvas> <!-- Change ID to match donut chart -->
+        <canvas id="dashboardDonutChart"></canvas> <!-- Donut Chart -->
       </div>
     </div>
   </div>
@@ -101,7 +108,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       });
 
       var donutChart = new Chart(donutCtx, {
-        type: 'doughnut',  // Change from 'pie' to 'doughnut'
+        type: 'doughnut',  // Donut chart type
         data: {
           labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
           datasets: [{
@@ -113,6 +120,8 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,  // Allow custom height
+          aspectRatio: 1,  // Aspect ratio for the chart (1 = square)
           plugins: {
             datalabels: {
               formatter: function(value, context) {
