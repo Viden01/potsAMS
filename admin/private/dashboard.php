@@ -182,5 +182,7 @@ $row4 = $query4->fetch_array();
 
   <script src="assets/plugins/jquery-1.10.2.js"></script>
   <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
+  <!-- Include the sidebar menu JavaScript for functionality -->
+  <script src="private/assets/js/sidebar-menu.js"></script> <!-- Ensure this is correctly referenced -->
 </body>
 </html>
