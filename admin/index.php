@@ -152,7 +152,7 @@
       <div class="col-md-4 custom-offset">
         <div class="login-panel panel panel-default" id="signInPanel">
           <div class="panel-heading">
-            <h3 class="panel-title">Please Sign In</h3>
+            <h3 class="panel-title">Sign In</h3>
           </div>
           <div class="panel-body">
             <div id="msg"></div>
