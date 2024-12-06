@@ -39,6 +39,10 @@
     }
 
     .login-panel {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      top: 0;
       background-color: rgba(255, 255, 255, 0.9);
       padding: 30px;
       border-radius: 8px;
@@ -150,33 +154,31 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="login-panel panel panel-default" id="signInPanel">
-      <div class="panel-heading">
-        <h3 class="panel-title">Please Sign In</h3>
-      </div>
-      <div class="panel-body">
-        <div id="msg"></div>
-        <form role="form" id="form_action" method="POST">
-          <fieldset>
-            <div class="form-group">
-              <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
+  <div class="login-panel panel panel-default" id="signInPanel">
+    <div class="panel-heading">
+      <h3 class="panel-title">Please Sign In</h3>
+    </div>
+    <div class="panel-body">
+      <div id="msg"></div>
+      <form role="form" id="form_action" method="POST">
+        <fieldset>
+          <div class="form-group">
+            <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
+          </div>
+          <div class="form-options">
+            <div class="checkbox">
+              <label>
+                <input name="remember" type="checkbox" value="Remember Me"> Remember Me
+              </label>
             </div>
-            <div class="form-group">
-              <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
-            </div>
-            <div class="form-options">
-              <div class="checkbox">
-                <label>
-                  <input name="remember" type="checkbox" value="Remember Me"> Remember Me
-                </label>
-              </div>
-              <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-            </div>
-            <button type="button" class="btn submit" value="Login">Login</button>
-          </fieldset>
-        </form>
-      </div>
+            <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+          </div>
+          <button type="button" class="btn submit" value="Login">Login</button>
+        </fieldset>
+      </form>
     </div>
   </div>
 
