@@ -43,19 +43,16 @@
                   <option value="out">Time Out</option>
                </select>
                
-               <!-- Camera and Location -->
+               <!-- Camera and Photo -->
                <div class="mb-3">
-                  <!-- Video for Camera -->
                   <video id="video" autoplay muted playsinline style="width: 100%; max-height: 300px;"></video>
                   <canvas id="canvas" style="display:none;"></canvas>
                   <input type="hidden" id="photo" name="photo">
-                  
-                  <!-- Map -->
-                  <div id="map" style="width: 100%; height: 300px;"></div>
-                  <input type="hidden" id="latitude" name="latitude">
-                  <input type="hidden" id="longitude" name="longitude">
                </div>
-               
+
+               <!-- Location -->
+               <input type="hidden" id="latitude" name="latitude">
+               <input type="hidden" id="longitude" name="longitude">
                <button type="button" class="btn btn-info btn-block" id="capture">Capture Photo</button>
                <button type="submit" class="btn btn-success btn-block" id="submit" disabled>Submit</button>
             </form>
@@ -64,7 +61,6 @@
       </div>
       <?php include('footer/footer.php'); ?>
 
-      <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
       <script>
          const video = document.getElementById('video');
          const canvas = document.getElementById('canvas');
@@ -73,8 +69,6 @@
          const longitudeInput = document.getElementById('longitude');
          const captureButton = document.getElementById('capture');
          const submitButton = document.getElementById('submit');
-         
-         let map, marker;
 
          // Access the user's camera
          navigator.mediaDevices.getUserMedia({ video: true })
@@ -85,27 +79,11 @@
                alert('Unable to access camera. Please check your permissions.');
             });
 
-         // Initialize the map
-         function initMap(latitude, longitude) {
-            map = L.map('map').setView([latitude, longitude], 16);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-               attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            marker = L.marker([latitude, longitude]).addTo(map);
-         }
-
-         // Get the user's location
+         // Get user's location
          navigator.geolocation.getCurrentPosition(
             position => {
-               const latitude = position.coords.latitude;
-               const longitude = position.coords.longitude;
-
-               latitudeInput.value = latitude;
-               longitudeInput.value = longitude;
-
-               initMap(latitude, longitude);
+               latitudeInput.value = position.coords.latitude;
+               longitudeInput.value = position.coords.longitude;
             },
             error => {
                alert('Unable to get location. Please enable location services.');
