@@ -21,17 +21,97 @@
   </script>
 
   <style>
-    .custom-offset {
-      margin-left: 63%;
+    body {
+      background-image: url('picture1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+      font-family: 'Arial', sans-serif;
     }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding-top: 0;
+    }
+
+    .login-panel {
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .panel-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      border-color: #28a745;
+      box-shadow: 0 0 8px rgba(40, 167, 69, 0.2);
+    }
+
     .form-options {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+
     .form-options a {
       font-size: 0.9em;
+      color: #007bff;
+      text-decoration: none;
+      transition: color 0.3s ease;
     }
+
+    .form-options a:hover {
+      color: #0056b3;
+    }
+
+    .submit {
+      background-color: #28a745;
+      border: none;
+      border-radius: 5px;
+      padding: 15px;
+      font-size: 18px;
+      color: white;
+      width: 100%;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .submit:hover {
+      background-color: #218838;
+    }
+
+    .checkbox label {
+      font-size: 0.9em;
+      color: #333;
+    }
+
+    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -41,21 +121,25 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0,0,0,0.4);
+      background-color: rgba(0, 0, 0, 0.4);
     }
+
     .modal-content {
-      background-color: #fefefe;
+      background-color: #fff;
       margin: 15% auto;
       padding: 20px;
-      border: 1px solid #888;
+      border-radius: 8px;
       width: 80%;
+      max-width: 500px;
     }
+
     .close {
       color: #aaa;
       float: right;
       font-size: 28px;
       font-weight: bold;
     }
+
     .close:hover,
     .close:focus {
       color: black;
@@ -65,37 +149,33 @@
   </style>
 </head>
 
-<body style="background-image: url('picture1.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; height: 100vh;">
+<body>
   <div class="container">
-    <div class="row" style="padding-top: 10%">
-      <div class="col-md-4 custom-offset">
-        <div class="login-panel panel panel-default" id="signInPanel">
-          <div class="panel-heading">
-            <h3 class="panel-title">Please Sign In</h3>
-          </div>
-          <div class="panel-body">
-            <div id="msg"></div>
-            <form role="form" id="form_action" method="POST">
-              <fieldset>
-                <div class="form-group">
-                  <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off">
-                </div>
-                <div class="form-group">
-                  <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off">
-                </div>
-                <div class="form-options">
-                  <div class="checkbox">
-                    <label>
-                      <input name="remember" type="checkbox" value="Remember Me">Remember Me
-                    </label>
-                  </div>
-                  <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-                </div>
-                <button type="button" class="btn btn-lg btn-success btn-block submit" value="Login">Login</button>
-              </fieldset>
-            </form>
-          </div>
-        </div>
+    <div class="login-panel panel panel-default" id="signInPanel">
+      <div class="panel-heading">
+        <h3 class="panel-title">Please Sign In</h3>
+      </div>
+      <div class="panel-body">
+        <div id="msg"></div>
+        <form role="form" id="form_action" method="POST">
+          <fieldset>
+            <div class="form-group">
+              <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
+            </div>
+            <div class="form-group">
+              <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
+            </div>
+            <div class="form-options">
+              <div class="checkbox">
+                <label>
+                  <input name="remember" type="checkbox" value="Remember Me"> Remember Me
+                </label>
+              </div>
+              <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+            </div>
+            <button type="button" class="btn submit" value="Login">Login</button>
+          </fieldset>
+        </form>
       </div>
     </div>
   </div>
