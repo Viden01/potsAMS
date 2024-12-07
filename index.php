@@ -10,7 +10,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             /* Ensure the image path is correct */
-            background: url('picture3.jpg') no-repeat center center fixed;
+            background: url('picture3.jpg');
             background-size: cover;
             margin: 0;
             padding: 0;
