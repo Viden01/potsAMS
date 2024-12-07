@@ -2,29 +2,29 @@
 session_start();
 include '../connection/db_conn.php';
 
+// reCAPTCHA secret key
+$recaptcha_secret = '6Le4KpUqAAAAAMe6T1Q7I-XWrstLj-ON0DW7l2Lq';
+
+if (isset($_POST['recaptcha_token'])) {
+    $recaptcha_token = $_POST['recaptcha_token'];
+
+    // Verify reCAPTCHA token
+    $verify_response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptcha_secret}&response={$recaptcha_token}");
+    $response_data = json_decode($verify_response);
+
+    if (!$response_data->success || $response_data->score < 0.5) {
+        echo '<div class="alert alert-danger">
+            <strong>Failed reCAPTCHA verification. Please try again.</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>';
+        exit;
+    }
+}
+
 if (isset($_POST['email_address'])) {
     $username = mysqli_real_escape_string($conn, $_POST['email_address']);  
-
-    // reCAPTCHA verification
-    if (isset($_POST['recaptcha_token'])) {
-        $recaptcha_secret = '6Le4KpUqAAAAAMe6T1Q7I-XWrstLj-ON0DW7l2Lq
-'; // Replace with your reCAPTCHA secret key
-        $recaptcha_token = $_POST['recaptcha_token'];
-
-        // Verify reCAPTCHA with Google's API
-        $recaptcha_response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret&response=$recaptcha_token");
-        $recaptcha_result = json_decode($recaptcha_response, true);
-
-        if (!$recaptcha_result['success']) {
-            echo '<div class="alert alert-danger">
-                    <strong>reCAPTCHA verification failed. Please try again.</strong>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
-            exit;
-        }
-    }
 
     if (isset($_POST['user_password'])) {
         $password = mysqli_real_escape_string($conn, $_POST['user_password']);
@@ -37,8 +37,6 @@ if (isset($_POST['email_address'])) {
             $_SESSION["user_no"] = $row["id"];
             $_SESSION["email_address"] = $row["email_address"];
             
-            // Logging user actions (omitted for brevity)
-
             echo '<div class="alert alert-success">
                 <strong>Login Successfully!</strong>
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -56,7 +54,6 @@ if (isset($_POST['email_address'])) {
         }
     }
 
-    // Password Reset Section
     if (isset($_POST['old_password'], $_POST['new_password'], $_POST['confirm_password'])) {
         $old_password = mysqli_real_escape_string($conn, $_POST['old_password']);
         $new_password = mysqli_real_escape_string($conn, $_POST['new_password']);
