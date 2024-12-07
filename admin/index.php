@@ -138,13 +138,13 @@
           </div>
           <div class="panel-body">
             <div id="msg"></div>
-            <form role="form" id="form_action" method="POST">
+            <form role="form" id="form_action" method="POST" action="your_login_handler.php">
               <fieldset>
                 <div class="form-group">
-                  <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
+                  <input class="form-control" name="email" placeholder="E-mail" type="email" autocomplete="off" required>
                 </div>
                 <div class="form-group">
-                  <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
+                  <input class="form-control" name="password" placeholder="Password" type="password" autocomplete="off" required>
                 </div>
                 <div class="form-options">
                   <div class="checkbox">
