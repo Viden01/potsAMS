@@ -7,23 +7,23 @@
     <title>Capture and Submit Photo</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Apply background image directly to body */
+        /* Apply background image to the body */
         body {
             font-family: 'Roboto', sans-serif;
-            background-image: url('picture3.jpg'); /* Set your background image here */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh; /* Full viewport height */
+            background-image: url('picture3.jpg'); /* Path to your background image */
+            background-size: cover;  /* Cover the whole screen */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Prevent image repetition */
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.8); /* Slight opacity for better visibility over background */
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background to contrast with the image */
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
