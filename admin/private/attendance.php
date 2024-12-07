@@ -41,6 +41,8 @@
                         <th>Time Out</th>
                         <th>Status</th>
                         <th>Date</th>
+                        <th>Photo</th> <!-- New Photo Column -->
+                        <th>Location</th> <!-- New Location Column -->
                         <th>Action</th>
                     </thead>
                     <tbody>
@@ -48,7 +50,7 @@
                         // Fetch attendance records
                         $sql = "SELECT *, employee_records.employee_id AS emp_id, employee_attendance.id AS attend 
                                 FROM employee_attendance 
-                                LEFT JOIN employee_records ON employee_records.emp_id=employee_attendance.employee_id 
+                                LEFT JOIN employee_records ON employee_records.emp_id = employee_attendance.employee_id 
                                 ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in DESC";
                         $query = $conn->query($sql);
 
@@ -56,10 +58,21 @@
                             echo "Error fetching records: " . $conn->error;
                         }
 
-                        while($row = $query->fetch_assoc()){
+                        while ($row = $query->fetch_assoc()) {
                             // Determine if the employee has not yet clocked out
                             $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '00:00';
-                            $status = ($row['status']) ? '<button type="" class="btn btn-success btn-xs"><i class="fa fa-user-clock"></i> On Time</button>' : '<button type="" class="btn btn-danger btn-xs">Late</button>';
+                            $status = ($row['status']) ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' : '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
+
+                            // Display photo if available
+                            $photo_display = !empty($row['photo']) 
+                                ? "<img src='uploads/photos/" . htmlentities($row['photo']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
+                                : "No Photo";
+
+                            // Display location (latitude, longitude) if available
+                            $location_display = (!empty($row['latitude']) && !empty($row['longitude'])) 
+                                ? htmlentities($row['latitude']) . ", " . htmlentities($row['longitude']) 
+                                : "No Location";
+
                             echo "
                                 <tr>
                                     <td class='hidden'></td>
@@ -69,8 +82,12 @@
                                     <td>".$time_out_display."</td>
                                     <td>".$status."</td>
                                     <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
+                                    <td>".$photo_display."</td> <!-- Display Photo -->
+                                    <td>".$location_display."</td> <!-- Display Location -->
                                     <td>
-                                        <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'><i class='fa fa-trash'></i> Delete</button>
+                                        <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
+                                            <i class='fa fa-trash'></i> Delete
+                                        </button>
                                     </td>
                                 </tr>
                             ";
