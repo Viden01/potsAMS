@@ -23,11 +23,11 @@ if ($_SESSION['failed_attempts'] >= 3 && (time() - $_SESSION['last_failed_attemp
 }
 
 if (isset($_POST['email_address'])) {
-    $username = mysqli_real_escape_string($conn, $_POST['email_address']);  
+    $username = mysqli_real_escape_string($conn, $_POST['email_address']);
 
     if (isset($_POST['user_password'])) {
         $password = mysqli_real_escape_string($conn, $_POST['user_password']);
-        
+
         // Check CAPTCHA (reCAPTCHA v3 token)
         if ($_SESSION['failed_attempts'] >= 3 && (empty($_POST['recaptcha_token']) || !verify_recaptcha_v3($_POST['recaptcha_token']))) {
             echo '<div class="alert alert-danger">
