@@ -9,8 +9,9 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: url('picture3.jpg'); /* Add background image */
-            background-size: cover; /* Ensures the image covers the entire screen */
+            /* Ensure the image path is correct */
+            background: url('picture3.jpg') no-repeat center center fixed;
+            background-size: cover;
             margin: 0;
             padding: 0;
             display: flex;
@@ -21,7 +22,7 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.8); /* Slightly transparent background for readability */
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent background for better readability */
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
