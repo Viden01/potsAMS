@@ -7,18 +7,22 @@
     <title>Capture and Submit Photo</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-image: url('picture3.jpg'); /* Add your background image here */
-            background-size: cover; /* Ensures the image covers the entire background */
-            background-position: center; /* Center the image */
-            background-repeat: no-repeat; /* Prevents the image from repeating */
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
+        }
+
+        /* Full viewport height container for the background image */
+        .background {
+            background-image: url('picture3.jpg'); /* Set your background image here */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
 
         .container {
@@ -114,40 +118,42 @@
 </head>
 
 <body>
-    <div class="container">
-        <h3>Attendance Tracker</h3>
+    <div class="background"> <!-- Wrapper for the background image -->
+        <div class="container">
+            <h3>Attendance Tracker</h3>
 
-        <div>
-            <video id="video" autoplay></video>
-            <canvas id="canvas"></canvas>
+            <div>
+                <video id="video" autoplay></video>
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div class="action-buttons">
+                <button id="capture">Capture Photo</button>
+                <button id="submitPhoto">Submit Photo</button>
+            </div>
+
+            <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="text" name="employee_id" placeholder="Employee ID" required>
+                </div>
+                <input type="hidden" name="photo" id="photo">
+                <input type="hidden" name="time_in" id="time_in">
+                <input type="hidden" name="time_out" id="time_out">
+
+                <!-- Dropdown for Attendance Type -->
+                <div class="form-group">
+                    <label for="attendance_type">Select Attendance Type: </label>
+                    <select name="attendance_type" id="attendance_type">
+                        <option value="time_in">Time-In</option>
+                        <option value="time_out">Time-Out</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
+                </div>
+            </form>
         </div>
-
-        <div class="action-buttons">
-            <button id="capture">Capture Photo</button>
-            <button id="submitPhoto">Submit Photo</button>
-        </div>
-
-        <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <input type="text" name="employee_id" placeholder="Employee ID" required>
-            </div>
-            <input type="hidden" name="photo" id="photo">
-            <input type="hidden" name="time_in" id="time_in">
-            <input type="hidden" name="time_out" id="time_out">
-
-            <!-- Dropdown for Attendance Type -->
-            <div class="form-group">
-                <label for="attendance_type">Select Attendance Type: </label>
-                <select name="attendance_type" id="attendance_type">
-                    <option value="time_in">Time-In</option>
-                    <option value="time_out">Time-Out</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
-            </div>
-        </form>
     </div>
 
     <script>
