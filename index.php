@@ -76,7 +76,8 @@
                video.srcObject = stream;
             })
             .catch(error => {
-               alert('Unable to access camera. Please check your permissions.');
+               console.error('Camera initialization failed:', error);
+               alert('Unable to access camera. Please check your permissions and try again.');
             });
 
          // Get user's location
@@ -92,6 +93,10 @@
 
          // Capture photo
          captureButton.addEventListener('click', () => {
+            if (video.videoWidth === 0 || video.videoHeight === 0) {
+               alert('Camera is not ready yet. Please wait and try again.');
+               return;
+            }
             const context = canvas.getContext('2d');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
