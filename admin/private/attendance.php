@@ -24,10 +24,10 @@
     </div>
 
     <!-- Advanced Tables -->
-    <div class="panel panel-default">
+   <!-- <div class="panel panel-default">
         <div class="panel-heading">
             <a href="#addnew" data-toggle="modal" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus"></i> Add Attendance</a>
-        </div>
+        </div> -->
         <!-- Modal -->
         <?php include 'modal/attendance_modal.php'; ?>
         <div class="panel-body">
