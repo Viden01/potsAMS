@@ -9,6 +9,7 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fa;
             margin: 0;
             padding: 0;
             display: flex;
@@ -18,7 +19,7 @@
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background to contrast with the image */
+            background: #fff;
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -109,7 +110,7 @@
     </style>
 </head>
 
-<body style="background: url('picture3.jpg') no-repeat center center fixed; background-size: cover;">
+<body>
     <div class="container">
         <h3>Attendance Tracker</h3>
 
