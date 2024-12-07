@@ -59,10 +59,9 @@ CREATE TABLE `employee_attendance` (
   `status` int(1) NOT NULL,
   `time_out` time NOT NULL,
   `number_of_hour` double NOT NULL,
-  `photo` VARCHAR(255) DEFAULT NULL,
-  `latitude` VARCHAR(50) DEFAULT NULL,
-  `longitude` VARCHAR(50) DEFAULT NULL
+  `photo_path` VARCHAR(255) NULL  -- New column for photo path
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 --
