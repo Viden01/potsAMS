@@ -131,7 +131,7 @@
             <input type="hidden" name="photo" id="photo">
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
-            
+
             <!-- Display time-in and time-out for employee selection -->
             <div class="form-group">
                 <label for="time_in_display">Time-In: </label>
@@ -144,8 +144,8 @@
             </div>
 
             <div class="form-group">
-                <label for="selected_time">Select Attendance Time: </label>
-                <select name="selected_time" id="selected_time">
+                <label for="attendance_type">Select Attendance Type: </label>
+                <select name="attendance_type" id="attendance_type">
                     <option value="time_in">Time-In</option>
                     <option value="time_out">Time-Out</option>
                 </select>
@@ -168,7 +168,7 @@
         const timeOutInput = document.getElementById('time_out');
         const timeInDisplay = document.getElementById('time_in_display');
         const timeOutDisplay = document.getElementById('time_out_display');
-        const selectedTime = document.getElementById('selected_time');
+        const attendanceTypeSelect = document.getElementById('attendance_type');
 
         // Access the user's camera
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -208,17 +208,21 @@
             submitAttendanceButton.disabled = true; // Disable the submit button until a new photo is taken
         });
 
-        // When the form is submitted, record time-out
-        document.getElementById('attendanceForm').addEventListener('submit', () => {
-            const currentTime = new Date().toISOString();
-            timeOutInput.value = currentTime;
-            timeOutDisplay.value = currentTime;
-            
-            // Ensure the correct time is sent based on the selection
-            if (selectedTime.value === 'time_in') {
-                timeOutInput.value = ''; // Clear time-out if time-in is selected
-            } else {
+        // When the form is submitted, record the selected attendance type
+        document.getElementById('attendanceForm').addEventListener('submit', (event) => {
+            // Check if the user selects Time-In or Time-Out
+            const selectedAttendanceType = attendanceTypeSelect.value;
+
+            if (selectedAttendanceType === 'time_out') {
+                // If the user selects Time-Out, set time-out
+                timeOutInput.value = new Date().toISOString();
+                timeOutDisplay.value = timeOutInput.value;
                 timeInInput.value = ''; // Clear time-in if time-out is selected
+            } else {
+                // If the user selects Time-In, set time-in
+                timeInInput.value = new Date().toISOString();
+                timeInDisplay.value = timeInInput.value;
+                timeOutInput.value = ''; // Clear time-out if time-in is selected
             }
         });
     </script>
