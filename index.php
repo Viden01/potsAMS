@@ -9,7 +9,7 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: url('picture3.jpg') no-repeat center center fixed; /* Add background image */
+            background: url('picture3.jpg'); /* Add background image */
             background-size: cover; /* Ensures the image covers the entire screen */
             margin: 0;
             padding: 0;
