@@ -13,6 +13,10 @@
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
+  <!-- reCAPTCHA v3 -->
+  <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9
+"></script>
+
   <!-- Disable right-click -->
   <script>
     document.addEventListener('contextmenu', function(e) {
@@ -253,24 +257,32 @@
       });
     });
 
-    $('.submit').click(function(e) {
-      e.preventDefault();
-      const email_address = $('input[alt="email_address"]').val();
-      const user_password = $('input[alt="user_password"]').val();
+    // reCAPTCHA integration
+    grecaptcha.ready(function() {
+      $('#loginBtn').click(function(e) {
+        e.preventDefault();
 
-      $.ajax({
-        type: 'POST',
-        data: {
-          email_address: email_address,
-          user_password: user_password,
-        },
-        url: 'public/login_process.php',
-        success: function(data) {
-          $('#msg').html(data);
-        },
-        error: function(data) {
-          $('#msg').html(data);
-        }
+        // Get reCAPTCHA token
+        grecaptcha.execute('6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9', {action: 'login'}).then(function(token) {
+          const email_address = $('input[alt="email_address"]').val();
+          const user_password = $('input[alt="user_password"]').val();
+
+          $.ajax({
+            type: 'POST',
+            data: {
+              email_address: email_address,
+              user_password: user_password,
+              recaptcha_token: token, // Send the token
+            },
+            url: 'public/login_process.php',
+            success: function(data) {
+              $('#msg').html(data);
+            },
+            error: function(data) {
+              $('#msg').html(data);
+            }
+          });
+        });
       });
     });
   </script>
