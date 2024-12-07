@@ -129,6 +129,8 @@
                 <input type="text" name="employee_id" placeholder="Employee ID" required>
             </div>
             <input type="hidden" name="photo" id="photo">
+            <input type="hidden" name="time_in" id="time_in">
+            <input type="hidden" name="time_out" id="time_out">
             <div class="form-group">
                 <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
             </div>
@@ -142,6 +144,8 @@
         const submitButton = document.getElementById('submitPhoto');
         const photoInput = document.getElementById('photo');
         const submitAttendanceButton = document.getElementById('submitAttendance');
+        const timeInInput = document.getElementById('time_in');
+        const timeOutInput = document.getElementById('time_out');
 
         // Access the user's camera
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -164,6 +168,10 @@
             const imageData = canvas.toDataURL('image/png');
             photoInput.value = imageData;
 
+            // Record time-in
+            const currentTime = new Date().toISOString();
+            timeInInput.value = currentTime;
+
             // Enable submit attendance button
             submitAttendanceButton.disabled = false;
         });
@@ -174,6 +182,12 @@
             canvas.style.display = 'none';
             submitButton.style.display = 'none';
             submitAttendanceButton.disabled = true; // Disable the submit button until a new photo is taken
+        });
+
+        // When the form is submitted, record time-out
+        document.getElementById('attendanceForm').addEventListener('submit', () => {
+            const currentTime = new Date().toISOString();
+            timeOutInput.value = currentTime;
         });
     </script>
 </body>
