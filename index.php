@@ -9,33 +9,29 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            /* Test with a simple solid background color first */
-            background-color: #f4f7fa; /* Light gray background */
+            background-color: #f4f7fa;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            overflow: hidden;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.8); /* Semi-transparent background for better readability */
-            border-radius: 12px;
-            padding: 40px;
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 600px;
             text-align: center;
-            box-sizing: border-box;
         }
 
         h3 {
             color: #333;
-            font-size: 26px;
+            font-size: 24px;
             margin-bottom: 20px;
-            font-weight: 500;
         }
 
         video {
@@ -61,7 +57,7 @@
             background-color: #28a745;
             color: #fff;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 20px;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
@@ -83,7 +79,7 @@
         }
 
         .form-group input {
-            padding: 12px;
+            padding: 10px;
             width: 100%;
             max-width: 300px;
             margin: 0 auto;
