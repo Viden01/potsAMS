@@ -13,28 +13,10 @@
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-  <!-- Include Google reCAPTCHA v3 script -->
-  <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
-
+  <!-- Disable right-click -->
   <script>
-    // Captcha v3 token generation and form submission
-    $('#loginButton').click(function(e) {
+    document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
-      
-      // Execute reCAPTCHA v3 to get token
-      grecaptcha.ready(function() {
-        grecaptcha.execute('6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9', { action: 'login' }).then(function(token) {
-          // Add the token to the form
-          $('<input>').attr({
-            type: 'hidden',
-            name: 'recaptcha_token',
-            value: token
-          }).appendTo('#form_action');
-          
-          // Now submit the form
-          $('#form_action').submit();
-        });
-      });
     });
   </script>
 
@@ -125,6 +107,42 @@
       font-size: 0.9em;
       color: #333;
     }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -138,13 +156,13 @@
           </div>
           <div class="panel-body">
             <div id="msg"></div>
-            <form role="form" id="form_action" method="POST" action="your_login_handler.php">
+            <form role="form" id="form_action" method="POST">
               <fieldset>
                 <div class="form-group">
-                  <input class="form-control" name="email_address" placeholder="E-mail" type="email" autocomplete="off" required>
+                  <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
                 </div>
                 <div class="form-group">
-                  <input class="form-control" name="user_password" placeholder="Password" type="password" autocomplete="off" required>
+                  <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
                 </div>
                 <div class="form-options">
                   <div class="checkbox">
@@ -154,7 +172,7 @@
                   </div>
                   <a href="#" id="forgotPasswordLink">Forgot Password?</a>
                 </div>
-                <button type="button" class="btn submit" value="Login" id="loginButton">Login</button>
+                <button type="button" class="btn submit" value="Login">Login</button>
               </fieldset>
             </form>
           </div>
@@ -162,6 +180,105 @@
       </div>
     </div>
   </div>
+
+  <!-- The Modal -->
+  <div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Forgot Password</h2>
+      <p>Please enter your email and current password to reset your password.</p>
+      <form id="forgotPasswordForm" method="POST">
+        <div class="form-group">
+          <input class="form-control" placeholder="Enter your email" type="email" name="forgot_email" required>
+        </div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Enter old password" type="password" name="old_password" required>
+        </div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Enter new password" type="password" name="new_password" required>
+        </div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Confirm new password" type="password" name="confirm_password" required>
+        </div>
+        <button type="button" class="btn btn-primary" id="resetPasswordBtn">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    var modal = document.getElementById("forgotPasswordModal");
+    var btn = document.getElementById("forgotPasswordLink");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function(e) {
+      e.preventDefault();
+      modal.style.display = "block";
+    }
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    $('#resetPasswordBtn').click(function(e) {
+      e.preventDefault();
+      var forgot_email = $('input[name="forgot_email"]').val();
+      var old_password = $('input[name="old_password"]').val();
+      var new_password = $('input[name="new_password"]').val();
+      var confirm_password = $('input[name="confirm_password"]').val();
+
+      if (new_password !== confirm_password) {
+        alert("New passwords do not match. Please try again.");
+        return;
+      }
+
+      $.ajax({
+        type: 'POST',
+        data: {
+          forgot_email: forgot_email,
+          old_password: old_password,
+          new_password: new_password
+        },
+        url: 'public/reset_password_process.php',
+        success: function(data) {
+          alert('Your password has been reset successfully.');
+          modal.style.display = "none";
+        },
+        error: function(data) {
+          alert('Error resetting password. Please try again.');
+        }
+      });
+    });
+
+    $('.submit').click(function(e) {
+      e.preventDefault();
+      const email_address = $('input[alt="email_address"]').val();
+      const user_password = $('input[alt="user_password"]').val();
+
+      $.ajax({
+        type: 'POST',
+        data: {
+          email_address: email_address,
+          user_password: user_password,
+        },
+        url: 'public/login_process.php',
+        success: function(data) {
+          $('#msg').html(data);
+        },
+        error: function(data) {
+          $('#msg').html(data);
+        }
+      });
+    });
+  </script>
+
+  <script src="assets/plugins/jquery-1.10.2.js"></script>
+  <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
+  <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
+
 </body>
 
 </html>
