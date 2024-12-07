@@ -112,7 +112,7 @@
 
 <body>
     <div class="container">
-        <h3>Employee Attendance</h3>
+        <h3>Attendance Tracker</h3>
 
         <div>
             <video id="video" autoplay></video>
