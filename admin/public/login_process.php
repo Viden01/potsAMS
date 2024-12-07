@@ -80,7 +80,7 @@ function verify_recaptcha_v3($token) {
     $secret_key = '6Le4KpUqAAAAAMe6T1Q7I-XWrstLj-ON0DW7l2Lq';
     $verify_url = 'https://www.google.com/recaptcha/api/siteverify';
     $response = file_get_contents($verify_url . '?secret=' . $secret_key . '&response=' . $token);
-    $response_keys = json_decode($response, true);
+    
     return $response_keys['success'] && $response_keys['score'] >= 0.5; // Adjust score threshold if needed
 }
 ?>
