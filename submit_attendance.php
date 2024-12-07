@@ -1,7 +1,13 @@
 <?php
-include '../../connection/db_conn.php';
+include($_SERVER['DOCUMENT_ROOT'] . '/connection/db_conn.php'); // Adjust the path if necessary
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Check if the database connection exists
+    if (!$conn) {
+        die("Database connection failed.");
+    }
+
+    // Escape and sanitize input data
     $employee_id = $conn->real_escape_string(strip_tags($_POST['employee_id']));
     $photo_data = $_POST['photo'];
 
@@ -15,18 +21,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $file_name = uniqid() . '.' . $image_type;
         $file_path = $folderPath . $file_name;
 
-        // Save the file
+        // Create the directory if it doesn't exist
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0777, true);
         }
+
+        // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // Store the path in the database
+        // Store the photo path in the database
         $sql = "INSERT INTO employee_attendance (employee_id, photo_path) VALUES ('$employee_id', '$file_name')";
+
         if ($conn->query($sql)) {
             echo "Attendance with photo submitted successfully.";
         } else {
-            echo "Failed to submit attendance.";
+            echo "Failed to submit attendance. Error: " . $conn->error;
         }
     } else {
         echo "No photo captured.";
