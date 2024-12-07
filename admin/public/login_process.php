@@ -13,7 +13,7 @@ if (isset($_POST['email_address'])) {
 
         // Verify reCAPTCHA with Google's API
         $recaptcha_response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$recaptcha_secret&response=$recaptcha_token");
-
+        $recaptcha_result = json_decode($recaptcha_response, true);
 
         if (!$recaptcha_result['success']) {
             echo '<div class="alert alert-danger">
