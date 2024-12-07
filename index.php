@@ -9,7 +9,10 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f7fa;
+            background-image: url('picture3.jpg'); /* Add your background image here */
+            background-size: cover; /* Ensures the image covers the entire background */
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
             margin: 0;
             padding: 0;
             display: flex;
@@ -19,7 +22,7 @@
         }
 
         .container {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.8); /* Slight opacity for better visibility over background */
             border-radius: 8px;
             padding: 30px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
