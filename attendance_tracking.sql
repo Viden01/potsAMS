@@ -58,8 +58,12 @@ CREATE TABLE `employee_attendance` (
   `time_in` time NOT NULL,
   `status` int(1) NOT NULL,
   `time_out` time NOT NULL,
-  `number_of_hour` double NOT NULL
+  `number_of_hour` double NOT NULL,
+  `photo` VARCHAR(255) DEFAULT NULL,
+  `latitude` VARCHAR(50) DEFAULT NULL,
+  `longitude` VARCHAR(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 --
 -- Dumping data for table `employee_attendance`
