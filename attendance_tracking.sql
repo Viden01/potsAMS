@@ -52,15 +52,17 @@ INSERT INTO `admin` (`id`, `username`, `password`, `firstname`, `lastname`, `pho
 --
 
 CREATE TABLE `employee_attendance` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) NOT NULL,
   `date_attendance` date NOT NULL,
   `time_in` time NOT NULL,
   `status` int(1) NOT NULL,
   `time_out` time NOT NULL,
   `number_of_hour` double NOT NULL,
-  `photo_path` VARCHAR(255) NULL  -- New column for photo path
+  `photo_path` VARCHAR(255) NULL,  -- New column for photo path
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 
 
 
