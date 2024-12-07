@@ -5,21 +5,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>POTS - ESL</title>
-  <!-- Core CSS - Include with every page -->
   <link href="private/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
   <link href="private/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
   <link href="private/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-  <!-- Disable right-click -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script> <!-- Add Google reCAPTCHA -->
   <script>
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
     });
   </script>
-
   <style>
     body {
       background-image: url('picture1.jpg');
@@ -143,6 +140,10 @@
       text-decoration: none;
       cursor: pointer;
     }
+
+    #captcha-container {
+      display: none;
+    }
   </style>
 </head>
 
@@ -175,13 +176,16 @@
                 <button type="button" class="btn submit" value="Login">Login</button>
               </fieldset>
             </form>
+            <div id="captcha-container" style="display:none;">
+              <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- The Modal -->
+  <!-- Forgot Password Modal -->
   <div id="forgotPasswordModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
@@ -266,7 +270,12 @@
         },
         url: 'public/login_process.php',
         success: function(data) {
-          $('#msg').html(data);
+          if (data === 'captcha') {
+            $('#captcha-container').show(); // Show CAPTCHA
+            alert('Please complete the CAPTCHA.');
+          } else {
+            $('#msg').html(data);
+          }
         },
         error: function(data) {
           $('#msg').html(data);
@@ -274,11 +283,6 @@
       });
     });
   </script>
-
-  <script src="assets/plugins/jquery-1.10.2.js"></script>
-  <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
-  <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
-
 </body>
 
 </html>
