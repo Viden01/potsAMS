@@ -131,6 +131,26 @@
             <input type="hidden" name="photo" id="photo">
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
+            
+            <!-- Display time-in and time-out for employee selection -->
+            <div class="form-group">
+                <label for="time_in_display">Time-In: </label>
+                <input type="text" id="time_in_display" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="time_out_display">Time-Out: </label>
+                <input type="text" id="time_out_display" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="selected_time">Select Attendance Time: </label>
+                <select name="selected_time" id="selected_time">
+                    <option value="time_in">Time-In</option>
+                    <option value="time_out">Time-Out</option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
             </div>
@@ -146,6 +166,9 @@
         const submitAttendanceButton = document.getElementById('submitAttendance');
         const timeInInput = document.getElementById('time_in');
         const timeOutInput = document.getElementById('time_out');
+        const timeInDisplay = document.getElementById('time_in_display');
+        const timeOutDisplay = document.getElementById('time_out_display');
+        const selectedTime = document.getElementById('selected_time');
 
         // Access the user's camera
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -171,6 +194,7 @@
             // Record time-in
             const currentTime = new Date().toISOString();
             timeInInput.value = currentTime;
+            timeInDisplay.value = currentTime;
 
             // Enable submit attendance button
             submitAttendanceButton.disabled = false;
@@ -188,6 +212,14 @@
         document.getElementById('attendanceForm').addEventListener('submit', () => {
             const currentTime = new Date().toISOString();
             timeOutInput.value = currentTime;
+            timeOutDisplay.value = currentTime;
+            
+            // Ensure the correct time is sent based on the selection
+            if (selectedTime.value === 'time_in') {
+                timeOutInput.value = ''; // Clear time-out if time-in is selected
+            } else {
+                timeInInput.value = ''; // Clear time-in if time-out is selected
+            }
         });
     </script>
 </body>
