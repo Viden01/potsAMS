@@ -9,9 +9,8 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            /* Ensure the image path is correct */
-            background: url('picture3.jpg');
-            background-size: cover;
+            /* Test with a simple solid background color first */
+            background-color: #f4f7fa; /* Light gray background */
             margin: 0;
             padding: 0;
             display: flex;
