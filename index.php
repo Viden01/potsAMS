@@ -7,13 +7,8 @@
     <title>Capture and Submit Photo</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Apply background image to the body */
         body {
             font-family: 'Roboto', sans-serif;
-            background-image: url('picture3.jpg'); /* Path to your background image */
-            background-size: cover;  /* Cover the whole screen */
-            background-position: center; /* Center the image */
-            background-repeat: no-repeat; /* Prevent image repetition */
             margin: 0;
             padding: 0;
             display: flex;
@@ -114,7 +109,7 @@
     </style>
 </head>
 
-<body>
+<body style="background: url('picture3.jpg') no-repeat center center fixed; background-size: cover;">
     <div class="container">
         <h3>Attendance Tracker</h3>
 
