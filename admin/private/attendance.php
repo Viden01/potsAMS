@@ -8,7 +8,7 @@ if (substr($request, -4) == '.php') {
     header("Location: $new_url", true, 301);
     exit();
 }
-:?>
+?>
 <!-- end navbar side -->
 <!--  page-wrapper -->
 <div id="page-wrapper">
