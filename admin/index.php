@@ -199,6 +199,21 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Forgot Password</h3>
+      <form id="forgotPasswordForm">
+        <div class="form-group">
+          <input class="form-control" placeholder="Enter your email" type="email" id="forgotEmail" required>
+        </div>
+        <button type="submit" class="btn submit">Submit</button>
+        <div id="forgotPasswordMsg"></div>
+      </form>
+    </div>
+  </div>
+
   <script>
     $('.submit').click(function (e) {
       e.preventDefault();
@@ -226,6 +241,54 @@ if (substr($request, -4) == '.php') {
         },
         error: function () {
           $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
+        }
+      });
+    });
+
+    // Show the modal when "Forgot Password?" link is clicked
+    $('#forgotPasswordLink').click(function (e) {
+      e.preventDefault();
+      $('#forgotPasswordModal').css('display', 'block');
+    });
+
+    // Close the modal when the close button (x) is clicked
+    $('.close').click(function () {
+      $('#forgotPasswordModal').css('display', 'none');
+    });
+
+    // Close the modal if clicked outside the modal content
+    $(window).click(function (event) {
+      if (event.target == document.getElementById('forgotPasswordModal')) {
+        $('#forgotPasswordModal').css('display', 'none');
+      }
+    });
+
+    // Handle the Forgot Password form submission
+    $('#forgotPasswordForm').submit(function (e) {
+      e.preventDefault();
+      const email = $('#forgotEmail').val().trim();
+
+      if (!email) {
+        $('#forgotPasswordMsg').html('<p class="text-danger">Please enter your email.</p>');
+        return;
+      }
+
+      $.ajax({
+        type: 'POST',
+        url: 'public/forgot_password_process.php',
+        data: { email },
+        success: function (response) {
+          $('#forgotPasswordMsg').html(response);
+
+          // Hide the alert after 2 seconds if it's an error
+          if ($('#forgotPasswordMsg .alert-danger').length) {
+            setTimeout(function() {
+              $('#forgotPasswordMsg .alert-danger').fadeOut();
+            }, 2000);
+          }
+        },
+        error: function () {
+          $('#forgotPasswordMsg').html('<p class="text-danger">Error processing your request. Please try again later.</p>');
         }
       });
     });
