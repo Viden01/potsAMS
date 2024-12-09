@@ -188,7 +188,6 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Forgot Password</h2>
-      <p>Please enter your Gmail account to begin the password reset process.</p>
       <form id="forgotPasswordForm" method="POST">
         <div class="form-group">
           <input class="form-control" placeholder="Enter your Gmail" type="email" name="forgot_email" required>
