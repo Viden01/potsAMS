@@ -188,22 +188,28 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Forgot Password</h2>
-      <p>Please enter your email and current password to reset your password.</p>
+      <p>Please enter your Gmail account to begin the password reset process.</p>
       <form id="forgotPasswordForm" method="POST">
         <div class="form-group">
-          <input class="form-control" placeholder="Enter your email" type="email" name="forgot_email" required>
+          <input class="form-control" placeholder="Enter your Gmail" type="email" name="forgot_email" required>
         </div>
-        <div class="form-group">
-          <input class="form-control" placeholder="Enter old password" type="password" name="old_password" required>
-        </div>
-        <div class="form-group">
-          <input class="form-control" placeholder="Enter new password" type="password" name="new_password" required>
-        </div>
-        <div class="form-group">
-          <input class="form-control" placeholder="Confirm new password" type="password" name="confirm_password" required>
-        </div>
-        <button type="button" class="btn btn-primary" id="resetPasswordBtn">Submit</button>
+        <button type="button" class="btn btn-primary" id="nextStepBtn">Next</button>
       </form>
+      <div id="passwordResetSection" style="display: none;">
+        <p>Please enter your old password and new password.</p>
+        <form id="resetPasswordForm" method="POST">
+          <div class="form-group">
+            <input class="form-control" placeholder="Enter old password" type="password" name="old_password" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Enter new password" type="password" name="new_password" required>
+          </div>
+          <div class="form-group">
+            <input class="form-control" placeholder="Confirm new password" type="password" name="confirm_password" required>
+          </div>
+          <button type="button" class="btn btn-primary" id="resetPasswordBtn">Submit</button>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -219,29 +225,47 @@
     const modal = document.getElementById("forgotPasswordModal");
     const btn = document.getElementById("forgotPasswordLink");
     const span = document.getElementsByClassName("close")[0];
+    const nextStepBtn = document.getElementById("nextStepBtn");
+    const passwordResetSection = document.getElementById("passwordResetSection");
 
     btn.onclick = function (e) {
       e.preventDefault();
       modal.style.display = "block";
     };
+
     span.onclick = function () {
       modal.style.display = "none";
     };
+
     window.onclick = function (event) {
       if (event.target === modal) {
         modal.style.display = "none";
       }
     };
 
+    nextStepBtn.onclick = function () {
+      const forgot_email = $('input[name="forgot_email"]').val().trim();
+      
+      // Check if the entered email is a valid Gmail address
+      const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+      if (!gmailRegex.test(forgot_email)) {
+        alert("Please enter a valid Gmail address.");
+        return;
+      }
+
+      // Proceed to show the password reset form
+      $('#forgotPasswordForm').hide();
+      passwordResetSection.style.display = "block";
+    };
+
     $('#resetPasswordBtn').click(function (e) {
       e.preventDefault();
 
-      const forgot_email = $('input[name="forgot_email"]').val().trim();
       const old_password = $('input[name="old_password"]').val().trim();
       const new_password = $('input[name="new_password"]').val().trim();
       const confirm_password = $('input[name="confirm_password"]').val().trim();
 
-      if (!forgot_email || !old_password || !new_password || !confirm_password) {
+      if (!old_password || !new_password || !confirm_password) {
         alert("All fields are required.");
         return;
       }
