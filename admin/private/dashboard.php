@@ -188,7 +188,6 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
               'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
               'rgba(120, 233, 177, 1)', // Hover effect Mint Green
               'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
-              'rgba(168, 115, 247, 1)'  // Hover effect Lavender Purple
             ],
             hoverBorderWidth: 0
           }]
