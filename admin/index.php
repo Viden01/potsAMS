@@ -1,19 +1,3 @@
-<?php
-// Security headers
-header("Strict-Transport-Security: max-age=31536000; includeSubDomains");
-header("X-Frame-Options: SAMEORIGIN");
-header("X-Content-Type-Options: nosniff");
-header("Referrer-Policy: strict-origin-when-cross-origin");
-header("Permissions-Policy: geolocation=(self), microphone=()");
-
-$request = $_SERVER['REQUEST_URI'];
-if (substr($request, -4) == '.php') {
-    $new_url = substr($request, 0, -4);
-    header("Location: $new_url", true, 301);
-    exit();
-}
-?>
-
 <!DOCTYPE html>
 <html>
 
@@ -21,22 +5,15 @@ if (substr($request, -4) == '.php') {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>POTS - ESL</title>
-  <!-- Core CSS - Include with every page -->
   <link href="private/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
   <link href="private/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
   <link href="private/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
   <!-- reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
-
-  <!-- Disable right-click -->
-  <script>
-    document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-    });
-  </script>
 
   <style>
     body {
@@ -199,33 +176,59 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
-  <script>
-    $('.submit').click(function (e) {
-      e.preventDefault();
-      const email_address = $('input[alt="email_address"]').val().trim();
-      const user_password = $('input[alt="user_password"]').val().trim();
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Reset Your Password</h3>
+      <form id="resetPasswordForm">
+        <div class="form-group">
+          <input class="form-control" placeholder="Enter your email address" type="email" id="resetEmail" required>
+        </div>
+        <button type="submit" class="btn submit">Submit</button>
+      </form>
+      <div id="resetMsg"></div>
+    </div>
+  </div>
 
-      if (!email_address || !user_password) {
-        $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
+  <script>
+    // Show modal on Forgot Password link click
+    $("#forgotPasswordLink").click(function () {
+      $("#forgotPasswordModal").fadeIn();
+    });
+
+    // Close modal
+    $(".close").click(function () {
+      $("#forgotPasswordModal").fadeOut();
+    });
+
+    // Handle password reset request
+    $("#resetPasswordForm").submit(function (e) {
+      e.preventDefault();
+      const email = $("#resetEmail").val().trim();
+
+      if (!email) {
+        $("#resetMsg").html('<p class="text-danger">Please enter a valid email address.</p>');
         return;
       }
 
+      // Simulate AJAX request for password reset
       $.ajax({
         type: 'POST',
-        url: 'public/login_process.php',
-        data: { email_address, user_password },
+        url: 'public/reset_password_process.php',
+        data: { email },
         success: function (response) {
-          $('#msg').html(response);
+          $("#resetMsg").html(response);
           
           // Hide the alert after 2 seconds if it's an error
-          if ($('#msg .alert-danger').length) {
-            setTimeout(function() {
-              $('#msg .alert-danger').fadeOut();
+          if ($('#resetMsg .alert-danger').length) {
+            setTimeout(function () {
+              $('#resetMsg .alert-danger').fadeOut();
             }, 2000);
           }
         },
         error: function () {
-          $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
+          $("#resetMsg").html('<p class="text-danger">Error processing the request. Please try again later.</p>');
         }
       });
     });
