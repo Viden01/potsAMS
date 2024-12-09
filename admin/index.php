@@ -238,6 +238,7 @@ if (substr($request, -4) == '.php') {
       });
     }
 
+    // Modal actions for password reset
     const modal = document.getElementById("forgotPasswordModal");
     const btn = document.getElementById("forgotPasswordLink");
     const span = document.getElementsByClassName("close")[0];
@@ -261,72 +262,16 @@ if (substr($request, -4) == '.php') {
 
     nextStepBtn.onclick = function () {
       const forgot_email = $('input[name="forgot_email"]').val().trim();
-      
-      // Check if the entered email is a valid Gmail address
       const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+
       if (!gmailRegex.test(forgot_email)) {
         alert("Please enter a valid Gmail address.");
         return;
       }
 
-      // Proceed to show the password reset form
       $('#forgotPasswordForm').hide();
       passwordResetSection.style.display = "block";
     };
-
-    $('#resetPasswordBtn').click(function (e) {
-      e.preventDefault();
-
-      const old_password = $('input[name="old_password"]').val().trim();
-      const new_password = $('input[name="new_password"]').val().trim();
-      const confirm_password = $('input[name="confirm_password"]').val().trim();
-
-      if (!old_password || !new_password || !confirm_password) {
-        alert("All fields are required.");
-        return;
-      }
-
-      if (new_password !== confirm_password) {
-        alert("New passwords do not match. Please try again.");
-        return;
-      }
-
-      executeRecaptcha('reset_password', function (recaptchaToken) {
-        $.ajax({
-          type: 'POST',
-          url: 'public/reset_password_process.php',
-          data: {
-            forgot_email: forgot_email,
-            old_password: old_password,
-            new_password: new_password,
-            recaptchaToken: recaptchaToken
-          },
-          beforeSend: function () {
-            $('#resetPasswordBtn').text('Processing...').prop('disabled', true);
-          },
-          success: function (response) {
-            try {
-              const data = JSON.parse(response);
-              if (data.success) {
-                alert('Your password has been reset successfully.');
-                modal.style.display = "none";
-              } else {
-                alert(data.message || 'Error resetting password.');
-              }
-            } catch (err) {
-              alert('Unexpected response from server.');
-            }
-          },
-          error: function (xhr, status, error) {
-            alert(`Error: ${xhr.status} - ${xhr.statusText}. Details: ${error}`);
-            console.log(xhr.responseText);
-          },
-          complete: function () {
-            $('#resetPasswordBtn').text('Submit').prop('disabled', false);
-          }
-        });
-      });
-    });
 
     $('.submit').click(function (e) {
       e.preventDefault();
