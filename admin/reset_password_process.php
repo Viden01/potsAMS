@@ -1,69 +1,76 @@
 <?php
 // Enable error reporting for debugging (remove in production)
-error_reporting(E_ALL);
 ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// Security headers
+// Set content type to JSON
 header('Content-Type: application/json');
-header("Strict-Transport-Security: max-age=31536000; includeSubDomains");
 header("X-Frame-Options: SAMEORIGIN");
 header("X-Content-Type-Options: nosniff");
-header("Referrer-Policy: strict-origin-when-cross-origin");
 
-// Database connection
-require_once 'db_connection.php';
+// Database connection (replace with your actual connection details)
+$host = 'localhost';
+$dbuser = 'your_username';
+$dbpass = 'your_password';
+$dbname = 'your_database';
 
-// Function to generate a secure reset token
-function generateResetToken($length = 32) {
-    return bin2hex(random_bytes($length));
-}
+// Create connection
+$conn = new mysqli($host, $dbuser, $dbpass, $dbname);
 
-// Function to validate email
-function isValidEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-}
-
-// Response function
-function sendResponse($success, $message) {
+// Check connection
+if ($conn->connect_error) {
     echo json_encode([
-        'success' => $success,
-        'message' => $message
+        'status' => 'error',
+        'message' => 'Database connection failed: ' . $conn->connect_error
     ]);
     exit;
 }
 
-// Check if it's a POST request
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    sendResponse(false, 'Invalid request method');
-}
-
-// Receive and sanitize input
+// Receive input
 $email = isset($_POST['email_address']) ? trim($_POST['email_address']) : '';
 
 // Validate email
 if (empty($email)) {
-    sendResponse(false, 'Email address is required');
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Email address is required.'
+    ]);
+    exit;
 }
 
-if (!isValidEmail($email)) {
-    sendResponse(false, 'Invalid email format');
+// Validate email format
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Invalid email format.'
+    ]);
+    exit;
+}
+
+// Function to generate reset token
+function generateResetToken($length = 32) {
+    return bin2hex(random_bytes($length));
 }
 
 try {
-    // Prepare statement to prevent SQL injection
-    $stmt = $conn->prepare("SELECT id, email FROM users WHERE email = ?");
+    // Prepare statement to check email
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Check if user exists
-    if ($result->num_rows === 0) {
-        // Security best practice: Don't reveal if email exists
-        sendResponse(true, 'If an account exists with this email, a reset link will be sent');
+    // If no user found
+    if ($result->num_rows == 0) {
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'If an account exists with this email, reset instructions will be sent.'
+        ]);
+        exit;
     }
 
-    // Fetch user details
+    // Get user ID
     $user = $result->fetch_assoc();
+    $user_id = $user['id'];
 
     // Generate reset token
     $reset_token = generateResetToken();
@@ -71,10 +78,14 @@ try {
 
     // Prepare statement to update reset token
     $update_stmt = $conn->prepare("UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE id = ?");
-    $update_stmt->bind_param("ssi", $reset_token, $token_expiry, $user['id']);
+    $update_stmt->bind_param("ssi", $reset_token, $token_expiry, $user_id);
     
     if (!$update_stmt->execute()) {
-        sendResponse(false, 'Error generating reset token');
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Error generating reset token.'
+        ]);
+        exit;
     }
 
     // Construct reset link (replace with your actual domain)
@@ -91,20 +102,30 @@ try {
         'Reply-To: noreply@yourwebsite.com' . "\r\n" .
         'X-Mailer: PHP/' . phpversion();
 
-    // Send email (use PHP's mail function or a library like PHPMailer)
+    // Attempt to send email
     if (mail($to, $subject, $message, $headers)) {
-        sendResponse(true, 'Password reset instructions sent to your email');
+        echo json_encode([
+            'status' => 'success',
+            'message' => 'Password reset instructions sent to your email.'
+        ]);
     } else {
-        sendResponse(false, 'Error sending reset email');
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Error sending reset email.'
+        ]);
     }
 
 } catch (Exception $e) {
     // Log the full error in your server logs
     error_log($e->getMessage());
-    sendResponse(false, 'An unexpected error occurred');
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'An unexpected error occurred.'
+    ]);
 } finally {
     // Close statements and connection
     if (isset($stmt)) $stmt->close();
     if (isset($update_stmt)) $update_stmt->close();
     $conn->close();
 }
+?>
