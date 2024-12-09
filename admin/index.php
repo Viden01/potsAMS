@@ -216,19 +216,16 @@ if (substr($request, -4) == '.php') {
         data: { email_address, user_password },
         success: function (response) {
           $('#msg').html(response);
-
-          // If the response contains a warning/error, fade it out after 2 seconds
-          if ($('#msg .text-danger').length) {
+          
+          // Hide the alert after 2 seconds if it's an error
+          if ($('#msg .alert-danger').length) {
             setTimeout(function() {
-              $('#msg .text-danger').fadeOut();
-            }, 2000);  // 2 seconds delay
+              $('#msg .alert-danger').fadeOut();
+            }, 2000);
           }
         },
         error: function () {
           $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
-          setTimeout(function() {
-            $('#msg .text-danger').fadeOut();
-          }, 2000);  // Hide after 2 seconds in case of error
         }
       });
     });
