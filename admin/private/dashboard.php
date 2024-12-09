@@ -16,6 +16,13 @@ $query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysq
 $row4 = $query4->fetch_array();
 
 $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
+
+$request = $_SERVER['REQUEST_URI'];
+if (substr($request, -4) == '.php') {
+    $new_url = substr($request, 0, -4);
+    header("Location: $new_url", true, 301);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html>
