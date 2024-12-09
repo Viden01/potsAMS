@@ -181,7 +181,6 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
               'rgba(72, 132, 239, 0.7)',  // Cool Blue
               'rgba(120, 233, 177, 0.7)', // Mint Green
               'rgba(255, 153, 122, 0.7)', // Soft Coral
-              'rgba(168, 115, 247, 0.7)'  // Lavender Purple
             ],
             borderColor: 'transparent',
             borderWidth: 0,
