@@ -1,14 +1,6 @@
 <?php include('header/head.php');?>
 <?php include('header/sidebar_menu.php');?>
-<?php
 
-$request = $_SERVER['REQUEST_URI'];
-if (substr($request, -4) == '.php') {
-    $new_url = substr($request, 0, -4);
-    header("Location: $new_url", true, 301);
-    exit();
-}
-?>
 <!-- end navbar side -->
 <!--  page-wrapper -->
 <div id="page-wrapper">
@@ -37,7 +29,15 @@ if (substr($request, -4) == '.php') {
            <!-- <a href="#addnew" data-toggle="modal" class="btn btn-primary btn-sm btn-flat"><i class="fa fa-plus"></i> Add Attendance</a> -->
         </div>
         <!-- Modal -->
-        <?php include 'modal/attendance_modal.php'; ?>
+        <?php include 'modal/attendance_modal.php';
+        
+        $request = $_SERVER['REQUEST_URI'];
+if (substr($request, -4) == '.php') {
+    $new_url = substr($request, 0, -4);
+    header("Location: $new_url", true, 301);
+    exit();
+}
+        ?>
         <div class="panel-body">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
