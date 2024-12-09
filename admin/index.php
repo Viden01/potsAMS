@@ -199,33 +199,59 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
-  <script>
-    $('.submit').click(function (e) {
-      e.preventDefault();
-      const email_address = $('input[alt="email_address"]').val().trim();
-      const user_password = $('input[alt="user_password"]').val().trim();
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Reset Password</h3>
+      <form id="forgotPasswordForm">
+        <div class="form-group">
+          <label for="resetEmail">Enter your email address:</label>
+          <input class="form-control" id="resetEmail" type="email" required placeholder="Email Address">
+        </div>
+        <button type="submit" class="btn submit">Reset Password</button>
+      </form>
+    </div>
+  </div>
 
-      if (!email_address || !user_password) {
-        $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
+  <script>
+    // Open the forgot password modal
+    document.getElementById('forgotPasswordLink').onclick = function () {
+      document.getElementById('forgotPasswordModal').style.display = "block";
+    }
+
+    // Close the modal
+    document.querySelector('.close').onclick = function () {
+      document.getElementById('forgotPasswordModal').style.display = "none";
+    }
+
+    // Close modal when clicking outside of modal
+    window.onclick = function (event) {
+      if (event.target == document.getElementById('forgotPasswordModal')) {
+        document.getElementById('forgotPasswordModal').style.display = "none";
+      }
+    }
+
+    // Handle forgot password form submission
+    $('#forgotPasswordForm').submit(function (e) {
+      e.preventDefault();
+      const email = $('#resetEmail').val().trim();
+
+      if (!email) {
+        alert("Please enter a valid email.");
         return;
       }
 
       $.ajax({
         type: 'POST',
-        url: 'public/login_process.php',
-        data: { email_address, user_password },
+        url: 'public/forgot_password_process.php',
+        data: { email },
         success: function (response) {
-          $('#msg').html(response);
-          
-          // Hide the alert after 2 seconds if it's an error
-          if ($('#msg .alert-danger').length) {
-            setTimeout(function() {
-              $('#msg .alert-danger').fadeOut();
-            }, 2000);
-          }
+          alert(response);
+          $('#forgotPasswordModal').fadeOut();
         },
         error: function () {
-          $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
+          alert("Error sending password reset request. Please try again.");
         }
       });
     });
