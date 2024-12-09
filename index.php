@@ -132,7 +132,17 @@
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
 
-            <!-- Dropdown for Attendance Type -->
+            <!-- Display time-in and time-out for employee selection -->
+            <div class="form-group">
+                <label for="time_in_display">Time-In: </label>
+                <input type="text" id="time_in_display" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="time_out_display">Time-Out: </label>
+                <input type="text" id="time_out_display" readonly>
+            </div>
+
             <div class="form-group">
                 <label for="attendance_type">Select Attendance Type: </label>
                 <select name="attendance_type" id="attendance_type">
@@ -156,6 +166,8 @@
         const submitAttendanceButton = document.getElementById('submitAttendance');
         const timeInInput = document.getElementById('time_in');
         const timeOutInput = document.getElementById('time_out');
+        const timeInDisplay = document.getElementById('time_in_display');
+        const timeOutDisplay = document.getElementById('time_out_display');
         const attendanceTypeSelect = document.getElementById('attendance_type');
 
         // Access the user's camera
@@ -179,9 +191,10 @@
             const imageData = canvas.toDataURL('image/png');
             photoInput.value = imageData;
 
-            // Record time-in when the photo is captured
+            // Record time-in
             const currentTime = new Date().toISOString();
             timeInInput.value = currentTime;
+            timeInDisplay.value = currentTime;
 
             // Enable submit attendance button
             submitAttendanceButton.disabled = false;
@@ -201,10 +214,14 @@
             const selectedAttendanceType = attendanceTypeSelect.value;
 
             if (selectedAttendanceType === 'time_out') {
-                // If Time-Out is selected, record time-out
+                // If the user selects Time-Out, set time-out
                 timeOutInput.value = new Date().toISOString();
+                timeOutDisplay.value = timeOutInput.value;
+                timeInInput.value = ''; // Clear time-in if time-out is selected
             } else {
-                // If Time-In is selected, ensure time-out is not sent
+                // If the user selects Time-In, set time-in
+                timeInInput.value = new Date().toISOString();
+                timeInDisplay.value = timeInInput.value;
                 timeOutInput.value = ''; // Clear time-out if time-in is selected
             }
         });
