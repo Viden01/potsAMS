@@ -39,10 +39,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<p class='text-success'>Login successful!</p>";
     } else {
         $_SESSION['failed_attempts']++; // Increment failed attempts counter
-        // Only show the locked account warning if attempts are 3 or more, no count message
+        echo "<p class='text-danger'>Invalid credentials. Attempt " . $_SESSION['failed_attempts'] . " of 3.</p>";
+
+        // Show CAPTCHA if failed attempts are 3 or more
         if ($_SESSION['failed_attempts'] >= 3) {
-            echo "<p class='text-danger'>Your account is locked due to multiple failed login attempts. Please try again later.</p>";
-            exit();
+            show_recaptcha();
         }
     }
 }
