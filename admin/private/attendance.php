@@ -1,5 +1,6 @@
 <?php include('header/head.php');?>
-<?php include('header/sidebar_menu.php');
+<?php include('header/sidebar_menu.php');?>
+<?php
 
 $request = $_SERVER['REQUEST_URI'];
 if (substr($request, -4) == '.php') {
@@ -8,7 +9,6 @@ if (substr($request, -4) == '.php') {
     exit();
 }
 ?>
-
 <!-- end navbar side -->
 <!--  page-wrapper -->
 <div id="page-wrapper">
