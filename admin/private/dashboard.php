@@ -173,7 +173,7 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       var barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
-          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
+          labels: ['Members', 'Attendance Records', 'Schedule',],
           datasets: [{
             label: 'Count',
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
@@ -226,14 +226,14 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       var donutChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-          labels: ['Members', 'Attendance Records', 'Schedule', 'Logged History'],
+          labels: ['Members', 'Attendance Records', 'Schedule',],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: [
               'rgba(72, 132, 239, 0.7)',  // Cool Blue
               'rgba(120, 233, 177, 0.7)', // Mint Green
               'rgba(255, 153, 122, 0.7)', // Soft Coral
-              'rgba(168, 115, 247, 0.7)'  // Lavender Purple
+ 
             ],
             borderWidth: 0
           }]
