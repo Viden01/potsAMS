@@ -277,8 +277,9 @@
               alert('Unexpected response from server.');
             }
           },
-          error: function () {
-            alert('Error connecting to server. Please try again later.');
+          error: function (xhr, status, error) {
+            alert(`Error: ${xhr.status} - ${xhr.statusText}. Details: ${error}`);
+            console.log(xhr.responseText);
           },
           complete: function () {
             $('#resetPasswordBtn').text('Submit').prop('disabled', false);
