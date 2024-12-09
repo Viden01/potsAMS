@@ -146,14 +146,14 @@ $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
       </div>
 
       <!-- Logged History -->
-      <div class="col-lg-3">
+      <!--<div class="col-lg-3">
         <div class="alert-modern" style="background-color: #f44336;">
           <i class="fa fa-eye"></i>
           <div class="value"><?php echo $row4['log_id']; ?></div>
           <div>Logged History</div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="row">
       <div class="col-lg-6">
