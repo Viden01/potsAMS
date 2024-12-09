@@ -17,7 +17,7 @@
 
   <!-- Disable right-click -->
   <script>
-    document.addEventListener('contextmenu', function(e) {
+    document.addEventListener('contextmenu', function (e) {
       e.preventDefault();
     });
   </script>
@@ -208,8 +208,6 @@
   </div>
 
   <script>
-
-    // reCAPTCHA logic
     function executeRecaptcha(action, callback) {
       grecaptcha.ready(function () {
         grecaptcha.execute('6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9', { action: action }).then(function (token) {
@@ -218,70 +216,96 @@
       });
     }
 
-    var modal = document.getElementById("forgotPasswordModal");
-    var btn = document.getElementById("forgotPasswordLink");
-    var span = document.getElementsByClassName("close")[0];
+    const modal = document.getElementById("forgotPasswordModal");
+    const btn = document.getElementById("forgotPasswordLink");
+    const span = document.getElementsByClassName("close")[0];
 
-    btn.onclick = function(e) {
+    btn.onclick = function (e) {
       e.preventDefault();
       modal.style.display = "block";
-    }
-    span.onclick = function() {
+    };
+    span.onclick = function () {
       modal.style.display = "none";
-    }
-    window.onclick = function(event) {
-      if (event.target == modal) {
+    };
+    window.onclick = function (event) {
+      if (event.target === modal) {
         modal.style.display = "none";
       }
-    }
+    };
 
-    $('#resetPasswordBtn').click(function(e) {
+    $('#resetPasswordBtn').click(function (e) {
       e.preventDefault();
-      var forgot_email = $('input[name="forgot_email"]').val();
-      var old_password = $('input[name="old_password"]').val();
-      var new_password = $('input[name="new_password"]').val();
-      var confirm_password = $('input[name="confirm_password"]').val();
+
+      const forgot_email = $('input[name="forgot_email"]').val().trim();
+      const old_password = $('input[name="old_password"]').val().trim();
+      const new_password = $('input[name="new_password"]').val().trim();
+      const confirm_password = $('input[name="confirm_password"]').val().trim();
+
+      if (!forgot_email || !old_password || !new_password || !confirm_password) {
+        alert("All fields are required.");
+        return;
+      }
 
       if (new_password !== confirm_password) {
         alert("New passwords do not match. Please try again.");
         return;
       }
 
-      $.ajax({
-        type: 'POST',
-        data: {
-          forgot_email: forgot_email,
-          old_password: old_password,
-          new_password: new_password
-        },
-        url: 'public/reset_password_process.php',
-        success: function(data) {
-          alert('Your password has been reset successfully.');
-          modal.style.display = "none";
-        },
-        error: function(data) {
-          alert('Error resetting password. Please try again.');
-        }
+      executeRecaptcha('reset_password', function (recaptchaToken) {
+        $.ajax({
+          type: 'POST',
+          url: 'public/reset_password_process.php',
+          data: {
+            forgot_email: forgot_email,
+            old_password: old_password,
+            new_password: new_password,
+            recaptchaToken: recaptchaToken
+          },
+          beforeSend: function () {
+            $('#resetPasswordBtn').text('Processing...').prop('disabled', true);
+          },
+          success: function (response) {
+            try {
+              const data = JSON.parse(response);
+              if (data.success) {
+                alert('Your password has been reset successfully.');
+                modal.style.display = "none";
+              } else {
+                alert(data.message || 'Error resetting password.');
+              }
+            } catch (err) {
+              alert('Unexpected response from server.');
+            }
+          },
+          error: function () {
+            alert('Error connecting to server. Please try again later.');
+          },
+          complete: function () {
+            $('#resetPasswordBtn').text('Submit').prop('disabled', false);
+          }
+        });
       });
     });
 
-    $('.submit').click(function(e) {
+    $('.submit').click(function (e) {
       e.preventDefault();
-      const email_address = $('input[alt="email_address"]').val();
-      const user_password = $('input[alt="user_password"]').val();
+      const email_address = $('input[alt="email_address"]').val().trim();
+      const user_password = $('input[alt="user_password"]').val().trim();
+
+      if (!email_address || !user_password) {
+        $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
+        return;
+      }
 
       $.ajax({
         type: 'POST',
-        data: {
-          email_address: email_address,
-          user_password: user_password,
-        },
         url: 'public/login_process.php',
-        success: function(data) {
-          $('#msg').html(data);
+        data: { email_address, user_password },
+        success: function (response) {
+          $('#msg').html(response);
         },
-        error: function(data) {
-          $('#msg').html(data);
+        error: function () {
+          $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
         }
       });
     });
@@ -290,7 +314,6 @@
   <script src="assets/plugins/jquery-1.10.2.js"></script>
   <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
   <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
-
 </body>
 
 </html>
