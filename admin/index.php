@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Security headers
 header("Strict-Transport-Security: max-age=31536000; includeSubDomains");
 header("X-Frame-Options: SAMEORIGIN");
@@ -12,10 +14,26 @@ if (substr($request, -4) == '.php') {
     header("Location: $new_url", true, 301);
     exit();
 }
+
+// Limit login attempts and lockout functionality
+if (!isset($_SESSION['login_attempts'])) {
+    $_SESSION['login_attempts'] = 0;
+    $_SESSION['lockout_time'] = 0;
+}
+
+// Check for lockout
+if ($_SESSION['lockout_time'] > time()) {
+    echo '<p class="text-danger">Account is locked. Try again later.</p>';
+    exit();
+}
+
+if ($_SESSION['login_attempts'] >= 3) {
+    echo '<p class="text-warning">You have exceeded the maximum number of login attempts. Please complete the CAPTCHA.</p>';
+}
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="utf-8">
@@ -31,135 +49,11 @@ if (substr($request, -4) == '.php') {
   <!-- reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
 
-  <!-- Disable right-click -->
-  <script>
-    document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-    });
-  </script>
-
   <style>
-    body {
-      background-image: url('picture1.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      height: 100vh;
-    }
-
-    .custom-offset {
-      margin-left: 63%;
-    }
-
-    .form-options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .form-options a {
-      font-size: 0.9em;
-    }
-
-    .login-panel {
-      position: absolute;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      margin: 10% auto;
-      padding: 30px;
-      background-color: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-      border-radius: 8px;
-    }
-
-    .panel-heading {
-      text-align: center;
-    }
-
-    .panel-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-control {
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      padding: 15px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      width: 100%;
-      transition: all 0.3s ease;
-    }
-
-    .form-control:focus {
-      border-color: #28a745;
-      box-shadow: 0 0 8px rgba(40, 167, 69, 0.2);
-    }
-
-    .submit {
-      background-color: #28a745;
-      border: none;
-      border-radius: 5px;
-      padding: 15px;
-      font-size: 18px;
-      color: white;
-      width: 100%;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .submit:hover {
-      background-color: #218838;
-    }
-
-    .checkbox label {
-      font-size: 0.9em;
-      color: #333;
-    }
-
-    /* Modal Styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 15% auto;
-      padding: 20px;
-      border-radius: 8px;
-      width: 80%;
-      max-width: 500px;
-    }
-
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
+    /* Add your styling for lockout and CAPTCHA */
+    .submit[disabled] {
+      background-color: #ccc;
+      cursor: not-allowed;
     }
   </style>
 </head>
@@ -190,7 +84,13 @@ if (substr($request, -4) == '.php') {
                   </div>
                   <a href="#" id="forgotPasswordLink">Forgot Password?</a>
                 </div>
-                <button type="button" class="btn submit" value="Login">Login</button>
+
+                <!-- reCAPTCHA -->
+                <div id="recaptcha" style="display: none;">
+                  <div class="g-recaptcha" data-sitekey="6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></div>
+                </div>
+
+                <button type="button" class="btn submit" id="loginBtn" value="Login">Login</button>
               </fieldset>
             </form>
           </div>
@@ -199,162 +99,63 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
-  <!-- The Modal -->
-  <div id="forgotPasswordModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Forgot Password</h2>
-      <p>Please enter your Gmail account to begin the password reset process.</p>
-      <form id="forgotPasswordForm" method="POST">
-        <div class="form-group">
-          <input class="form-control" placeholder="Enter your Gmail" type="email" name="forgot_email" required>
-        </div>
-        <button type="button" class="btn btn-primary" id="nextStepBtn">Next</button>
-      </form>
-      <div id="passwordResetSection" style="display: none;">
-        <p>Please enter your old password and new password.</p>
-        <form id="resetPasswordForm" method="POST">
-          <div class="form-group">
-            <input class="form-control" placeholder="Enter old password" type="password" name="old_password" required>
-          </div>
-          <div class="form-group">
-            <input class="form-control" placeholder="Enter new password" type="password" name="new_password" required>
-          </div>
-          <div class="form-group">
-            <input class="form-control" placeholder="Confirm new password" type="password" name="confirm_password" required>
-          </div>
-          <button type="button" class="btn btn-primary" id="resetPasswordBtn">Submit</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
   <script>
-    function executeRecaptcha(action, callback) {
-      grecaptcha.ready(function () {
-        grecaptcha.execute('6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9', { action: action }).then(function (token) {
-          callback(token);
-        });
-      });
-    }
+    $(document).ready(function () {
+      // Check if the user is locked out
+      <?php if ($_SESSION['lockout_time'] > time()): ?>
+        $('#loginBtn').prop('disabled', true);
+        setTimeout(function () {
+          $('#loginBtn').prop('disabled', false);
+          alert("You can try logging in again.");
+        }, <?php echo ($_SESSION['lockout_time'] - time()) * 1000; ?>);
+      <?php endif; ?>
 
-    const modal = document.getElementById("forgotPasswordModal");
-    const btn = document.getElementById("forgotPasswordLink");
-    const span = document.getElementsByClassName("close")[0];
-    const nextStepBtn = document.getElementById("nextStepBtn");
-    const passwordResetSection = document.getElementById("passwordResetSection");
+      $('.submit').click(function (e) {
+        e.preventDefault();
 
-    btn.onclick = function (e) {
-      e.preventDefault();
-      modal.style.display = "block";
-    };
+        const email_address = $('input[alt="email_address"]').val().trim();
+        const user_password = $('input[alt="user_password"]').val().trim();
 
-    span.onclick = function () {
-      modal.style.display = "none";
-    };
+        if (!email_address || !user_password) {
+          $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
+          return;
+        }
 
-    window.onclick = function (event) {
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    };
+        if ($_SESSION['login_attempts'] >= 3) {
+          // Show reCAPTCHA after 3 failed attempts
+          if (grecaptcha.getResponse() === "") {
+            alert("Please complete the CAPTCHA.");
+            return;
+          }
+        }
 
-    nextStepBtn.onclick = function () {
-      const forgot_email = $('input[name="forgot_email"]').val().trim();
-      
-      // Check if the entered email is a valid Gmail address
-      const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-      if (!gmailRegex.test(forgot_email)) {
-        alert("Please enter a valid Gmail address.");
-        return;
-      }
-
-      // Proceed to show the password reset form
-      $('#forgotPasswordForm').hide();
-      passwordResetSection.style.display = "block";
-    };
-
-    $('#resetPasswordBtn').click(function (e) {
-      e.preventDefault();
-
-      const old_password = $('input[name="old_password"]').val().trim();
-      const new_password = $('input[name="new_password"]').val().trim();
-      const confirm_password = $('input[name="confirm_password"]').val().trim();
-
-      if (!old_password || !new_password || !confirm_password) {
-        alert("All fields are required.");
-        return;
-      }
-
-      if (new_password !== confirm_password) {
-        alert("New passwords do not match. Please try again.");
-        return;
-      }
-
-      executeRecaptcha('reset_password', function (recaptchaToken) {
         $.ajax({
           type: 'POST',
-          url: 'public/reset_password_process.php',
-          data: {
-            forgot_email: forgot_email,
-            old_password: old_password,
-            new_password: new_password,
-            recaptchaToken: recaptchaToken
-          },
-          beforeSend: function () {
-            $('#resetPasswordBtn').text('Processing...').prop('disabled', true);
-          },
+          url: 'public/login_process.php',
+          data: { email_address, user_password },
           success: function (response) {
-            try {
-              const data = JSON.parse(response);
-              if (data.success) {
-                alert('Your password has been reset successfully.');
-                modal.style.display = "none";
-              } else {
-                alert(data.message || 'Error resetting password.');
+            if (response === "login_failed") {
+              // Increment the login attempts counter
+              <?php $_SESSION['login_attempts']++; ?>
+              $('#msg').html('<p class="text-danger">Invalid credentials. Try again.</p>');
+
+              if ($_SESSION['login_attempts'] >= 3) {
+                // Lock the account for 30 seconds
+                <?php $_SESSION['lockout_time'] = time() + 30; ?>
+                alert("You have reached the maximum number of login attempts. Please try again after 30 seconds.");
               }
-            } catch (err) {
-              alert('Unexpected response from server.');
+            } else if (response === "login_success") {
+              window.location.href = "dashboard.php"; // Redirect on successful login
             }
           },
-          error: function (xhr, status, error) {
-            alert(`Error: ${xhr.status} - ${xhr.statusText}. Details: ${error}`);
-            console.log(xhr.responseText);
-          },
-          complete: function () {
-            $('#resetPasswordBtn').text('Submit').prop('disabled', false);
+          error: function () {
+            $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
           }
         });
       });
     });
-
-    $('.submit').click(function (e) {
-      e.preventDefault();
-      const email_address = $('input[alt="email_address"]').val().trim();
-      const user_password = $('input[alt="user_password"]').val().trim();
-
-      if (!email_address || !user_password) {
-        $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
-        return;
-      }
-
-      $.ajax({
-        type: 'POST',
-        url: 'public/login_process.php',
-        data: { email_address, user_password },
-        success: function (response) {
-          $('#msg').html(response);
-        },
-        error: function () {
-          $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
-        }
-      });
-    });
   </script>
 
-  <script src="assets/plugins/jquery-1.10.2.js"></script>
-  <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
-  <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
 </body>
 
 </html>
