@@ -130,7 +130,7 @@ if (substr($request, -4) == '.php') {
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
+      z-index: 1;
       left: 0;
       top: 0;
       width: 100%;
@@ -140,13 +140,12 @@ if (substr($request, -4) == '.php') {
     }
 
     .modal-content {
-      background-color: #fefefe;
+      background-color: #fff;
       margin: 15% auto;
       padding: 20px;
       border-radius: 8px;
       width: 80%;
       max-width: 500px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
     .close {
@@ -154,13 +153,13 @@ if (substr($request, -4) == '.php') {
       float: right;
       font-size: 28px;
       font-weight: bold;
-      cursor: pointer;
     }
 
     .close:hover,
     .close:focus {
       color: black;
       text-decoration: none;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -200,22 +199,6 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
-  <!-- Forgot Password Modal -->
-  <div id="forgotPasswordModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h3 class="panel-title">Forgot Password</h3>
-      <div id="forgotPasswordMsg"></div>
-      <form id="forgotPasswordForm">
-        <div class="form-group">
-          <label for="forgotEmail">Enter your email address</label>
-          <input type="email" class="form-control" id="forgotEmail" placeholder="Enter your email" required>
-        </div>
-        <button type="button" class="btn submit" id="resetPasswordBtn">Reset Password</button>
-      </form>
-    </div>
-  </div>
-
   <script>
     $('.submit').click(function (e) {
       e.preventDefault();
@@ -243,56 +226,6 @@ if (substr($request, -4) == '.php') {
         },
         error: function () {
           $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
-        }
-      });
-    });
-
-    // Forgot Password Modal Functionality
-    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
-    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-    const closeModal = document.getElementsByClassName('close')[0];
-
-    // Open Modal
-    forgotPasswordLink.onclick = function(e) {
-      e.preventDefault();
-      forgotPasswordModal.style.display = 'block';
-    }
-
-    // Close Modal
-    closeModal.onclick = function() {
-      forgotPasswordModal.style.display = 'none';
-    }
-
-    // Close Modal when clicking outside of it
-    window.onclick = function(event) {
-      if (event.target == forgotPasswordModal) {
-        forgotPasswordModal.style.display = 'none';
-      }
-    }
-
-    // Reset Password Button Click
-    $('#resetPasswordBtn').click(function() {
-      const forgotEmail = $('#forgotEmail').val().trim();
-
-      if (!forgotEmail) {
-        $('#forgotPasswordMsg').html('<p class="text-danger">Please enter your email address.</p>');
-        return;
-      }
-
-      $.ajax({
-        type: 'POST',
-        url: 'public/forgot_password_process.php',
-        data: { email_address: forgotEmail },
-        success: function(response) {
-          $('#forgotPasswordMsg').html(response);
-          
-          // Hide the alert after 2 seconds
-          setTimeout(function() {
-            $('#forgotPasswordMsg').fadeOut();
-          }, 2000);
-        },
-        error: function() {
-          $('#forgotPasswordMsg').html('<p class="text-danger">Error processing your request. Please try again later.</p>');
         }
       });
     });
