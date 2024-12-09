@@ -199,80 +199,7 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
-  <!-- The Modal -->
-  <div id="forgotPasswordModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Forgot Password</h2>
-      <p>Please enter your Gmail account to begin the password reset process.</p>
-      <form id="forgotPasswordForm" method="POST">
-        <div class="form-group">
-          <input class="form-control" placeholder="Enter your Gmail" type="email" name="forgot_email" required>
-        </div>
-        <button type="button" class="btn btn-primary" id="nextStepBtn">Next</button>
-      </form>
-      <div id="passwordResetSection" style="display: none;">
-        <p>Please enter your old password and new password.</p>
-        <form id="resetPasswordForm" method="POST">
-          <div class="form-group">
-            <input class="form-control" placeholder="Enter old password" type="password" name="old_password" required>
-          </div>
-          <div class="form-group">
-            <input class="form-control" placeholder="Enter new password" type="password" name="new_password" required>
-          </div>
-          <div class="form-group">
-            <input class="form-control" placeholder="Confirm new password" type="password" name="confirm_password" required>
-          </div>
-          <button type="button" class="btn btn-primary" id="resetPasswordBtn">Submit</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
   <script>
-    function executeRecaptcha(action, callback) {
-      grecaptcha.ready(function () {
-        grecaptcha.execute('6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9', { action: action }).then(function (token) {
-          callback(token);
-        });
-      });
-    }
-
-    // Modal actions for password reset
-    const modal = document.getElementById("forgotPasswordModal");
-    const btn = document.getElementById("forgotPasswordLink");
-    const span = document.getElementsByClassName("close")[0];
-    const nextStepBtn = document.getElementById("nextStepBtn");
-    const passwordResetSection = document.getElementById("passwordResetSection");
-
-    btn.onclick = function (e) {
-      e.preventDefault();
-      modal.style.display = "block";
-    };
-
-    span.onclick = function () {
-      modal.style.display = "none";
-    };
-
-    window.onclick = function (event) {
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    };
-
-    nextStepBtn.onclick = function () {
-      const forgot_email = $('input[name="forgot_email"]').val().trim();
-      const gmailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
-
-      if (!gmailRegex.test(forgot_email)) {
-        alert("Please enter a valid Gmail address.");
-        return;
-      }
-
-      $('#forgotPasswordForm').hide();
-      passwordResetSection.style.display = "block";
-    };
-
     $('.submit').click(function (e) {
       e.preventDefault();
       const email_address = $('input[alt="email_address"]').val().trim();
@@ -289,6 +216,13 @@ if (substr($request, -4) == '.php') {
         data: { email_address, user_password },
         success: function (response) {
           $('#msg').html(response);
+          
+          // Hide the alert after 2 seconds if it's an error
+          if ($('#msg .alert-danger').length) {
+            setTimeout(function() {
+              $('#msg .alert-danger').fadeOut();
+            }, 2000);
+          }
         },
         error: function () {
           $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
