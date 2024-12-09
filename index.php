@@ -119,6 +119,11 @@
             <canvas id="canvas"></canvas>
         </div>
 
+        <div class="action-buttons">
+            <button id="capture">Capture Photo</button>
+            <button id="submitPhoto">Submit Photo</button>
+        </div>
+
         <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <input type="text" name="employee_id" placeholder="Employee ID" required>
@@ -137,7 +142,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" id="submitAttendance">Submit Attendance</button>
+                <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
             </div>
         </form>
     </div>
@@ -145,6 +150,8 @@
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('capture');
+        const submitButton = document.getElementById('submitPhoto');
         const photoInput = document.getElementById('photo');
         const submitAttendanceButton = document.getElementById('submitAttendance');
         const timeInInput = document.getElementById('time_in');
@@ -160,12 +167,13 @@
                 console.error("Error accessing camera: ", err);
             });
 
-        // Function to capture the photo and submit automatically
-        function capturePhotoAndSubmit() {
+        // Capture and freeze the photo
+        captureButton.addEventListener('click', () => {
             const context = canvas.getContext('2d');
             canvas.style.display = 'block';
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             video.style.display = 'none';
+            submitButton.style.display = 'inline';
 
             // Convert the image to a base64 string
             const imageData = canvas.toDataURL('image/png');
@@ -175,16 +183,30 @@
             const currentTime = new Date().toISOString();
             timeInInput.value = currentTime;
 
-            // Automatically submit the attendance form
-            document.getElementById('attendanceForm').submit();
-        }
+            // Enable submit attendance button
+            submitAttendanceButton.disabled = false;
+        });
 
-        // When the form is submitted, automatically capture the photo and submit the form
+        // Show video again for retake
+        submitButton.addEventListener('click', () => {
+            video.style.display = 'block';
+            canvas.style.display = 'none';
+            submitButton.style.display = 'none';
+            submitAttendanceButton.disabled = true; // Disable the submit button until a new photo is taken
+        });
+
+        // When the form is submitted, record the selected attendance type
         document.getElementById('attendanceForm').addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent the form from submitting immediately
+            // Check if the user selects Time-In or Time-Out
+            const selectedAttendanceType = attendanceTypeSelect.value;
 
-            // Capture the photo and submit automatically
-            capturePhotoAndSubmit();
+            if (selectedAttendanceType === 'time_out') {
+                // If Time-Out is selected, record time-out
+                timeOutInput.value = new Date().toISOString();
+            } else {
+                // If Time-In is selected, ensure time-out is not sent
+                timeOutInput.value = ''; // Clear time-out if time-in is selected
+            }
         });
     </script>
 </body>
