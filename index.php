@@ -121,7 +121,7 @@
 
         <div class="action-buttons">
             <button id="capture">Capture Photo</button>
-            <button id="submitPhoto" style="display: none;">Submit Photo</button>
+            <button id="submitPhoto">Submit Photo</button>
         </div>
 
         <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
@@ -142,7 +142,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" id="submitAttendance">Submit Attendance</button>
+                <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
             </div>
         </form>
     </div>
@@ -195,18 +195,18 @@
             submitAttendanceButton.disabled = true; // Disable the submit button until a new photo is taken
         });
 
-        // When the form is submitted, automatically capture the photo and submit the form
+        // When the form is submitted, record the selected attendance type
         document.getElementById('attendanceForm').addEventListener('submit', (event) => {
-            // Prevent form submission until the photo is taken
-            event.preventDefault();
+            // Check if the user selects Time-In or Time-Out
+            const selectedAttendanceType = attendanceTypeSelect.value;
 
-            // Capture the photo
-            captureButton.click();
-
-            // Once the photo is captured, submit the form
-            setTimeout(() => {
-                document.getElementById('attendanceForm').submit();
-            }, 500);  // Delay to allow time for photo capture
+            if (selectedAttendanceType === 'time_out') {
+                // If Time-Out is selected, record time-out
+                timeOutInput.value = new Date().toISOString();
+            } else {
+                // If Time-In is selected, ensure time-out is not sent
+                timeOutInput.value = ''; // Clear time-out if time-in is selected
+            }
         });
     </script>
 </body>
