@@ -17,11 +17,13 @@ try {
     }
 
     // Get POST data
-    $forgot_email = $_POST['email'] ?? null; // Align with frontend email field
+    $forgot_email = $_POST['forgot_email'] ?? null;
+    $old_password = $_POST['old_password'] ?? null;
+    $new_password = $_POST['new_password'] ?? null;
     $recaptchaToken = $_POST['recaptchaToken'] ?? null;
 
     // Validate required fields
-    if (!$forgot_email || !$recaptchaToken) {
+    if (!$forgot_email || !$old_password || !$new_password || !$recaptchaToken) {
         throw new Exception("Missing required fields.");
     }
 
@@ -35,7 +37,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Check if the email exists in the database
-    $stmt = $pdo->prepare("SELECT id, email FROM users WHERE email = :email");
+    $stmt = $pdo->prepare("SELECT id, password FROM users WHERE email = :email");
     $stmt->execute(['email' => $forgot_email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -43,23 +45,28 @@ try {
         throw new Exception("No user found with this email.");
     }
 
-    // Generate a password reset token (you can store it in a reset_tokens table or similar)
-    $reset_token = bin2hex(random_bytes(32)); // Random 32-byte token for the reset link
+    // Verify old password (use password_hash() and password_verify() for secure password checking)
+    if (!password_verify($old_password, $user['password'])) {
+        throw new Exception("Incorrect old password.");
+    }
 
-    // Store the reset token (in a reset_tokens table or update the user record with it)
-    $stmt = $pdo->prepare("UPDATE users SET reset_token = :reset_token WHERE email = :email");
-    $stmt->execute(['reset_token' => $reset_token, 'email' => $forgot_email]);
+    // Validate new password (you can set your own password strength rules here)
+    if (strlen($new_password) < 8) {
+        throw new Exception("New password must be at least 8 characters long.");
+    }
 
-    // Send reset email (you can implement your own email system here)
-    $reset_link = "https://yourdomain.com/reset-password.php?token=" . $reset_token;
+    // Hash the new password before storing it
+    $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
 
-    // Send the reset link via email (using PHP's mail function or a third-party email service)
-    mail($forgot_email, "Password Reset Request", "Click the link to reset your password: $reset_link");
+    // Update the user's password in the database
+    $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE email = :email");
+    $stmt->execute(['password' => $hashed_password, 'email' => $forgot_email]);
 
     // Return success message
-    echo json_encode(['success' => true, 'message' => 'Password reset email sent.']);
+    echo json_encode(['success' => true, 'message' => 'Password reset successful.']);
+
 } catch (Exception $e) {
     // Return error message
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
-?>
+
