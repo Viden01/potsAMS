@@ -20,8 +20,30 @@ $fileName = '';
 $complete_address = $barangay . ', ' . $municipality . ', ' . $city;
 
 if (isset($_FILES['profile_pic']) && $_FILES['profile_pic']['size'] > 0) {
-    $fileName = "../../../images/" . time() . '_' . basename($_FILES["profile_pic"]["name"]);
-    move_uploaded_file($_FILES["profile_pic"]["tmp_name"], $fileName);
+    $fileTmpPath = $_FILES['profile_pic']['tmp_name'];
+    $originalFileName = $_FILES['profile_pic']['name'];
+    $fileSize = $_FILES['profile_pic']['size'];
+    $fileExtension = strtolower(pathinfo($originalFileName, PATHINFO_EXTENSION));
+    $allowedExtensions = ['jpg', 'jpeg'];
+    
+    // Validate file type
+    if (!in_array($fileExtension, $allowedExtensions)) {
+        echo '<div class="alert alert-warning">Only JPG/JPEG files are allowed!</div>';
+        exit();
+    }
+    
+    // Validate file size (e.g., max 5MB)
+    if ($fileSize > 5 * 1024 * 1024) {
+        echo '<div class="alert alert-warning">File size must not exceed 5MB!</div>';
+        exit();
+    }
+    
+    // Save the file with a unique name
+    $fileName = "../../../images/" . time() . '_' . uniqid() . '.' . $fileExtension;
+    if (!move_uploaded_file($fileTmpPath, $fileName)) {
+        echo '<div class="alert alert-danger">Error uploading file. Please try again.</div>';
+        exit();
+    }
 }
 
 // Check if the employee name already exists
