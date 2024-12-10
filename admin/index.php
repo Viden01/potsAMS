@@ -75,6 +75,43 @@ if (substr($request, -4) == '.php') {
       border-radius: 8px;
     }
 
+    .panel-heading {
+      text-align: center;
+    }
+
+    .panel-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      border-radius: 5px;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      width: 100%;
+    }
+
+    .submit {
+      background-color: #28a745;
+      border: none;
+      padding: 15px;
+      font-size: 18px;
+      color: white;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .submit:hover {
+      background-color: #218838;
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -130,6 +167,12 @@ if (substr($request, -4) == '.php') {
                 <div class="form-group">
                   <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
                 </div>
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" id="termsCheckbox" required>
+                    I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
+                  </label>
+                </div>
                 <div class="form-options">
                   <div class="checkbox">
                     <label>
@@ -137,12 +180,6 @@ if (substr($request, -4) == '.php') {
                     </label>
                   </div>
                   <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-                </div>
-                <div class="form-group">
-                  <label>
-                    <input type="checkbox" id="termsCheckbox" required>
-                    I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
-                  </label>
                 </div>
                 <button type="button" class="btn submit" value="Login">Login</button>
               </fieldset>
