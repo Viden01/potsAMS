@@ -152,11 +152,4 @@ ob_end_clean();
 
 // Output the PDF to the browser for direct printing
 $pdf->Output('payslip.pdf', 'I');
-
-// Automatically trigger the print dialog in the browser (works only if browser allows)
-echo "<script type='text/javascript'>
-    window.onload = function() {
-        window.print();
-    }
-</script>";
 ?>
