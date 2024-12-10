@@ -39,7 +39,6 @@ if (substr($request, -4) == '.php') {
   </script>
 
   <style>
-    /* Add existing and new styles here */
     body {
       background-image: url('picture1.jpg');
       background-size: cover;
@@ -50,6 +49,16 @@ if (substr($request, -4) == '.php') {
 
     .custom-offset {
       margin-left: 63%;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-options a {
+      font-size: 0.9em;
     }
 
     .login-panel {
