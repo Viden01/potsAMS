@@ -16,9 +16,9 @@
     <div class="row">
         <!-- Welcome -->
         <div class="col-lg-12">
-          <!--  <div class="alert alert-info">
+            <div class="alert alert-info">
                 
-            </div> -->
+            </div>
         </div>
         <!--end  Welcome -->
     </div>
