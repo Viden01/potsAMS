@@ -75,11 +75,13 @@ while ($row = $query->fetch_assoc()) {
 
     $gross = $rate_per_hour * $total_hours;
     $total_deduction = $deduction + $cashadvance;
+    
+    // Adjusted Net Pay Logic
     $net = $gross - $total_deduction;
+    $net = $net < 0 ? 0 : round($net, 2);
 
     $gross = round($gross, 2);
     $total_deduction = round($total_deduction, 2);
-    $net = round($net, 2);
 
     $total_seconds = $total_hours * 3600;  // Convert hours to seconds
     $formatted_hours = gmdate("H:i:s", $total_seconds);
