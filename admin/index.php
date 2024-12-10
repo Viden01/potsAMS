@@ -21,14 +21,23 @@ if (substr($request, -4) == '.php') {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>POTS - ESL</title>
-  <!-- Core CSS -->
+  <!-- Core CSS - Include with every page -->
   <link href="private/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
   <link href="private/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
   <link href="private/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- reCAPTCHA v3 -->
+  <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
+
+  <!-- Disable right-click -->
+  <script>
+    document.addEventListener('contextmenu', function (e) {
+      e.preventDefault();
+    });
+  </script>
+
   <style>
     body {
       background-image: url('picture1.jpg');
@@ -40,6 +49,16 @@ if (substr($request, -4) == '.php') {
 
     .custom-offset {
       margin-left: 63%;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-options a {
+      font-size: 0.9em;
     }
 
     .login-panel {
@@ -91,20 +110,6 @@ if (substr($request, -4) == '.php') {
 
     .submit:hover {
       background-color: #218838;
-    }
-
-    .form-options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .form-options a {
-      font-size: 0.9em;
-    }
-
-    .alert {
-      margin-top: 15px;
     }
 
     .modal {
@@ -185,7 +190,6 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
-  <!-- Terms and Conditions Modal -->
   <div id="termsModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
@@ -195,7 +199,6 @@ if (substr($request, -4) == '.php') {
   </div>
 
   <script>
-    // Terms Modal Logic
     const termsModal = document.getElementById('termsModal');
     const termsLink = document.getElementById('viewTerms');
     const closeModal = document.querySelector('.close');
@@ -215,7 +218,6 @@ if (substr($request, -4) == '.php') {
       }
     });
 
-    // Login Functionality
     $('.submit').click(function (e) {
       e.preventDefault();
       const email_address = $('input[alt="email_address"]').val().trim();
@@ -223,12 +225,12 @@ if (substr($request, -4) == '.php') {
       const termsCheckbox = $('#termsCheckbox').is(':checked');
 
       if (!email_address || !user_password) {
-        $('#msg').html('<div class="alert alert-danger">Please fill in both fields.</div>');
+        $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
         return;
       }
 
       if (!termsCheckbox) {
-        $('#msg').html('<div class="alert alert-danger">You must agree to the terms and conditions.</div>');
+        $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
         return;
       }
 
@@ -237,16 +239,15 @@ if (substr($request, -4) == '.php') {
         url: 'public/login_process.php',
         data: { email_address, user_password },
         success: function (response) {
-          $('#msg').html('<div class="alert alert-success alert-dismissible fade show" role="alert">' +
-            '<strong>Success!</strong> You have logged in successfully.' +
-            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-            '</div>');
-          setTimeout(function () {
-            $('#msg .alert-success').fadeOut();
-          }, 3000);
+          $('#msg').html(response);
+          if ($('#msg .alert-danger').length) {
+            setTimeout(function () {
+              $('#msg .alert-danger').fadeOut();
+            }, 2000);
+          }
         },
         error: function () {
-          $('#msg').html('<div class="alert alert-danger">Error logging in. Please try again later.</div>');
+          $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
         }
       });
     });
