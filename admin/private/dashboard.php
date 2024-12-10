@@ -15,7 +15,17 @@ $row3 = $query3->fetch_array();
 $query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysqli_error($conn));
 $row4 = $query4->fetch_array();
 
+// Fetch the total net pay
+$queryNetPay = $conn->query("SELECT SUM(net_pay) AS total_netpay FROM payroll") or die(mysqli_error($conn));
+$rowNetPay = $queryNetPay->fetch_array();
+
+$totalNetPay = $rowNetPay['total_netpay']; // Total net pay
 $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
+$totalPercentage = ($totalNetPay / $total) * 100; // Percentage of net pay (relative to total dashboard metrics)
+
+// Format numbers for display
+$formattedNetPay = number_format($totalNetPay, 2);
+$formattedPercentage = number_format($totalPercentage, 2) . '%';
 
 $request = $_SERVER['REQUEST_URI'];
 if (substr($request, -4) == '.php') {
@@ -56,6 +66,7 @@ if (substr($request, -4) == '.php') {
       text-align: center;
       margin-bottom: 20px;
     }
+
     .dashboard-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
@@ -152,139 +163,16 @@ if (substr($request, -4) == '.php') {
         </div>
       </div>
 
-      <!-- Logged History -->
-      <!-- <div class="col-lg-3">
-        <div class="alert-modern" style="background-color: #f44336;">
-          <i class="fa fa-eye"></i>
-          <div class="value"><?php echo $row4['log_id']; ?></div>
-          <div>Logged History</div>
+      <!-- Total Net Pay -->
+      <div class="col-lg-3">
+        <div class="alert-modern" style="background-color: #9c27b0;">
+          <i class="fa fa-money"></i>
+          <div class="value"><?php echo $formattedNetPay; ?></div>
+          <div>Total Net Pay</div>
+          <small>Percentage: <?php echo $formattedPercentage; ?></small>
         </div>
-      </div>
-    </div> -->
-
-    <div class="row">
-      <div class="col-lg-6">
-        <canvas id="dashboardBarChart"></canvas>
-      </div>
-      <div class="col-lg-6 donut-chart-container">
-        <canvas id="dashboardDonutChart"></canvas> <!-- Donut Chart -->
       </div>
     </div>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
-      var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
-
-      var barChart = new Chart(barCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Members', 'Attendance Records', 'Schedule',],
-          datasets: [{
-            label: 'Count',
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: [
-              'rgba(72, 132, 239, 0.7)',  // Cool Blue
-              'rgba(120, 233, 177, 0.7)', // Mint Green
-              'rgba(255, 153, 122, 0.7)', // Soft Coral
-            ],
-            borderColor: 'transparent',
-            borderWidth: 0,
-            hoverBackgroundColor: [
-              'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
-              'rgba(120, 233, 177, 1)', // Hover effect Mint Green
-              'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
-            ],
-            hoverBorderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              color: '#fff',
-              font: {
-                weight: 'bold'
-              },
-              anchor: 'end',
-              align: 'end'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(tooltipItem) {
-                  var dataset = tooltipItem.dataset;
-                  var currentValue = dataset.data[tooltipItem.dataIndex];
-                  var total = dataset.data.reduce(function(a, b) {
-                    return a + b;
-                  }, 0);
-                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
-                  return tooltipItem.label + ': ' + percentage;
-                }
-              }
-            }
-          }
-        }
-      });
-
-      var donutChart = new Chart(donutCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Members', 'Attendance Records', 'Schedule',],
-          datasets: [{
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: [
-              'rgba(72, 132, 239, 0.7)',  // Cool Blue
-              'rgba(120, 233, 177, 0.7)', // Mint Green
-              'rgba(255, 153, 122, 0.7)', // Soft Coral
- 
-            ],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              formatter: function(value, context) {
-                var total = context.chart.data.datasets[0].data.reduce(function(a, b) {
-                  return a + b;
-                }, 0);
-                var percentage = ((value / total) * 100).toFixed(2) + '%';
-                return percentage;
-              },
-              color: '#fff',
-              font: {
-                weight: 'bold'
-              },
-              anchor: 'end',
-              align: 'end'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(tooltipItem) {
-                  var dataset = tooltipItem.dataset;
-                  var currentValue = dataset.data[tooltipItem.dataIndex];
-                  var total = dataset.data.reduce(function(a, b) {
-                    return a + b;
-                  }, 0);
-                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
-                  return tooltipItem.label + ': ' + percentage;
-                }
-              }
-            }
-          }
-        }
-      });
-    });
-  </script>
-
-  <script src="assets/plugins/jquery-1.10.2.js"></script>
-  <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
-  <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
-  <script src="assets/plugins/pace/pace.js"></script>
-  <script src="assets/scripts/siminta.js"></script>
 </body>
 </html>
