@@ -39,6 +39,7 @@ if (substr($request, -4) == '.php') {
   </script>
 
   <style>
+    /* Add existing and new styles here */
     body {
       background-image: url('picture1.jpg');
       background-size: cover;
@@ -49,16 +50,6 @@ if (substr($request, -4) == '.php') {
 
     .custom-offset {
       margin-left: 63%;
-    }
-
-    .form-options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .form-options a {
-      font-size: 0.9em;
     }
 
     .login-panel {
@@ -75,58 +66,6 @@ if (substr($request, -4) == '.php') {
       border-radius: 8px;
     }
 
-    .panel-heading {
-      text-align: center;
-    }
-
-    .panel-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-control {
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      padding: 15px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      width: 100%;
-      transition: all 0.3s ease;
-    }
-
-    .form-control:focus {
-      border-color: #28a745;
-      box-shadow: 0 0 8px rgba(40, 167, 69, 0.2);
-    }
-
-    .submit {
-      background-color: #28a745;
-      border: none;
-      border-radius: 5px;
-      padding: 15px;
-      font-size: 18px;
-      color: white;
-      width: 100%;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .submit:hover {
-      background-color: #218838;
-    }
-
-    .checkbox label {
-      font-size: 0.9em;
-      color: #333;
-    }
-
-    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
@@ -190,6 +129,12 @@ if (substr($request, -4) == '.php') {
                   </div>
                   <a href="#" id="forgotPasswordLink">Forgot Password?</a>
                 </div>
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" id="termsCheckbox" required>
+                    I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
+                  </label>
+                </div>
                 <button type="button" class="btn submit" value="Login">Login</button>
               </fieldset>
             </form>
@@ -199,14 +144,47 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Terms and Conditions</h2>
+      <p>[Insert your terms and conditions here.]</p>
+    </div>
+  </div>
+
   <script>
+    const termsModal = document.getElementById('termsModal');
+    const termsLink = document.getElementById('viewTerms');
+    const closeModal = document.querySelector('.close');
+
+    termsLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      termsModal.style.display = 'block';
+    });
+
+    closeModal.addEventListener('click', function () {
+      termsModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function (e) {
+      if (e.target === termsModal) {
+        termsModal.style.display = 'none';
+      }
+    });
+
     $('.submit').click(function (e) {
       e.preventDefault();
       const email_address = $('input[alt="email_address"]').val().trim();
       const user_password = $('input[alt="user_password"]').val().trim();
+      const termsCheckbox = $('#termsCheckbox').is(':checked');
 
       if (!email_address || !user_password) {
         $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
+        return;
+      }
+
+      if (!termsCheckbox) {
+        $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
         return;
       }
 
@@ -216,10 +194,8 @@ if (substr($request, -4) == '.php') {
         data: { email_address, user_password },
         success: function (response) {
           $('#msg').html(response);
-          
-          // Hide the alert after 2 seconds if it's an error
           if ($('#msg .alert-danger').length) {
-            setTimeout(function() {
+            setTimeout(function () {
               $('#msg .alert-danger').fadeOut();
             }, 2000);
           }
@@ -230,10 +206,6 @@ if (substr($request, -4) == '.php') {
       });
     });
   </script>
-
-  <script src="assets/plugins/jquery-1.10.2.js"></script>
-  <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
-  <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
 </body>
 
 </html>
