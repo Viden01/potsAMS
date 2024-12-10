@@ -15,30 +15,6 @@ $row3 = $query3->fetch_array();
 $query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysqli_error($conn));
 $row4 = $query4->fetch_array();
 
-// Fetch Net Pay total from database
-$queryNetPay = $conn->query("
-    SELECT SUM((e.rate_per_hour * 
-        (SUM(TIME_TO_SEC(TIMEDIFF(a.time_out, a.time_in))) / 3600))
-        - (IFNULL(d.amount, 0) + IFNULL(ca.amount, 0))
-    ) AS total_netpay
-    FROM employee_records e
-    LEFT JOIN employee_attendance a ON e.emp_id = a.employee_id
-    LEFT JOIN (
-        SELECT employee_id, SUM(amount) AS amount
-        FROM employee_deductions
-        GROUP BY employee_id
-    ) d ON e.emp_id = d.employee_id
-    LEFT JOIN (
-        SELECT employee_id, SUM(amount) AS amount
-        FROM employee_cashadvance
-        GROUP BY employee_id
-    ) ca ON e.emp_id = ca.employee_id
-    WHERE a.time_in IS NOT NULL AND a.time_out IS NOT NULL
-") or die(mysqli_error($conn));
-
-$netPayRow = $queryNetPay->fetch_array();
-$totalNetPay = $netPayRow['total_netpay'];
-
 $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
 
 $request = $_SERVER['REQUEST_URI'];
@@ -61,6 +37,82 @@ if (substr($request, -4) == '.php') {
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <style>
+    /* Adjust donut chart size */
+    #dashboardDonutChart {
+      width: 100%;
+      height: 350px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* Modern Card Style */
+    .dashboard-card {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-card i {
+      font-size: 3rem;
+      color: #4caf50;
+    }
+
+    .dashboard-card b {
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .alert-modern {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      border-radius: 10px;
+      padding: 15px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .alert-modern i {
+      font-size: 2rem;
+    }
+
+    .alert-modern .value {
+      font-size: 2.5rem;
+    }
+
+    .alert-modern:hover {
+      background: linear-gradient(135deg, #2575fc, #6a11cb);
+    }
+
+    .donut-chart-container {
+      transition: all 0.5s ease-in-out;
+    }
+
+    .donut-chart-container:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Modern Bar Chart */
+    .bar-chart {
+      border-radius: 10px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .bar-chart .bar {
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
 </head>
 <body>
   <?php include('header/sidebar_menu.php'); ?>
@@ -100,22 +152,22 @@ if (substr($request, -4) == '.php') {
         </div>
       </div>
 
-      <!-- Net Pay Total -->
-      <div class="col-lg-3">
+      <!-- Logged History -->
+      <!-- <div class="col-lg-3">
         <div class="alert-modern" style="background-color: #f44336;">
-          <i class="fa fa-money"></i>
-          <div class="value"><?php echo number_format($totalNetPay, 2); ?></div>
-          <div>Total Net Pay</div>
+          <i class="fa fa-eye"></i>
+          <div class="value"><?php echo $row4['log_id']; ?></div>
+          <div>Logged History</div>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="row">
       <div class="col-lg-6">
         <canvas id="dashboardBarChart"></canvas>
       </div>
       <div class="col-lg-6 donut-chart-container">
-        <canvas id="dashboardDonutChart"></canvas>
+        <canvas id="dashboardDonutChart"></canvas> <!-- Donut Chart -->
       </div>
     </div>
   </div>
@@ -128,46 +180,65 @@ if (substr($request, -4) == '.php') {
       var barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
-          labels: ['Members', 'Attendance Records', 'Schedule', 'Net Pay'],
+          labels: ['Members', 'Attendance Records', 'Schedule',],
           datasets: [{
             label: 'Count',
-            data: [
-              <?php echo $row1['emp_id']; ?>, 
-              <?php echo $row2['id']; ?>, 
-              <?php echo $row3['ids']; ?>, 
-              <?php echo round($totalNetPay, 2); ?>
-            ],
+            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: [
-              'rgba(72, 132, 239, 0.7)', 
-              'rgba(120, 233, 177, 0.7)', 
-              'rgba(255, 153, 122, 0.7)',
-              'rgba(244, 67, 54, 0.7)'
+              'rgba(72, 132, 239, 0.7)',  // Cool Blue
+              'rgba(120, 233, 177, 0.7)', // Mint Green
+              'rgba(255, 153, 122, 0.7)', // Soft Coral
             ],
-            borderWidth: 0
+            borderColor: 'transparent',
+            borderWidth: 0,
+            hoverBackgroundColor: [
+              'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
+              'rgba(120, 233, 177, 1)', // Hover effect Mint Green
+              'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
+            ],
+            hoverBorderWidth: 0
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+            datalabels: {
+              color: '#fff',
+              font: {
+                weight: 'bold'
+              },
+              anchor: 'end',
+              align: 'end'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  var dataset = tooltipItem.dataset;
+                  var currentValue = dataset.data[tooltipItem.dataIndex];
+                  var total = dataset.data.reduce(function(a, b) {
+                    return a + b;
+                  }, 0);
+                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
+                  return tooltipItem.label + ': ' + percentage;
+                }
+              }
+            }
+          }
         }
       });
 
       var donutChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-          labels: ['Members', 'Attendance Records', 'Schedule', 'Net Pay'],
+          labels: ['Members', 'Attendance Records', 'Schedule',],
           datasets: [{
-            data: [
-              <?php echo $row1['emp_id']; ?>, 
-              <?php echo $row2['id']; ?>, 
-              <?php echo $row3['ids']; ?>, 
-              <?php echo round($totalNetPay, 2); ?>
-            ],
+            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: [
-              'rgba(72, 132, 239, 0.7)', 
-              'rgba(120, 233, 177, 0.7)', 
-              'rgba(255, 153, 122, 0.7)',
-              'rgba(244, 67, 54, 0.7)'
+              'rgba(72, 132, 239, 0.7)',  // Cool Blue
+              'rgba(120, 233, 177, 0.7)', // Mint Green
+              'rgba(255, 153, 122, 0.7)', // Soft Coral
+ 
             ],
             borderWidth: 0
           }]
@@ -175,9 +246,45 @@ if (substr($request, -4) == '.php') {
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          plugins: {
+            datalabels: {
+              formatter: function(value, context) {
+                var total = context.chart.data.datasets[0].data.reduce(function(a, b) {
+                  return a + b;
+                }, 0);
+                var percentage = ((value / total) * 100).toFixed(2) + '%';
+                return percentage;
+              },
+              color: '#fff',
+              font: {
+                weight: 'bold'
+              },
+              anchor: 'end',
+              align: 'end'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  var dataset = tooltipItem.dataset;
+                  var currentValue = dataset.data[tooltipItem.dataIndex];
+                  var total = dataset.data.reduce(function(a, b) {
+                    return a + b;
+                  }, 0);
+                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
+                  return tooltipItem.label + ': ' + percentage;
+                }
+              }
+            }
+          }
         }
       });
     });
   </script>
+
+  <script src="assets/plugins/jquery-1.10.2.js"></script>
+  <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
+  <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
+  <script src="assets/plugins/pace/pace.js"></script>
+  <script src="assets/scripts/siminta.js"></script>
 </body>
 </html>
