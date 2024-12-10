@@ -112,19 +112,23 @@
         });
 
         function delID(id){
-            $.ajax({
-                type: 'POST',
-                url: 'attendance_row2.php',
-                data: {id:id},
-                dataType: 'json',
-                success: function(response2){
-                    $('#del_id').val(response2.id);
-                    $('#del_employee').html(response2.first_name+' '+response2.last_name);
-                    $('#del_timein').html(response2.time_in);
-                    $('#del_timeout').html(response2.time_out);
-                }
-            });
+    $.ajax({
+        type: 'POST',
+        url: 'attendance_row2.php',
+        data: {id: id},
+        dataType: 'json',
+        success: function(response2){
+            if (response2.status === 'success') {
+                // Remove the row from the table
+                $('button[data-id="'+id+'"]').closest('tr').remove();
+                $('#delete').modal('hide');
+                alert('Attendance record deleted successfully.');
+            } else {
+                alert('Error deleting attendance record: ' + response2.message);
+            }
         }
+    });
+}
     </script>
 
 </div>
