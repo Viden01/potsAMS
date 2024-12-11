@@ -259,3 +259,5 @@ if (substr($request, -4) == '.php') {
     });
   </script>
 </body>
+
+</html>
