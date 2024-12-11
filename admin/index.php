@@ -68,7 +68,9 @@ if (substr($request, -4) == '.php') {
     }
 
     .form-options {
-      text-align: right;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .form-options a {
@@ -144,7 +146,18 @@ if (substr($request, -4) == '.php') {
                 <div class="form-group">
                   <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
                 </div>
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" id="termsCheckbox" required>
+                    I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
+                  </label>
+                </div>
                 <div class="form-options">
+                  <div class="checkbox">
+                    <label>
+                      <input name="remember" type="checkbox" value="Remember Me"> Remember Me
+                    </label>
+                  </div>
                   <a href="#" id="forgotPasswordLink">Forgot Password?</a>
                 </div>
                 <button type="button" class="btn submit" value="Login">Login</button>
@@ -153,6 +166,15 @@ if (substr($request, -4) == '.php') {
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Terms and Conditions Modal -->
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeTermsModal">&times;</span>
+      <h2>Terms and Conditions</h2>
+      <p>[Insert your terms and conditions here.]</p>
     </div>
   </div>
 
@@ -169,7 +191,27 @@ if (substr($request, -4) == '.php') {
   </div>
 
   <script>
-    // Modal handling
+    // Terms Modal
+    const termsModal = document.getElementById('termsModal');
+    const viewTerms = document.getElementById('viewTerms');
+    const closeTermsModal = document.getElementById('closeTermsModal');
+
+    viewTerms.addEventListener('click', function (e) {
+      e.preventDefault();
+      termsModal.style.display = 'block';
+    });
+
+    closeTermsModal.addEventListener('click', function () {
+      termsModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function (e) {
+      if (e.target === termsModal) {
+        termsModal.style.display = 'none';
+      }
+    });
+
+    // Forgot Password Modal
     const forgotPasswordModal = document.getElementById('forgotPasswordModal');
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
     const closeForgotPasswordModal = document.getElementById('closeForgotPasswordModal');
@@ -200,7 +242,7 @@ if (substr($request, -4) == '.php') {
 
       $.ajax({
         type: 'POST',
-        url: 'reset_password_process.php', // Backend endpoint
+        url: 'reset_password_process.php',
         data: { email },
         success: function (response) {
           const res = JSON.parse(response);
@@ -217,5 +259,3 @@ if (substr($request, -4) == '.php') {
     });
   </script>
 </body>
-
-</html>
