@@ -21,22 +21,13 @@ if (substr($request, -4) == '.php') {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>POTS - ESL</title>
-  <!-- Core CSS - Include with every page -->
+  <!-- Core CSS -->
   <link href="private/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
   <link href="private/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
   <link href="private/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <!-- reCAPTCHA v3 -->
-  <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
-
-  <!-- Disable right-click -->
-  <script>
-    document.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-    });
-  </script>
 
   <style>
     body {
@@ -49,16 +40,6 @@ if (substr($request, -4) == '.php') {
 
     .custom-offset {
       margin-left: 63%;
-    }
-
-    .form-options {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .form-options a {
-      font-size: 0.9em;
     }
 
     .login-panel {
@@ -86,16 +67,12 @@ if (substr($request, -4) == '.php') {
       margin-bottom: 20px;
     }
 
-    .form-group {
-      margin-bottom: 20px;
+    .form-options {
+      text-align: right;
     }
 
-    .form-control {
-      border-radius: 5px;
-      padding: 15px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      width: 100%;
+    .form-options a {
+      font-size: 0.9em;
     }
 
     .submit {
@@ -130,7 +107,7 @@ if (substr($request, -4) == '.php') {
       padding: 20px;
       border-radius: 8px;
       width: 80%;
-      max-width: 500px;
+      max-width: 400px;
     }
 
     .close {
@@ -153,7 +130,7 @@ if (substr($request, -4) == '.php') {
   <div class="container">
     <div class="row" style="padding-top: 10%">
       <div class="col-md-4 custom-offset">
-        <div class="login-panel panel panel-default" id="signInPanel">
+        <div class="login-panel panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">Sign In</h3>
           </div>
@@ -167,17 +144,9 @@ if (substr($request, -4) == '.php') {
                 <div class="form-group">
                   <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
                 </div>
-                <div class="form-group">
-                  <label>
-                    <input type="checkbox" id="termsCheckbox" required>
-                    I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
-                  </label>
-                </div>
                 <div class="form-options">
-                  <div class="checkbox">
-                    <label>
-                      <input name="remember" type="checkbox" value="Remember Me"> Remember Me
-                    </label>
+                  <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                </div>
                 <button type="button" class="btn submit" value="Login">Login</button>
               </fieldset>
             </form>
@@ -187,64 +156,62 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
-  <div id="termsModal" class="modal">
+  <!-- Forgot Password Modal -->
+  <div id="forgotPasswordModal" class="modal">
     <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>Terms and Conditions</h2>
-      <p>[Insert your terms and conditions here.]</p>
+      <span class="close" id="closeForgotPasswordModal">&times;</span>
+      <h2>Forgot Password</h2>
+      <p>Enter your email address to reset your password:</p>
+      <input type="email" id="resetEmail" class="form-control" placeholder="E-mail" required>
+      <button class="btn submit" id="resetPasswordBtn">Submit</button>
+      <div id="resetMsg"></div>
     </div>
   </div>
 
   <script>
-    const termsModal = document.getElementById('termsModal');
-    const termsLink = document.getElementById('viewTerms');
-    const closeModal = document.querySelector('.close');
+    // Modal handling
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const closeForgotPasswordModal = document.getElementById('closeForgotPasswordModal');
+    const resetPasswordBtn = document.getElementById('resetPasswordBtn');
 
-    termsLink.addEventListener('click', function (e) {
+    forgotPasswordLink.addEventListener('click', function (e) {
       e.preventDefault();
-      termsModal.style.display = 'block';
+      forgotPasswordModal.style.display = 'block';
     });
 
-    closeModal.addEventListener('click', function () {
-      termsModal.style.display = 'none';
+    closeForgotPasswordModal.addEventListener('click', function () {
+      forgotPasswordModal.style.display = 'none';
     });
 
     window.addEventListener('click', function (e) {
-      if (e.target === termsModal) {
-        termsModal.style.display = 'none';
+      if (e.target === forgotPasswordModal) {
+        forgotPasswordModal.style.display = 'none';
       }
     });
 
-    $('.submit').click(function (e) {
-      e.preventDefault();
-      const email_address = $('input[alt="email_address"]').val().trim();
-      const user_password = $('input[alt="user_password"]').val().trim();
-      const termsCheckbox = $('#termsCheckbox').is(':checked');
-
-      if (!email_address || !user_password) {
-        $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
-        return;
-      }
-
-      if (!termsCheckbox) {
-        $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
+    // Handle password reset
+    resetPasswordBtn.addEventListener('click', function () {
+      const email = document.getElementById('resetEmail').value.trim();
+      if (!email) {
+        document.getElementById('resetMsg').innerHTML = '<p class="text-danger">Please enter your email.</p>';
         return;
       }
 
       $.ajax({
         type: 'POST',
-        url: 'public/login_process.php',
-        data: { email_address, user_password },
+        url: 'reset_password_process.php', // Backend endpoint
+        data: { email },
         success: function (response) {
-          $('#msg').html(response);
-          if ($('#msg .alert-danger').length) {
-            setTimeout(function () {
-              $('#msg .alert-danger').fadeOut();
-            }, 2000);
+          const res = JSON.parse(response);
+          if (res.success) {
+            document.getElementById('resetMsg').innerHTML = '<p class="text-success">' + res.message + '</p>';
+          } else {
+            document.getElementById('resetMsg').innerHTML = '<p class="text-danger">' + res.message + '</p>';
           }
         },
         error: function () {
-          $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
+          document.getElementById('resetMsg').innerHTML = '<p class="text-danger">Error sending reset instructions. Try again later.</p>';
         }
       });
     });
