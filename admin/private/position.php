@@ -1,5 +1,4 @@
-<?php
-include('header/head.php');?>
+<?php include('header/head.php');?>
 <?php include('header/sidebar_menu.php');?>
 
 <!-- end navbar side -->
