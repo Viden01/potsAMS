@@ -178,9 +178,6 @@ if (substr($request, -4) == '.php') {
                     <label>
                       <input name="remember" type="checkbox" value="Remember Me"> Remember Me
                     </label>
-                  </div>
-                  <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-                </div>
                 <button type="button" class="btn submit" value="Login">Login</button>
               </fieldset>
             </form>
