@@ -28,6 +28,7 @@ if (isset($_GET['range'])) {
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
+          
         </div>
     </div>
 
@@ -47,6 +48,7 @@ if (isset($_GET['range'])) {
         <?php else: ?>
             <div class="col-lg-12">
                 <div class="alert alert-info">
+                    
                 </div>
             </div>
             <div class="form-row">
@@ -86,11 +88,13 @@ if (isset($_GET['range'])) {
                         <?php
                         include '../connection/db_conn.php';
 
+                        // Fetch total deductions
                         $sql = "SELECT SUM(amount) as total_amount FROM employee_deductions";
                         $query = $conn->query($sql);
                         $drow = $query->fetch_assoc();
                         $deduction = isset($drow['total_amount']) ? $drow['total_amount'] : 0;
 
+                        // Fetch employee attendance and calculate totals
                         $sql = "SELECT employee_records.*, employee_position.*, 
                                 SUM(TIME_TO_SEC(TIMEDIFF(time_out, time_in))) AS total_seconds 
                                 FROM employee_attendance 
@@ -104,20 +108,24 @@ if (isset($_GET['range'])) {
                         while ($row = $query->fetch_assoc()) {
                             $empid = $row['emp_id'];
 
+                            // Fetch cash advance
                             $casql = "SELECT SUM(amount) AS cashamount FROM employee_cashadvance WHERE employee_id='$empid' AND date_created BETWEEN '$from' AND '$to'";
                             $caquery = $conn->query($casql);
                             $carow = $caquery->fetch_assoc();
                             $cashadvance = isset($carow['cashamount']) ? $carow['cashamount'] : 0;
 
+                            // Convert total seconds to HH:MM:SS format and decimal hours
                             $total_seconds = $row['total_seconds'];
                             $total_hours = floor($total_seconds / 3600);
                             $total_minutes = floor(($total_seconds % 3600) / 60);
-                            $total_seconds_display = $total_seconds % 60;
+                            $total_seconds_display = $total_seconds % 60; // Ensure correct seconds display
                             $decimal_hours = $total_hours + ($total_minutes / 60) + ($total_seconds_display / 3600);
 
+                            // Format total hours worked as HH:MM:SS
                             $formatted_total_hr = sprintf('%02d:%02d:%02d', $total_hours, $total_minutes, $total_seconds_display);
 
-                            $gross = $row['rate_per_hour'] * $decimal_hours;
+                            // Calculate gross, deductions, and net pay
+                            $gross = $row['rate_per_hour'] * $decimal_hours; // Using decimal hours
                             $total_deduction = $deduction + $cashadvance;
                             $net = $gross - $total_deduction;
 
@@ -161,6 +169,11 @@ if (isset($_GET['range'])) {
             delID(id);
         });
 
+        $("#reservation").on('change', function(){
+            var range = encodeURI($(this).val());
+            window.location = 'payroll.php?range='+range;
+        });
+
         $('#payroll').click(function(e){
             e.preventDefault();
             $('#payForm').attr('action', 'payroll_generate.php');
@@ -171,27 +184,6 @@ if (isset($_GET['range'])) {
             e.preventDefault();
             $('#payForm').attr('action', 'payslip_generate.php');
             $('#payForm').submit();
-        });
-
-        $('#reservation').daterangepicker({
-            locale: {
-                format: 'MM/DD/YYYY'
-            },
-            startDate: '<?php echo $range_from; ?>',
-            endDate: '<?php echo $range_to; ?>',
-            autoUpdateInput: false, // Prevent automatic update on initialization
-        });
-
-        // Ensure the input field updates on date selection
-        $('#reservation').on('apply.daterangepicker', function(ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-            var range = encodeURIComponent($(this).val());
-            window.location = 'payroll.php?range=' + range;
-        });
-
-        // Clear the input field on cancel
-        $('#reservation').on('cancel.daterangepicker', function(ev, picker) {
-            $(this).val('');
         });
     });
 
@@ -224,11 +216,6 @@ if (isset($_GET['range'])) {
     }
     </script>
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
     <script src="assets/plugins/jquery-1.10.2.js"></script>
     <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -236,6 +223,7 @@ if (isset($_GET['range'])) {
     <script src="assets/scripts/siminta.js"></script>
     <script src="assets/plugins/dataTables/jquery.dataTables.js"></script>
     <script src="assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+
     <script>
         $(document).ready(function () {
             $('#dataTables-example').dataTable();
