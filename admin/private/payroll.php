@@ -237,6 +237,25 @@ if (isset($_GET['range'])) {
         $('.timepicker1').timepicki();
         $('.timepicker2').timepicki();
     </script>
+
+    <!-- Include Daterangepicker CSS and JS -->
+    <link href="assets/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <script src="assets/plugins/moment/moment.js"></script>
+    <script src="assets/plugins/daterangepicker/daterangepicker.js"></script>
+
+    <script>
+        $(function() {
+            // Initialize daterangepicker
+            $('#reservation').daterangepicker({
+                locale: {
+                    format: 'MM/DD/YYYY'
+                },
+                opens: 'left',
+                showDropdowns: true,
+                showWeekNumbers: true
+            });
+        });
+    </script>
 </div>
 
 </body>
