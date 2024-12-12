@@ -8,7 +8,6 @@ if (substr($request, -4) == '.php') {
 
 include('header/head.php');?>
 <?php include('header/sidebar_menu.php');?>
-
 <?php
 include('header/timezone.php');
 
@@ -29,6 +28,7 @@ if (isset($_GET['range'])) {
 <div id="page-wrapper">
     <div class="row">
         <div class="col-lg-12">
+          
         </div>
     </div>
 
@@ -47,7 +47,9 @@ if (isset($_GET['range'])) {
             </div>
         <?php else: ?>
             <div class="col-lg-12">
-                <div class="alert alert-info"></div>
+                <div class="alert alert-info">
+                    
+                </div>
             </div>
             <div class="form-row">
                 <form method="POST" class="form-inline" id="payForm">
@@ -56,7 +58,6 @@ if (isset($_GET['range'])) {
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
-                            <!-- Date range picker input -->
                             <input type="text" class="form-control pull-right col-sm-8" id="reservation" name="date_range" value="<?php echo (isset($_GET['range'])) ? $_GET['range'] : $range_from.' - '.$range_to; ?>">
                         </div>
                     </div>
@@ -70,7 +71,6 @@ if (isset($_GET['range'])) {
         <div class="box-header with-border"></div>
     </div>
 
-    <!-- Panel with table -->
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="table-responsive">
@@ -148,42 +148,74 @@ if (isset($_GET['range'])) {
         </div>
     </div>
 
-    <!-- Modal includes -->
     <?php include 'modal/position_edit_modal.php'; ?>
     <?php include 'modal/postion_del_modal.php'; ?>
     <?php include 'modal/cashadvance_edit_modal.php'; ?>
     <?php include 'modal/cashadvance_del_modal.php'; ?>
 
-    <!-- Include date range picker scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
     <script>
-    $(function() {
-        // Initialize date range picker
-        $('#reservation').daterangepicker({
-            autoUpdateInput: false,
-            locale: {
-                format: 'MM/DD/YYYY'
-            }
+    $(function(){
+        $('.edit').click(function(e){
+            e.preventDefault();
+            $('#edit').modal('show');
+            var id = $(this).data('id');
+            editID(id);
         });
 
-        // Apply selected date range
-        $('#reservation').on('apply.daterangepicker', function(ev, picker) {
-            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        $('.delete').click(function(e){
+            e.preventDefault();
+            $('#delete').modal('show');
+            var id = $(this).data('id');
+            delID(id);
+        });
+
+        $("#reservation").on('change', function(){
             var range = encodeURI($(this).val());
-            window.location = 'payroll.php?range=' + range; // Update the URL with the selected range
+            window.location = 'payroll.php?range='+range;
         });
 
-        // Clear the input when cancel is clicked
-        $('#reservation').on('cancel.daterangepicker', function(ev, picker) {
-            $(this).val('');
+        $('#payroll').click(function(e){
+            e.preventDefault();
+            $('#payForm').attr('action', 'payroll_generate.php');
+            $('#payForm').submit();
+        });
+
+        $('#payslip').click(function(e){
+            e.preventDefault();
+            $('#payForm').attr('action', 'payslip_generate.php');
+            $('#payForm').submit();
         });
     });
+
+    function editID(id){
+        $.ajax({
+            type: 'POST',
+            url: 'cashadvance_row.php',
+            data: {id:id},
+            dataType: 'json',
+            success: function(response){
+                $('#id').val(response.id);
+                $('#edit_employeename').html(response.first_name+' '+response.last_name);
+                $('#edit_amount').val(response.amount);
+            }
+        });
+    }
+
+    function delID(id){
+        $.ajax({
+            type: 'POST',
+            url: 'cashadvance_row2.php',
+            data: {id:id},
+            dataType: 'json',
+            success: function(response2){
+                $('#del_id').val(response2.id);
+                $('#view_employeename').html(response2.first_name+' '+response2.last_name);
+                $('#del_amount').val(response2.amount);
+            }
+        });
+    }
     </script>
 
-    <!-- Your other existing scripts -->
     <script src="assets/plugins/jquery-1.10.2.js"></script>
     <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
