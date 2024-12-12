@@ -179,11 +179,19 @@ if (isset($_GET['range'])) {
             },
             startDate: '<?php echo $range_from; ?>',
             endDate: '<?php echo $range_to; ?>',
+            autoUpdateInput: false, // Prevent automatic update on initialization
         });
 
-        $("#reservation").on('apply.daterangepicker', function(ev, picker) {
-            var range = encodeURI($(this).val());
+        // Ensure the input field updates on date selection
+        $('#reservation').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+            var range = encodeURIComponent($(this).val());
             window.location = 'payroll.php?range=' + range;
+        });
+
+        // Clear the input field on cancel
+        $('#reservation').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
         });
     });
 
