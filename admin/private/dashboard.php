@@ -130,14 +130,15 @@ if (substr($request, -4) == '.php') {
     <div class="row">
   <!-- Employee -->
   <div class="col-lg-3">
-    <a href="employees.php" style="text-decoration: none;">
-      <div class="alert-modern" style="background-color: #4caf50;">
-        <i class="fa fa-users"></i>
-        <div class="value"><?php echo $row1['emp_id']; ?></div>
-        <div>Employees</div>
-      </div>
-    </a>
-  </div>
+  <a href="employees.php" style="text-decoration: none; display: block;">
+    <div class="alert-modern" style="background-color: #4caf50;">
+      <i class="fa fa-users"></i>
+      <div class="value"><?php echo $row1['emp_id']; ?></div>
+      <div>Employees</div>
+    </div>
+  </a>
+</div>
+
 
   <!-- Attendance Records -->
   <div class="col-lg-3">
