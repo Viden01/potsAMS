@@ -17,6 +17,9 @@ $row4 = $query4->fetch_array();
 
 $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
 
+$query2 = $conn->query("SELECT COUNT(*) AS id FROM employee_attendance") or die(mysqli_error($conn));
+$row2 = $query2->fetch_array();
+
 $request = $_SERVER['REQUEST_URI'];
 if (substr($request, -4) == '.php') {
     $new_url = substr($request, 0, -4);
@@ -161,6 +164,15 @@ if (substr($request, -4) == '.php') {
         </div>
       </div>
     </div> -->
+
+    <div class="col-lg-3">
+        <div class="alert-modern" style="background-color: #2196f3;">
+          <i class="fa fa-file"></i>
+          <div class="value"><?php echo $row2['id']; ?></div>
+          <div>Attendance Records</div>
+        </div>
+      </div>
+
 
     <div class="row">
       <div class="col-lg-6">
