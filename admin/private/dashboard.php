@@ -173,18 +173,13 @@ if (substr($request, -4) == '.php') {
 </div> -->
 
 
-   <!-- Log Activities -->
-<div class="col-lg-3">
-  <a href="log_activities.php" style="text-decoration: none; display: block;">
-    <div class="alert-modern" style="background-color: #2196f3;">
-      <!-- Replace the FontAwesome icon with an image logo -->
-      <img src="01.png" alt="Log Activities" style="width: 50px; height: 50px; margin-bottom: 10px;">
-      <div class="value"><?php echo $row4['log_id']; ?></div>
-      <div>Log Activities</div>
-    </div>
-  </a>
-</div>
-
+    <div class="col-lg-3">
+        <div class="alert-modern" style="background-color: #2196f3;">
+          <i class="fa fa-file"></i>
+          <div class="value"><?php echo $row2['id']; ?></div>
+          <div>Log Activities</div>
+        </div>
+      </div>
 
 
     <div class="row">
