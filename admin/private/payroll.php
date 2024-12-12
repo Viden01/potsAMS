@@ -6,9 +6,8 @@ if (substr($request, -4) == '.php') {
     exit();
 }
 
-include('header/head.php');?>
-<?php include('header/sidebar_menu.php');?>
-<?php
+include('header/head.php');
+include('header/sidebar_menu.php');
 include('header/timezone.php');
 
 $range_to = date('m/d/Y');
@@ -25,13 +24,28 @@ if (isset($_GET['range'])) {
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Range Picker</title>
+    <!-- CSS for Date Range Picker -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Date Range Picker JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+<body>
 <div id="page-wrapper">
     <div class="row">
-        <div class="col-lg-12">
-          
-        </div>
+        <div class="col-lg-12"></div>
     </div>
-
     <div class="row">
         <?php if (isset($_GET['show']) && $_GET['show'] === 'generate'): ?>
             <div class="col-lg-12" id="generate-payroll">
@@ -47,9 +61,7 @@ if (isset($_GET['range'])) {
             </div>
         <?php else: ?>
             <div class="col-lg-12">
-                <div class="alert alert-info">
-                    
-                </div>
+                <div class="alert alert-info"></div>
             </div>
             <div class="form-row">
                 <form method="POST" class="form-inline" id="payForm">
@@ -70,7 +82,7 @@ if (isset($_GET['range'])) {
         <?php endif; ?>
         <div class="box-header with-border"></div>
     </div>
-
+    
     <div class="panel panel-default">
         <div class="panel-body">
             <div class="table-responsive">
