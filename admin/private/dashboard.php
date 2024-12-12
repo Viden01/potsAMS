@@ -128,42 +128,49 @@ if (substr($request, -4) == '.php') {
     </div>
 
     <div class="row">
-      <!-- Employee -->
-      <div class="col-lg-3">
-        <div class="alert-modern" style="background-color: #4caf50;">
-          <i class="fa fa-users"></i>
-          <div class="value"><?php echo $row1['emp_id']; ?></div>
-          <div>Employees</div>
-        </div>
+  <!-- Employee -->
+  <div class="col-lg-3">
+    <a href="employees.php" style="text-decoration: none;">
+      <div class="alert-modern" style="background-color: #4caf50;">
+        <i class="fa fa-users"></i>
+        <div class="value"><?php echo $row1['emp_id']; ?></div>
+        <div>Employees</div>
       </div>
+    </a>
+  </div>
 
-      <!-- Attendance Records -->
-      <div class="col-lg-3">
-        <div class="alert-modern" style="background-color: #2196f3;">
-          <i class="fa fa-file"></i>
-          <div class="value"><?php echo $row2['id']; ?></div>
-          <div>Attendance Records</div>
-        </div>
+  <!-- Attendance Records -->
+  <div class="col-lg-3">
+    <a href="attendance.php" style="text-decoration: none;">
+      <div class="alert-modern" style="background-color: #2196f3;">
+        <i class="fa fa-file"></i>
+        <div class="value"><?php echo $row2['id']; ?></div>
+        <div>Attendance Records</div>
       </div>
+    </a>
+  </div>
 
-      <!-- Schedule -->
-      <div class="col-lg-3">
-        <div class="alert-modern" style="background-color: #ff9800;">
-          <i class="fa fa-history"></i>
-          <div class="value"><?php echo $row3['ids']; ?></div>
-          <div>Schedule</div>
-        </div>
+  <!-- Schedule -->
+  <div class="col-lg-3">
+    <a href="schedule.php" style="text-decoration: none;">
+      <div class="alert-modern" style="background-color: #ff9800;">
+        <i class="fa fa-history"></i>
+        <div class="value"><?php echo $row3['ids']; ?></div>
+        <div>Schedule</div>
       </div>
+    </a>
+  </div>
 
-      <!-- Logged History -->
-      <!-- <div class="col-lg-3">
-        <div class="alert-modern" style="background-color: #f44336;">
-          <i class="fa fa-eye"></i>
-          <div class="value"><?php echo $row4['log_id']; ?></div>
-          <div>Logged History</div>
-        </div>
-      </div>
-    </div> -->
+  <!-- Logged History -->
+ <!-- <div class="col-lg-3">
+    <div class="alert-modern" style="background-color: #f44336;">
+      <i class="fa fa-eye"></i>
+      <div class="value"><?php echo $row4['log_id']; ?></div>
+      <div>Logged History</div>
+    </div>
+  </div>
+</div> -->
+
 
     <div class="col-lg-3">
         <div class="alert-modern" style="background-color: #2196f3;">
