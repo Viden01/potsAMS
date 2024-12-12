@@ -128,50 +128,59 @@ if (substr($request, -4) == '.php') {
     </div>
 
     <div class="row">
-      <!-- Employee -->
-      <div class="col-lg-3">
-        <a href="employees.php" style="text-decoration: none; display: block;">
-          <div class="alert-modern" style="background-color: #4caf50;">
-            <i class="fa fa-users"></i>
-            <div class="value"><?php echo $row1['emp_id']; ?></div>
-            <div>Employees</div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Attendance Records -->
-      <div class="col-lg-3">
-        <a href="attendance.php" style="text-decoration: none; display: block;">
-          <div class="alert-modern" style="background-color: #2196f3;">
-            <i class="fa fa-file"></i>
-            <div class="value"><?php echo $row2['id']; ?></div>
-            <div>Attendance Records</div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Schedule -->
-      <div class="col-lg-3">
-        <a href="schedule.php" style="text-decoration: none; display: block;">
-          <div class="alert-modern" style="background-color: #ff9800;">
-            <i class="fa fa-history"></i>
-            <div class="value"><?php echo $row3['ids']; ?></div>
-            <div>Schedule</div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Log Activities -->
-      <div class="col-lg-3">
-        <a href="log_activities.php" style="text-decoration: none; display: block;">
-          <div class="alert-modern" style="background-color: #2196f3;">
-            <i class="fa fa-file"></i>
-            <div class="value"><?php echo $row4['log_id']; ?></div>
-            <div>Log Activities</div>
-          </div>
-        </a>
-      </div>
+  <!-- Employee -->
+ <div class="col-lg-3">
+  <a href="employees.php" style="text-decoration: none; display: block;">
+    <div class="alert-modern" style="background-color: #4caf50;">
+      <i class="fa fa-users"></i>
+      <div class="value"><?php echo $row1['emp_id']; ?></div>
+      <div>Employees</div>
     </div>
+  </a>
+</div>
+
+
+  <!-- Attendance Records -->
+  <div class="col-lg-3">
+    <a href="attendance.php" style="text-decoration: none;">
+      <div class="alert-modern" style="background-color: #2196f3;">
+        <i class="fa fa-file"></i>
+        <div class="value"><?php echo $row2['id']; ?></div>
+        <div>Attendance Records</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Schedule -->
+  <div class="col-lg-3">
+    <a href="schedule.php" style="text-decoration: none;">
+      <div class="alert-modern" style="background-color: #ff9800;">
+        <i class="fa fa-history"></i>
+        <div class="value"><?php echo $row3['ids']; ?></div>
+        <div>Schedule</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Logged History -->
+ <!-- <div class="col-lg-3">
+    <div class="alert-modern" style="background-color: #f44336;">
+      <i class="fa fa-eye"></i>
+      <div class="value"><?php echo $row4['log_id']; ?></div>
+      <div>Logged History</div>
+    </div>
+  </div>
+</div> -->
+
+
+    <div class="col-lg-3">
+        <div class="alert-modern" style="background-color: #2196f3;">
+          <i class="fa fa-file"></i>
+          <div class="value"><?php echo $row2['id']; ?></div>
+          <div>Log Activities</div>
+        </div>
+      </div>
+
 
     <div class="row">
       <div class="col-lg-6">
@@ -249,6 +258,7 @@ if (substr($request, -4) == '.php') {
               'rgba(72, 132, 239, 0.7)',  // Cool Blue
               'rgba(120, 233, 177, 0.7)', // Mint Green
               'rgba(255, 153, 122, 0.7)', // Soft Coral
+ 
             ],
             borderWidth: 0
           }]
@@ -291,5 +301,10 @@ if (substr($request, -4) == '.php') {
     });
   </script>
 
+  <script src="assets/plugins/jquery-1.10.2.js"></script>
+  <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
+  <script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
+  <script src="assets/plugins/pace/pace.js"></script>
+  <script src="assets/scripts/siminta.js"></script>
 </body>
 </html>
