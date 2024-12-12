@@ -10,6 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Escape and sanitize input data
     $employee_id = $conn->real_escape_string(strip_tags($_POST['employee_id']));
     $photo_data = $_POST['photo'];
+    $latitude = $conn->real_escape_string(strip_tags($_POST['latitude']));
+    $longitude = $conn->real_escape_string(strip_tags($_POST['longitude']));
 
     // Decode and save the image
     if (!empty($photo_data)) {
@@ -29,11 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // Store the photo path in the database
-        $sql = "INSERT INTO employee_attendance (employee_id, photo_path) VALUES ('$employee_id', '$file_name')";
+        // Insert attendance data into the database
+        $sql = "INSERT INTO employee_attendance (employee_id, photo_path, latitude, longitude, time_in, date_attendance)
+                VALUES ('$employee_id', '$file_name', '$latitude', '$longitude', NOW(), CURDATE())";
 
         if ($conn->query($sql)) {
-            echo "Attendance with photo submitted successfully.";
+            echo "Attendance with photo and location submitted successfully.";
         } else {
             echo "Failed to submit attendance. Error: " . $conn->error;
         }
