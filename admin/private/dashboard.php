@@ -178,7 +178,7 @@ if (substr($request, -4) == '.php') {
   <a href="log_activities.php" style="text-decoration: none; display: block;">
     <div class="alert-modern" style="background-color: #2196f3;">
       <!-- Replace the FontAwesome icon with an image logo -->
-      <img src="path_to_your_logo/log_icon.png" alt="Log Activities" style="width: 50px; height: 50px; margin-bottom: 10px;">
+      <img src="01.png" alt="Log Activities" style="width: 50px; height: 50px; margin-bottom: 10px;">
       <div class="value"><?php echo $row4['log_id']; ?></div>
       <div>Log Activities</div>
     </div>
