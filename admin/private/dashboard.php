@@ -169,7 +169,7 @@ if (substr($request, -4) == '.php') {
         <div class="alert-modern" style="background-color: #2196f3;">
           <i class="fa fa-file"></i>
           <div class="value"><?php echo $row2['id']; ?></div>
-          <div>Attendance Records</div>
+          <div>Log Activities</div>
         </div>
       </div>
 
