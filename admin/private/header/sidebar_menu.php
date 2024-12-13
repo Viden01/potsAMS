@@ -2,36 +2,6 @@
 $name = "Julius Maru";
 ?>
 
-<?php
-// Include the database connection
-include('../connection/db_conn.php');
-
-// Fetch the admin information (assuming you have an 'id' for the logged-in admin)
-$id = 1; // Example: replace with actual logged-in admin ID, e.g., from session
-
-$query = "SELECT * FROM admin WHERE id = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $id); // Bind the admin ID parameter
-$stmt->execute();
-$result = $stmt->get_result();
-
-// Check if the query returns any result
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $photo = $row['photo']; // Assuming the photo is stored in the 'photo' column
-    $name = $row['firstname'] . ' ' . $row['lastname']; // Full name
-} else {
-    // Default values in case no record is found
-    $photo = 'images/default.jpg'; // Fallback image
-    $name = 'Unknown User';
-}
-
-// Close the database connection
-$stmt->close();
-$conn->close();
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,7 +32,7 @@ $conn->close();
                     <div class="user-section">
                        <div class="user-section-inner">
                             <!-- Use the dynamic image URL fetched from the database -->
-                            <img src="../assets/img/<?php echo htmlentities($photo); ?>" alt="Admin Photo" style="width: 50px; height: 50px; object-fit: cover;">
+                            <img src="../uploads/<?php echo htmlentities($photo); ?>" alt="Admin Photo" style="width: 50px; height: 50px; object-fit: cover;">
                         </div>
                         <div class="user-info">
                             <div> <strong><?php echo ucwords(htmlentities($name)); ?></strong></div>
