@@ -1,5 +1,5 @@
 <?php
-require_once 'connection/db_conn.php';
+require_once '../connection/db_conn.php';
 require_once '../vendor/autoload.php';
 
 // Disable error reporting for production
@@ -8,12 +8,12 @@ ini_set('display_errors', 1);
 
 // Check if the request is a POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validate and sanitize inputs
-    $reset_token = filter_input(INPUT_POST, 'reset_token', FILTER_SANITIZE_STRING);
-    $new_password = filter_input(INPUT_POST, 'new_password', FILTER_SANITIZE_STRING);
+    // Validate and sanitize inputs using modern methods
+    $reset_token = isset($_POST['reset_token']) ? trim($_POST['reset_token']) : '';
+    $new_password = isset($_POST['new_password']) ? trim($_POST['new_password']) : '';
 
     // Validate inputs
-    if (!$reset_token || !$new_password) {
+    if (empty($reset_token) || empty($new_password)) {
         echo '<div class="alert alert-danger">Invalid input. Please try again.</div>';
         exit();
     }
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Begin transaction
         $conn->begin_transaction();
 
-        // Check if token exists and is valid (not expired)
+        // Prepare statement with parameterized query for token validation
         $token_stmt = $conn->prepare("
             SELECT id, email, reset_token_at 
             FROM admin 
