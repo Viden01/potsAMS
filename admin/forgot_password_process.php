@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Prepare the password reset link (adjust the URL as needed)
-        $reset_link = "https://potsesl.com/reset_new_password.php?token=" . urlencode($reset_token);
+        $reset_link = "https://potsesl.com/admin/reset_new_password.php?token=" . urlencode($reset_token);
 
         // Configure PHPMailer for sending email
         $mail = new PHPMailer(true);
