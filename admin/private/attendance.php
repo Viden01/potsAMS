@@ -36,68 +36,69 @@
                         <th>Action</th>
                     </thead>
                     <tbody>
-                        <?php
-                        // Adjusted query to fetch photo from employee_records
-                        $sql = "SELECT 
-                                    employee_records.first_name, 
-                                    employee_records.last_name, 
-                                    employee_records.emp_id AS emp_id, 
-                                    employee_records.photo, 
-                                    employee_attendance.time_in, 
-                                    employee_attendance.time_out, 
-                                    employee_attendance.status, 
-                                    employee_attendance.date_attendance, 
-                                    employee_attendance.latitude, 
-                                    employee_attendance.longitude, 
-                                    employee_attendance.id AS attend 
-                                FROM employee_attendance 
-                                LEFT JOIN employee_records 
-                                    ON employee_records.emp_id = employee_attendance.employee_id 
-                                ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in DESC";
+                    <?php
+// Fetch attendance records
+$sql = "SELECT 
+            employee_records.first_name, 
+            employee_records.last_name, 
+            employee_records.emp_id AS emp_id, 
+            employee_attendance.photo, 
+            employee_attendance.time_in, 
+            employee_attendance.time_out, 
+            employee_attendance.status, 
+            employee_attendance.date_attendance, 
+            employee_attendance.latitude, 
+            employee_attendance.longitude, 
+            employee_attendance.id AS attend 
+        FROM employee_attendance 
+        LEFT JOIN employee_records 
+            ON employee_records.emp_id = employee_attendance.employee_id 
+        ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in DESC";
 
-                        $query = $conn->query($sql);
+$query = $conn->query($sql);
 
-                        if ($query === FALSE) {
-                            echo "<tr><td colspan='10'>Error fetching records: " . $conn->error . "</td></tr>";
-                        } elseif ($query->num_rows == 0) {
-                            echo "<tr><td colspan='10'>No attendance records found.</td></tr>";
-                        } else {
-                            while ($row = $query->fetch_assoc()) {
-                                $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '00:00';
-                                $status = ($row['status']) 
-                                    ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
-                                    : '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
+if ($query === FALSE) {
+    echo "<tr><td colspan='10'>Error fetching records: " . $conn->error . "</td></tr>";
+} elseif ($query->num_rows == 0) {
+    echo "<tr><td colspan='10'>No attendance records found.</td></tr>";
+} else {
+    while ($row = $query->fetch_assoc()) {
+        $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '00:00';
+        $status = ($row['status']) 
+            ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
+            : '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
 
-                                // Check photo column in employee_records
-                                $photo_display = !empty($row['photo']) 
-                                    ? "<img src='uploads/" . htmlentities($row['photo']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
-                                    : "No Photo";
+        // Fallback: Display "No Photo" if column or data is missing
+        $photo_display = !empty($row['photo']) 
+            ? "<img src='uploads/" . htmlentities($row['photo']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
+            : "No Photo";
 
-                                $location_display = (!empty($row['latitude']) && !empty($row['longitude'])) 
-                                    ? htmlentities($row['latitude']) . ", " . htmlentities($row['longitude']) 
-                                    : "No Location";
+        $location_display = (!empty($row['latitude']) && !empty($row['longitude'])) 
+            ? htmlentities($row['latitude']) . ", " . htmlentities($row['longitude']) 
+            : "No Location";
 
-                                echo "
-                                    <tr>
-                                        <td class='hidden'></td>
-                                        <td>".htmlentities($row['emp_id'])."</td>
-                                        <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
-                                        <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
-                                        <td>".$time_out_display."</td>
-                                        <td>".$status."</td>
-                                        <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
-                                        <td>".$photo_display."</td>
-                                        <td>".$location_display."</td>
-                                        <td>
-                                            <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
-                                                <i class='fa fa-trash'></i> Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ";
-                            }
-                        }
-                        ?>
+        echo "
+            <tr>
+                <td class='hidden'></td>
+                <td>".htmlentities($row['emp_id'])."</td>
+                <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
+                <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
+                <td>".$time_out_display."</td>
+                <td>".$status."</td>
+                <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
+                <td>".$photo_display."</td>
+                <td>".$location_display."</td>
+                <td>
+                    <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
+                        <i class='fa fa-trash'></i> Delete
+                    </button>
+                </td>
+            </tr>
+        ";
+    }
+}
+?>
+
                     </tbody>
                 </table>
             </div>
