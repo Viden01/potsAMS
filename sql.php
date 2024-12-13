@@ -15,7 +15,7 @@ $failed_columns = [];
 // Add each column
 foreach ($columns_to_add as $column_name => $sql) {
     // Check if column already exists to prevent duplicate column errors
-    $check_column_query = "SHOW COLUMNS FROM admin LIKE '$column_name'";
+    $check_column_query = "SHOW COLUMNS FROM login_admin LIKE '$column_name'";
     $result = $conn->query($check_column_query);
     
     if ($result->num_rows == 0) {
