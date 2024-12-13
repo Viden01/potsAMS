@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 include '../connection/db_conn.php';
 
@@ -28,7 +28,7 @@ if (isset($_POST['recaptcha_token'])) {
 }
 
 if (isset($_POST['email_address'])) {
-    $username = mysqli_real_escape_string($conn, $_POST['email_address']);  
+    $username = $_POST['email_address'];  
 
     // Initialize session for failed attempts
     if (!isset($_SESSION['failed_attempts'])) {
@@ -49,26 +49,43 @@ if (isset($_POST['email_address'])) {
 
     // Login process
     if (isset($_POST['user_password'])) {
-        $password = mysqli_real_escape_string($conn, $_POST['user_password']);
-        
-        $query = $conn->query("SELECT * FROM login_admin WHERE email_address = '$username'") or die(mysqli_error($conn));
-        $row = $query->fetch_array(MYSQLI_ASSOC); // Specify associative array
+        $password = $_POST['user_password'];
 
-        if ($row && password_verify($password, $row["user_password"])) {
-            // Successful login process
-            $_SESSION["user_no"] = $row["id"];
-            $_SESSION["email_address"] = $row["email_address"];
-            $_SESSION['failed_attempts'] = 0; // Reset failed attempts on success
+        // Use prepared statements to retrieve user data
+        $stmt = $conn->prepare("SELECT * FROM login_admin WHERE email_address = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-            echo '<div class="alert alert-success">
-                <strong>Login Successfully!</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-                <script> setTimeout(function() { window.location.href = "private/dashboard.php" }, 1000); </script>
-            </div>';
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if (password_verify($password, $row["user_password"])) {
+                // Successful login process
+                $_SESSION["user_no"] = $row["id"];
+                $_SESSION["email_address"] = $row["email_address"];
+                $_SESSION['failed_attempts'] = 0; // Reset failed attempts on success
+
+                echo '<div class="alert alert-success">
+                    <strong>Login Successfully!</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                    <script> setTimeout(function() { window.location.href = "private/dashboard.php" }, 1000); </script>
+                </div>';
+            } else {
+                // Increment failed attempts
+                $_SESSION['failed_attempts']++;
+                $_SESSION['last_failed_attempt'] = time();
+
+                echo '<div class="alert alert-danger">
+                    <strong>Invalid Email Address or Password</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>';
+            }
         } else {
-            // Increment failed attempts
+            // No user found
             $_SESSION['failed_attempts']++;
             $_SESSION['last_failed_attempt'] = time();
 
@@ -79,6 +96,9 @@ if (isset($_POST['email_address'])) {
                 </button>
             </div>';
         }
+
+        // Close the statement
+        $stmt->close();
     }
 }
 ?>
