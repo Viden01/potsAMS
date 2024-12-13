@@ -90,34 +90,37 @@ if (substr($request, -4) == '.php') {
     <script>
     $(document).ready(function() {
         // Email Form Submission
-        $('#emailForm').on('submit', function(e) {
-            e.preventDefault();
-            const email = $('#adminEmail').val().trim();
+       // Email Form Submission
+$('#emailForm').on('submit', function (e) {
+    e.preventDefault();
+    const email = $('#adminEmail').val().trim();
 
-            // First, validate it's a Gmail address
-            if (!email.endsWith('@gmail.com')) {
-                $('#errorMsg').text('Please use a valid Gmail address');
-                return;
+    // Validate Gmail address
+    if (!email.endsWith('@gmail.com')) {
+        $('#errorMsg').text('Please use a valid Gmail address');
+        return;
+    }
+
+    // AJAX request
+    $.ajax({
+        type: 'POST',
+        url: 'verify_admin_email.php',
+        data: { email: email },
+        dataType: 'json', // Expect JSON response
+        success: function (response) {
+            if (response.status === 'success') {
+                $('#emailSection').hide();
+                $('#codeSection').show();
+            } else {
+                $('#errorMsg').text(response.message || 'Email not found');
             }
+        },
+        error: function (xhr, status, error) {
+            $('#errorMsg').text('Error verifying email. Please try again.');
+        },
+    });
+});
 
-            // AJAX call to verify email in login_admin table
-            $.ajax({
-                type: 'POST',
-                url: 'verify_admin_email.php',
-                data: { email: email },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        $('#emailSection').hide();
-                        $('#codeSection').show();
-                    } else {
-                        $('#errorMsg').text(response.message || 'Email not found');
-                    }
-                },
-                error: function() {
-                    $('#errorMsg').text('Error verifying email. Please try again.');
-                }
-            });
-        });
 
         // Code Verification Form Submission
         $('#codeForm').on('submit', function(e) {
