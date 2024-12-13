@@ -13,10 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Handle the photo upload if a new photo is provided
     $photo = $_FILES['photo']['name'];  // New photo uploaded
-    $target_dir = "uploads/";  // Directory where the photo will be uploaded
+    $target_dir = "../uploads/";  // Directory where the photo will be uploaded
     $target_file = $target_dir . basename($photo);
-    
-    // If a new photo is uploaded, move it to the 'uploads' folder
+
+    // Check if a new photo is uploaded
     if ($photo) {
         if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
             echo "The file has been uploaded.";
@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             echo "Sorry, there was an error uploading your file.";
         }
     } else {
-        // If no photo is uploaded, keep the existing photo
+        // If no new photo is uploaded, keep the existing photo
         $photo = $_POST['current_photo'];  // Keep the old photo URL if no new file is uploaded
     }
 
@@ -35,7 +35,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Execute the update query
     if ($stmt->execute()) {
-        echo "<div class='alert alert-success'>Admin information updated successfully!</div>";
+        // Redirect back to profile.php after a successful update
+        header("Location: profile.php?update=success");
+        exit;  // Make sure to exit after the header redirect
     } else {
         echo "<div class='alert alert-danger'>Error updating admin information: " . $stmt->error . "</div>";
     }
