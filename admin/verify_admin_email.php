@@ -10,6 +10,11 @@ function generateVerificationCode() {
     return str_pad(rand(0, 99999), 5, '0', STR_PAD_LEFT);
 }
 
+// Helper function to generate a secure random token
+function generateSecureToken($length = 32) {
+    return bin2hex(random_bytes($length / 2)); // Generates a token of specified length
+}
+
 // Check if request is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
@@ -33,13 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Generate a 5-digit verification code
         $verificationCode = generateVerificationCode();
+        // Generate a secure random token
+        $randomToken = generateSecureToken();
 
-        // Save the code in the database
-        $updateStmt = $conn->prepare("UPDATE login_admin SET code = ? WHERE email = ?");
-        $updateStmt->bind_param("ss", $verificationCode, $email);
+        // Save the code and token in the database
+        $updateStmt = $conn->prepare("UPDATE login_admin SET code = ?, token = ? WHERE email = ?");
+        $updateStmt->bind_param("sss", $verificationCode, $randomToken, $email);
 
         if (!$updateStmt->execute()) {
-            throw new Exception("Failed to update the verification code in the database.");
+            throw new Exception("Failed to update the verification code and token in the database.");
         }
 
         // Send the verification code via email
@@ -60,11 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->addAddress($email);
             $mail->isHTML(true);
             $mail->Subject = 'Your Verification Code';
-            $mail->Body    = "<p>Your verification code is: <strong>{$verificationCode}</strong></p>";
+            $mail->Body    = "
+                <p>Your verification code is: <strong>{$verificationCode}</strong></p>
+                <p>Use this token for secure access: <strong>{$randomToken}</strong></p>
+            ";
 
             $mail->send();
 
-            echo json_encode(['status' => 'success', 'message' => 'Verification code sent successfully.']);
+            echo json_encode(['status' => 'success', 'message' => 'Verification code and token sent successfully.']);
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => 'Mailer Error: ' . $mail->ErrorInfo]);
         }
