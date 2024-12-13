@@ -53,42 +53,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="row">
       <div class="col-lg-12">
 
-        <form method="POST" action="Editprofile.php">
-          <?php
-          if ($query->num_rows > 0) {
-              while ($row = $query->fetch_assoc()) {
-                  echo "
-                    <div class='form-group'>
-                      <label for='id_{$row['id']}'>ID</label>
-                      <input type='text' name='id[]' id='id_{$row['id']}' value='{$row['id']}' class='form-control'>
-                    </div>
-                    <div class='form-group'>
-                      <label for='username_{$row['id']}'>Username</label>
-                      <input type='text' name='username[]' id='username_{$row['id']}' value='{$row['username']}' class='form-control'>
-                    </div>
-                    <div class='form-group'>
-                      <label for='password_{$row['id']}'>Password</label>
-                      <input type='password' name='password[]' id='password_{$row['id']}' value='{$row['password']}' class='form-control'>
-                    </div>
-                    <div class='form-group'>
-                      <label for='firstname_{$row['id']}'>First Name</label>
-                      <input type='text' name='firstname[]' id='firstname_{$row['id']}' value='{$row['firstname']}' class='form-control'>
-                    </div>
-                    <div class='form-group'>
-                      <label for='lastname_{$row['id']}'>Last Name</label>
-                      <input type='text' name='lastname[]' id='lastname_{$row['id']}' value='{$row['lastname']}' class='form-control'>
-                    </div>
-                    <div class='form-group'>
-                      <label for='photo_{$row['id']}'>Photo URL</label>
-                      <input type='file' name='photo[]' id='photo_{$row['id']}' value='{$row['photo']}' class='form-control'>
-                    </div>
-                    <hr>
-                  ";
-              }
-          }
-          ?>
-          <button type="submit" class="btn btn-primary">Update Admin Data</button>
-        </form>
+      <?php
+// Include the database connection
+include('../connection/db_conn.php');
+
+// Fetch the current admin data
+$query = $conn->query("SELECT * FROM admin WHERE id = 1"); // Assuming you are editing the admin with ID 1
+$row = $query->fetch_assoc();
+?>
+
+<form method="POST" action="Editprofile.php" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="id">ID</label>
+        <input type="text" name="id" id="id" value="<?= $row['id'] ?>" class="form-control" readonly>
+    </div>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" value="<?= $row['username'] ?>" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" value="<?= $row['password'] ?>" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="firstname">First Name</label>
+        <input type="text" name="firstname" id="firstname" value="<?= $row['firstname'] ?>" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="lastname">Last Name</label>
+        <input type="text" name="lastname" id="lastname" value="<?= $row['lastname'] ?>" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="photo">Photo</label>
+        <input type="file" name="photo" id="photo" class="form-control">
+        <small>Current photo: <?= $row['photo'] ?></small>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Admin Data</button>
+</form>
+
       </div>
     </div>
   </div>

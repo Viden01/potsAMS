@@ -1,26 +1,34 @@
-<?php 
-include('header/head.php');
+<?php
+// Include the database connection
 include('../connection/db_conn.php');
 
-// Fetch the admin record using the ID (assuming the ID is passed via GET)
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-
-    // Query to fetch admin data by ID
-    $query = $conn->query("SELECT * FROM admin WHERE id = '$id'") or die(mysqli_error($conn));
-    $adminData = $query->fetch_assoc();
-}
-
-// Handle form submission and update the admin data
+// Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get the form data
+    // Get the POST data
+    $id = $_POST['id'];  // Admin ID
     $username = $_POST['username'];
     $password = $_POST['password'];
     $firstname = $_POST['firstname'];
     $lastname = $_POST['lastname'];
-    $photo = $_POST['photo'];
+    
+    // Handle the photo upload if a new photo is provided
+    $photo = $_FILES['photo']['name'];  // New photo uploaded
+    $target_dir = "uploads/";  // Directory where the photo will be uploaded
+    $target_file = $target_dir . basename($photo);
+    
+    // If a new photo is uploaded, move it to the 'uploads' folder
+    if ($photo) {
+        if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
+            echo "The file has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    } else {
+        // If no photo is uploaded, keep the existing photo
+        $photo = $_POST['current_photo'];  // Keep the old photo URL if no new file is uploaded
+    }
 
-    // Update query to modify the admin details
+    // Update the admin data in the database
     $updateQuery = "UPDATE admin SET username = ?, password = ?, firstname = ?, lastname = ?, photo = ? WHERE id = ?";
     $stmt = $conn->prepare($updateQuery);
     $stmt->bind_param("sssssi", $username, $password, $firstname, $lastname, $photo, $id);
@@ -29,71 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($stmt->execute()) {
         echo "<div class='alert alert-success'>Admin information updated successfully!</div>";
     } else {
-        echo "<div class='alert alert-danger'>Error updating admin information!</div>";
+        echo "<div class='alert alert-danger'>Error updating admin information: " . $stmt->error . "</div>";
     }
+
+    // Close the prepared statement
+    $stmt->close();
 }
 
-?>
-
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Update Admin Information</title>
-  <link href="private/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
-  <link href="private/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
-  <link href="private/assets/css/style.css" rel="stylesheet" />
-  <link href="private/assets/css/main-style.css" rel="stylesheet" />
-</head>
-<body>
-  <?php include('header/sidebar_menu.php'); ?>
-
-  <div id="page-wrapper">
-    <div class="row">
-      <div class="col-lg-12">
-        <h1 class="page-header">Update Admin Information</h1>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-lg-12">
-        <form method="POST" action="">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" value="<?= htmlspecialchars($adminData['username']) ?>" class="form-control" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" value="<?= htmlspecialchars($adminData['password']) ?>" class="form-control" required>
-          </div>
-
-          <div class="form-group">
-            <label for="firstname">First Name</label>
-            <input type="text" name="firstname" id="firstname" value="<?= htmlspecialchars($adminData['firstname']) ?>" class="form-control" required>
-          </div>
-
-          <div class="form-group">
-            <label for="lastname">Last Name</label>
-            <input type="text" name="lastname" id="lastname" value="<?= htmlspecialchars($adminData['lastname']) ?>" class="form-control" required>
-          </div>
-
-          <div class="form-group">
-            <label for="photo">Photo</label>
-            <input type="file" name="photo" id="photo" value="<?= htmlspecialchars($adminData['photo']) ?>" class="form-control">
-          </div>
-
-          <button type="submit" class="btn btn-primary">Update Admin Information</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-</body>
-</html>
-
-<?php
 // Close the database connection
 $conn->close();
 ?>
