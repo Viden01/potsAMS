@@ -1,6 +1,6 @@
 <?php
 // Include the database connection
-require_once 'db_connection.php'; // Assuming your connection script is named db_connection.php
+require_once 'connection/db_conn.php'; // Assuming your connection script is named db_connection.php
 
 // SQL to add new columns to the admin table
 $columns_to_add = [
