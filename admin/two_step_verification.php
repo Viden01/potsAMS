@@ -122,7 +122,7 @@ if (substr($request, -4) == '.php') {
         // Code Verification Form Submission
         $('#codeForm').on('submit', function(e) {
             e.preventDefault();
-            const email = $('#adminEmail').val().trim();
+            const email = $('#adminEmail').val().trim();Qx
             const code = $('#verificationCode').val().trim();
 
             $.ajax({
