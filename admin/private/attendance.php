@@ -75,25 +75,24 @@
                                         ? htmlentities($row['latitude']) . ", " . htmlentities($row['longitude']) 
                                         : "No Location";
 
-                                        echo "
+                                    echo "
                                         <tr>
                                             <td class='hidden'></td>
-                                            <td>" . htmlentities($row['emp_id']) . "</td>
-                                            <td>" . htmlentities($row['first_name']) . ' ' . htmlentities($row['last_name']) . "</td>
-                                            <td>" . date('h:i A', strtotime(htmlentities($row['time_in']))) . "</td>
-                                            <td>" . $time_out_display . "</td>
-                                            <td>" . $status . "</td>
-                                            <td>" . date('M d, Y', strtotime(htmlentities($row['date_attendance']))) . "</td>
-                                            <td>" . $photo_display . "</td>
-                                            <td>" . $location_display . "</td>
+                                            <td>".$row['emp_id']."</td>
+                                            <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
+                                            <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
+                                            <td>".$time_out_display."</td>
+                                            <td>".$status."</td>
+                                            <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
+                                            <td>".$photo_display."</td> <!-- Display Photo -->
+                                            <td>".$location_display."</td> <!-- Display Location -->
                                             <td>
-                                                <button class='btn btn-danger btn-sm btn-flat delete' data-id='" . htmlentities($row['attend']) . "'>
+                                                <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
                                                     <i class='fa fa-trash'></i> Delete
                                                 </button>
                                             </td>
                                         </tr>
                                     ";
-                                    
                                 }
                                 ?>
                             </tbody>
