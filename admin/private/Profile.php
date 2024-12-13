@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="row">
       <div class="col-lg-12">
         <h2>Edit Admin Data</h2>
-        <form method="POST" action="Editprofile">
+        <form method="POST" action="Editprofile.php">
           <?php
           if ($query->num_rows > 0) {
               while ($row = $query->fetch_assoc()) {
