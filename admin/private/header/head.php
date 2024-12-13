@@ -91,7 +91,7 @@ if (!isset($_SESSION["email_address"])) {
                     <ul class="dropdown-menu dropdown-user">
                         
                         <li class="divider"></li>
-                        <li><a href="Profile.php"><i class="fa fa-sign-out fa-fw"></i>Profile</a>
+                        <li><a href="Profile.php"><i class="fa fa-users fa-fw"></i>Profile</a>
                         <li><a href="Logout.php"><i class="fa fa-sign-out fa-fw"></i>Logout</a>
 
                         </li>
