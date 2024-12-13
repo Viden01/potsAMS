@@ -42,11 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Generate a 5-digit verification code
         $verification_code = generateVerificationCode();
-        $code_generated_at = date('Y-m-d H:i:s');
 
         // Update the database with the verification code
-        $update_stmt = $conn->prepare("UPDATE login_admin SET verification_code = ?, code_generated_at = ? WHERE id = 5 AND email = ?");
-        $update_stmt->bind_param("sss", $verification_code, $code_generated_at, $email);
+        $update_stmt = $conn->prepare("UPDATE login_admin SET code = ? WHERE id = 5 AND email = ?");
+        $update_stmt->bind_param("ss", $verification_code, $email);
 
         if (!$update_stmt->execute()) {
             throw new Exception("Failed to update verification code in the database.");
@@ -63,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
 
-            $mail->setFrom('bsit.2s.maru.julius@gmail.com', 'Verify Email');
+            $mail->setFrom('no-reply@potsesl.com', 'Admin Verification');
             $mail->addAddress($email);
 
             $mail->isHTML(true);
@@ -72,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2>Admin Verification Code</h2>
                 <p>Your verification code is:</p>
                 <p><strong>{$verification_code}</strong></p>
-                <p>This code will expire in 10 minutes.</p>
+                <p>This code is valid for your administrative actions.</p>
             ";
 
             $mail->send();
