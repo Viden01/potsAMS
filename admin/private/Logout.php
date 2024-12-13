@@ -1,6 +1,17 @@
 
 <?php
 
+session_start();
+session_unset(); 
+session_destroy(); 
+
+echo "<script>
+    localStorage.setItem('loggedOut', 'true'); 
+    window.location.href = '../';  
+</script>";
+exit();
+
+
 include '../connection/db_conn.php';
 // this is logout page when user click button logout in system page
 
