@@ -37,12 +37,21 @@
                     </thead>
                     <tbody>
                     <?php
-// Fetch attendance records
+// Test for 'photo' column existence
+$photo_exists = false;
+
+$check_columns_query = "SHOW COLUMNS FROM employee_attendance LIKE 'photo'";
+$check_result = $conn->query($check_columns_query);
+if ($check_result && $check_result->num_rows > 0) {
+    $photo_exists = true;
+}
+
+// Updated SQL query
 $sql = "SELECT 
             employee_records.first_name, 
             employee_records.last_name, 
             employee_records.emp_id AS emp_id, 
-            employee_attendance.photo, 
+            " . ($photo_exists ? "employee_attendance.photo, " : "") . "
             employee_attendance.time_in, 
             employee_attendance.time_out, 
             employee_attendance.status, 
@@ -68,8 +77,8 @@ if ($query === FALSE) {
             ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
             : '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
 
-        // Fallback: Display "No Photo" if column or data is missing
-        $photo_display = !empty($row['photo']) 
+        // Display photo only if it exists
+        $photo_display = ($photo_exists && !empty($row['photo'])) 
             ? "<img src='uploads/" . htmlentities($row['photo']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
             : "No Photo";
 
