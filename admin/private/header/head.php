@@ -91,7 +91,7 @@ if (!isset($_SESSION["email_address"])) {
                     <ul class="dropdown-menu dropdown-user">
                         
                         <li class="divider"></li>
-                        <li><a href="Logout.php" onclick="logoutAllSessions()">logout><i class="fa fa-sign-out fa-fw"></i>Logout</a>
+                        <li><a href="Logout.php" onclick="logoutAllSessions()"><i class="fa fa-sign-out fa-fw"></i>Logout</a>
                         </li>
                     </ul>
                     <!-- end dropdown-user -->
@@ -104,4 +104,23 @@ if (!isset($_SESSION["email_address"])) {
     </div>
     <!-- end wrapper -->
 </body>
+<!-- Include JavaScript Code -->
+    <script>
+        function logoutAllSessions() {
+            fetch('../path_to_logout.php', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        localStorage.clear();
+                        alert('LogOut Successfully!');
+                        window.location.href = '../index.php';
+                    } else {
+                        alert('Logout failed. Please try again.');
+                    }
+                })
+                .catch(error => console.error('Error during logout:', error));
+        }
+    </script>
+</body>
+</html>
 </html>
