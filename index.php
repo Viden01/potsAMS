@@ -16,7 +16,6 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
     <title>Capture and Submit Photo</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Styles */
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f4f7fa;
@@ -50,6 +49,8 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
             width: 100%;
             max-width: 400px;
             margin-bottom: 20px;
+            display: block;
+            margin: 0 auto;
         }
 
         canvas {
@@ -129,14 +130,14 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
 
         <div class="action-buttons">
             <button id="capture">Capture Photo</button>
-            <button id="submitPhoto">Retake Photo</button>
+            <button id="submitPhoto">Submit Photo</button>
         </div>
 
         <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <input type="text" name="employee_id" placeholder="Employee ID" id="employee_id" required>
             </div>
-            <input type="hidden" name="photo" id="photo" required>
+            <input type="hidden" name="photo" id="photo">
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
 
@@ -180,54 +181,46 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
         captureButton.addEventListener('click', () => {
             if (!employeeIdInput.value.trim()) {
                 alert('Please enter your Employee ID first.');
-                return;
+                return; // Prevent capturing the photo if Employee ID is not entered
             }
 
             const context = canvas.getContext('2d');
-            canvas.width = video.videoWidth; // Match video dimensions
-            canvas.height = video.videoHeight;
             canvas.style.display = 'block';
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
             video.style.display = 'none';
             submitButton.style.display = 'inline';
 
+            // Convert the image to a base64 string
             const imageData = canvas.toDataURL('image/png');
             photoInput.value = imageData;
 
+            // Record time-in when the photo is captured
             const currentTime = new Date().toISOString();
-            if (attendanceTypeSelect.value === 'time_in') {
-                timeInInput.value = currentTime;
-                timeOutInput.value = ''; // Clear time-out
-            }
+            timeInInput.value = currentTime;
 
+            // Enable submit attendance button
             submitAttendanceButton.disabled = false;
         });
 
+        // Show video again for retake
         submitButton.addEventListener('click', () => {
             video.style.display = 'block';
             canvas.style.display = 'none';
             submitButton.style.display = 'none';
-            photoInput.value = ''; // Clear the photo value
-            submitAttendanceButton.disabled = true;
+            submitAttendanceButton.disabled = true; // Disable the submit button until a new photo is taken
         });
 
+        // When the form is submitted, record the selected attendance type
         document.getElementById('attendanceForm').addEventListener('submit', (event) => {
-            if (!photoInput.value.trim()) {
-                alert('Please capture a photo before submitting.');
-                event.preventDefault();
-                return;
-            }
-
-            if (!employeeIdInput.value.trim()) {
-                alert('Please enter your Employee ID.');
-                event.preventDefault();
-                return;
-            }
-
+            // Check if the user selects Time-In or Time-Out
             const selectedAttendanceType = attendanceTypeSelect.value;
+
             if (selectedAttendanceType === 'time_out') {
-                timeOutInput.value = new Date().toISOString(); // Set time-out
+                // If Time-Out is selected, record time-out
+                timeOutInput.value = new Date().toISOString();
+            } else {
+                // If Time-In is selected, ensure time-out is not sent
+                timeOutInput.value = ''; // Clear time-out if time-in is selected
             }
         });
     </script>
