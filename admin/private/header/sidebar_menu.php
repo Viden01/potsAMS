@@ -22,7 +22,7 @@ if ($result->num_rows > 0) {
     $name = $row['firstname'] . ' ' . $row['lastname']; // Full name
 } else {
     // Default values in case no record is found
-    $photo = 'assets/img/default.jpg'; // Fallback image
+    $photo = 'images/default.jpg'; // Fallback image
     $name = 'Unknown User';
 }
 
@@ -62,7 +62,7 @@ $conn->close();
                     <div class="user-section">
                        <div class="user-section-inner">
                             <!-- Use the dynamic image URL fetched from the database -->
-                            <img src="../uploads/<?php echo htmlentities($photo); ?>" alt="Admin Photo" style="width: 50px; height: 50px; object-fit: cover;">
+                            <img src="../images/<?php echo htmlentities($photo); ?>" alt="Admin Photo" style="width: 50px; height: 50px; object-fit: cover;">
                         </div>
                         <div class="user-info">
                             <div> <strong><?php echo ucwords(htmlentities($name)); ?></strong></div>
