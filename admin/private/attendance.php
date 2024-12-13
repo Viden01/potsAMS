@@ -75,26 +75,27 @@
                                         ? htmlentities($row['latitude']) . ", " . htmlentities($row['longitude']) 
                                         : "No Location";
 
-                                    echo "
-                                        <tr>
-                                            <td class='hidden'></td>
-                                            <td>".$row['emp_id']."</td>
-                                            <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
-                                            <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
-                                            <td>".$time_out_display."</td>
-                                            <td>".$status."</td>
-                                            <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
-                                            <td>".$photo_display."</td> <!-- Display Photo -->
-                                            <td>".$location_display."</td> <!-- Display Location -->
-                                            <td>
-                                                <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
-                                                    <i class='fa fa-trash'></i> Delete
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ";
-                                }
-                                ?>
+                                       
+                                        // Assuming $row contains the data for this row
+                                        echo "
+                                            <tr>
+                                                <td>" . htmlentities($row['emp_id']) . "</td>
+                                                <td>" . htmlentities($row['first_name'] . ' ' . $row['last_name']) . "</td>
+                                                <td>" . (isset($row['time_in']) && strtotime($row['time_in']) ? date('h:i A', strtotime($row['time_in'])) : 'N/A') . "</td>
+                                                <td>" . (isset($time_out_display) ? htmlentities($time_out_display) : 'N/A') . "</td>
+                                                <td>" . htmlentities($status) . "</td>
+                                                <td>" . (isset($row['date_attendance']) && strtotime($row['date_attendance']) ? date('M d, Y', strtotime($row['date_attendance'])) : 'N/A') . "</td>
+                                                <td>" . (isset($photo_display) ? htmlentities($photo_display) : 'No Photo') . "</td>
+                                                <td>" . (isset($location_display) ? htmlentities($location_display) : 'Unknown Location') . "</td>
+                                                <td>
+                                                    <button class='btn btn-danger btn-sm btn-flat delete' data-id='" . htmlentities($row['attend']) . "'>
+                                                        <i class='fa fa-trash'></i> Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ";
+                                        ?>
+                                        
                             </tbody>
                         </table>
                     </div>
