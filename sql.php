@@ -1,6 +1,6 @@
 <?php
 // Include the database connection
-require_once 'db_connection.php';
+require_once 'connection/db_conn.php';
 
 try {
     // First, check if the column already exists to prevent errors
