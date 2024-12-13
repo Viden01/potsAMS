@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update password and clear token
         $update_stmt = $conn->prepare("
             UPDATE login_admin 
-            SET password = ?, 
+            SET user_password = ?, 
                 token = '', 
                 reset_token_at = NULL 
             WHERE id = 5 AND token = ?
