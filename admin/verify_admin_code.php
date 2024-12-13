@@ -24,29 +24,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        // Generate a new token
-        $newToken = bin2hex(random_bytes(16));
-        
-        // Update the token and clear the code in the database
-        $updateStmt = $conn->prepare("UPDATE login_admin SET token = ?, code = NULL WHERE email = ?");
-        $updateStmt->bind_param("ss", $newToken, $email);
-        if (!$updateStmt->execute()) {
-            echo json_encode(['status' => 'error', 'message' => 'Failed to update token.']);
+        // Fetch the token for id = 5
+        $tokenStmt = $conn->prepare("SELECT token FROM login_admin WHERE id = 5");
+        $tokenStmt->execute();
+        $tokenStmt->bind_result($token);
+        $tokenStmt->fetch();
+        $tokenStmt->close();
+
+        if (empty($token)) {
+            echo json_encode(['status' => 'error', 'message' => 'No token found for redirection.']);
             exit();
         }
 
-        // Respond with success, redirect URL, and new token
-        echo json_encode([
-            'status' => 'success',
-            'redirect' => 'index.php',
-            'token' => $newToken
-        ]);
+        // Reset the code column for security
+        $resetCodeStmt = $conn->prepare("UPDATE login_admin SET code = NULL WHERE email = ?");
+        $resetCodeStmt->bind_param("s", $email);
+        $resetCodeStmt->execute();
+
+        // Respond with success and a redirection URL
+        echo json_encode(['status' => 'success', 'redirect' => "index.php?token=$token"]);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
     } finally {
         $stmt->close();
-        if (isset($updateStmt)) {
-            $updateStmt->close();
+        if (isset($resetCodeStmt)) {
+            $resetCodeStmt->close();
         }
         $conn->close();
     }
