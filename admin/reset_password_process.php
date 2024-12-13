@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Prepare statement with parameterized query for token validation
         $token_stmt = $conn->prepare("
             SELECT id, email, reset_token_at 
-            FROM admin 
+            FROM login_admin 
             WHERE token = ? AND id = 5
         ");
         $token_stmt->bind_param("s", $reset_token);
