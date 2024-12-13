@@ -30,9 +30,8 @@ $name = "Julius Maru";
                 <li>
                     <!-- user image section-->
                     <div class="user-section">
-                       <div class="user-section-inner">
-                            <!-- Use the dynamic image URL fetched from the database -->
-                            <img src="../uploads/<?php echo htmlentities($photo); ?>" alt="Admin Photo" style="width: 50px; height: 50px; object-fit: cover;">
+                        <div class="user-section-inner">
+                            <img src="assets/img/user.jpg" alt="">
                         </div>
                         <div class="user-info">
                             <div> <strong><?php echo ucwords(htmlentities($name)); ?></strong></div>
