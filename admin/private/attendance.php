@@ -1,5 +1,9 @@
-        <?php include('header/head.php');?>
-        <?php include('header/sidebar_menu.php');?>
+     <?php
+         include('header/head.php');
+         include('header/sidebar_menu.php');
+         include ('connection/db_conn.php');
+      
+      ?>
 
         <!-- end navbassr side -->
         <!--  page-wrapper -->
@@ -34,7 +38,7 @@
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                             <thead>
-                          
+                                <th class="hidden"></th>
                                 <th>Employee ID</th>
                                 <th>Employee Name</th>
                                 <th>Time In</th>
@@ -77,7 +81,7 @@
 
                                     echo "
                                         <tr>
-                                          
+                                            <td class='hidden'></td>
                                             <td>".$row['emp_id']."</td>
                                             <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
                                             <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>

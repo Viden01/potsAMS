@@ -1,6 +1,6 @@
 <?php
 // Include the database connection
-include 'connection/db_conn.php'; // Adjust the path if needed
+ // Adjust the path if needed
 
 // Function to get all tables in the database
 function getDatabaseTables($conn) {
