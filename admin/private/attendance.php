@@ -48,7 +48,10 @@
                             <tbody>
                                 <?php
                                 // Fetch attendance records
-                                $sql = "SELECT * FROM  employee_records, employee_id WHERE employee_records.employee_id";
+                                $sql = "SELECT *, employee_records.employee_id AS emp_id, employee_attendance.id AS attend 
+                                        FROM employee_attendance 
+                                        LEFT JOIN employee_records ON employee_records.emp_id = employee_attendance.employee_id 
+                                        ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in DESC";
 
                                         // SELECT * FROM  employee_records, employee_id WHERE employee_records.employee_id
                                 $query = $conn->query($sql);
