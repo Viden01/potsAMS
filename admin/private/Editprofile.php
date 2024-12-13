@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     // Handle the photo upload if a new photo is provided
     $photo = $_FILES['photo']['name'];  // New photo uploaded
-    $target_dir = "../img/";  // Directory where the photo will be uploaded
+    $target_dir = "../uploads/";  // Directory where the photo will be uploaded
     $target_file = $target_dir . basename($photo);
 
     // Check if a new photo is uploaded

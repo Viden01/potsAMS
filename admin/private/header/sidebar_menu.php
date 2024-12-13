@@ -2,8 +2,6 @@
 $name = "Julius Maru";
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
