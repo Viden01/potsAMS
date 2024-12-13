@@ -1,17 +1,16 @@
         <?php include('header/head.php');?>
         <?php include('header/sidebar_menu.php');?>
-        <?php include('connection/db_conn.php'); ?>
 
-        <!-- end navbar side -->
+        <!-- end navbassr side -->
         <!--  page-wrapper -->
         <div id="page-wrapper">
 
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-12">
-                
+              
                 </div>
-                <!--End Page Header -->
+                <!--End Page Headers -->
             </div>
 
             <div class="row">
