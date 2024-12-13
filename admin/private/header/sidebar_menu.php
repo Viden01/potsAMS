@@ -62,7 +62,7 @@ $conn->close();
                     <div class="user-section">
                        <div class="user-section-inner">
                             <!-- Use the dynamic image URL fetched from the database -->
-                            <img src=".../assets/img/<?php echo htmlentities($photo); ?>" alt="Admin Photo" style="width: 50px; height: 50px; object-fit: cover;">
+                            <img src="../../assets/img/<?php echo htmlentities($photo); ?>" alt="Admin Photo" style="width: 50px; height: 50px; object-fit: cover;">
                         </div>
                         <div class="user-info">
                             <div> <strong><?php echo ucwords(htmlentities($name)); ?></strong></div>
