@@ -53,14 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="row">
       <div class="col-lg-12">
         <h2>Edit Admin Data</h2>
-        <form method="POST" action="">
+        <form method="POST" action="Editprofile">
           <?php
           if ($query->num_rows > 0) {
               while ($row = $query->fetch_assoc()) {
                   echo "
                     <div class='form-group'>
                       <label for='id_{$row['id']}'>ID</label>
-                      <input type='text' name='id[]' id='id_{$row['id']}' value='{$row['id']}' readonly class='form-control'>
+                      <input type='text' name='id[]' id='id_{$row['id']}' value='{$row['id']}' class='form-control'>
                     </div>
                     <div class='form-group'>
                       <label for='username_{$row['id']}'>Username</label>
