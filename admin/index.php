@@ -112,6 +112,11 @@ if (substr($request, -4) == '.php') {
       background-color: #218838;
     }
 
+    .back-to-login {
+      text-align: center;
+      margin-top: 15px;
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -153,38 +158,53 @@ if (substr($request, -4) == '.php') {
   <div class="container">
     <div class="row" style="padding-top: 10%">
       <div class="col-md-4 custom-offset">
-        <div class="login-panel panel panel-default" id="signInPanel">
+        <div class="login-panel panel panel-default" id="authPanel">
           <div class="panel-heading">
-            <h3 class="panel-title">Sign In</h3>
+            <h3 class="panel-title" id="panelTitle">Sign In</h3>
           </div>
           <div class="panel-body">
             <div id="msg"></div>
-            <form role="form" id="form_action" method="POST">
-              <fieldset>
-                <div class="form-group">
-                  <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
-                </div>
-                <div class="form-group">
-                  <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
-                </div>
-                <div class="form-group">
-                  <label>
-                    <input type="checkbox" id="termsCheckbox" required>
-                    I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
-                  </label>
-                </div>
-                <div class="form-options">
-                  <div class="checkbox">
+            <div id="loginForm">
+              <form role="form" id="form_action" method="POST">
+                <fieldset>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
+                  </div>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
+                  </div>
+                  <div class="form-group">
                     <label>
-                      <input name="remember" type="checkbox" value="Remember Me"> Remember Me
+                      <input type="checkbox" id="termsCheckbox" required>
+                      I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
                     </label>
                   </div>
-                  <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-                </div>
-                <button type="button" class="btn submit" value="Login">Login</button>
-              </fieldset>
-            </form>
-          </div>
+                  <div class="form-options">
+                    <div class="checkbox">
+                      <label>
+                        <input name="remember" type="checkbox" value="Remember Me"> Remember Me
+                      </label>
+                    </div>
+                    <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                  </div>
+                  <button type="button" class="btn submit" value="Login">Login</button>
+                </fieldset>
+              </form>
+            </div>
+            <div id="forgotPasswordForm" style="display: none;">
+              <form role="form" id="forgot_password_form" method="POST">
+                <fieldset>
+                  <div class="form-group">
+                    <input class="form-control" placeholder="E-mail" alt="forgot_email" type="email" autocomplete="off" required>
+                  </div>
+                  <button type="button" class="btn submit" id="resetPasswordBtn">Reset Password</button>
+                  <div class="back-to-login">
+                    <a href="#" id="backToLoginLink">Back to Login</a>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+          </div>  
         </div>
       </div>
     </div>
@@ -203,6 +223,13 @@ if (substr($request, -4) == '.php') {
     const termsLink = document.getElementById('viewTerms');
     const closeModal = document.querySelector('.close');
 
+    const loginForm = document.getElementById('loginForm');
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const backToLoginLink = document.getElementById('backToLoginLink');
+    const panelTitle = document.getElementById('panelTitle');
+
+    // Terms Modal Functionality
     termsLink.addEventListener('click', function (e) {
       e.preventDefault();
       termsModal.style.display = 'block';
@@ -218,38 +245,86 @@ if (substr($request, -4) == '.php') {
       }
     });
 
+    // Forgot Password Form Toggle
+    forgotPasswordLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      loginForm.style.display = 'none';
+      forgotPasswordForm.style.display = 'block';
+      panelTitle.textContent = 'Forgot Password';
+    });
+
+    // Back to Login Form
+    backToLoginLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      forgotPasswordForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      panelTitle.textContent = 'Sign In';
+    });
+
+    // Login Form Submission
     $('.submit').click(function (e) {
       e.preventDefault();
-      const email_address = $('input[alt="email_address"]').val().trim();
-      const user_password = $('input[alt="user_password"]').val().trim();
-      const termsCheckbox = $('#termsCheckbox').is(':checked');
+      // Check if we're on the login form or forgot password form
+      if ($(this).closest('#loginForm').length) {
+        const email_address = $('input[alt="email_address"]').val().trim();
+        const user_password = $('input[alt="user_password"]').val().trim();
+        const termsCheckbox = $('#termsCheckbox').is(':checked');
 
-      if (!email_address || !user_password) {
-        $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
-        return;
-      }
-
-      if (!termsCheckbox) {
-        $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
-        return;
-      }
-
-      $.ajax({
-        type: 'POST',
-        url: 'public/login_process.php',
-        data: { email_address, user_password },
-        success: function (response) {
-          $('#msg').html(response);
-          if ($('#msg .alert-danger').length) {
-            setTimeout(function () {
-              $('#msg .alert-danger').fadeOut();
-            }, 2000);
-          }
-        },
-        error: function () {
-          $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
+        if (!email_address || !user_password) {
+          $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
+          return;
         }
-      });
+
+        if (!termsCheckbox) {
+          $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
+          return;
+        }
+
+        $.ajax({
+          type: 'POST',
+          url: 'public/login_process.php',
+          data: { email_address, user_password },
+          success: function (response) {
+            $('#msg').html(response);
+            if ($('#msg .alert-danger').length) {
+              setTimeout(function () {
+                $('#msg .alert-danger').fadeOut();
+              }, 2000);
+            }
+          },
+          error: function () {
+            $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
+          }
+        });
+      } 
+      // Forgot Password Form Submission
+      else if ($(this).closest('#forgotPasswordForm').length) {
+        const forgot_email = $('input[alt="forgot_email"]').val().trim();
+
+        if (!forgot_email) {
+          $('#msg').html('<p class="text-danger">Please enter your email address.</p>');
+          return;
+        }
+
+        $.ajax({
+          type: 'POST',
+          url: 'public/forgot_password_process.php',
+          data: { email_address: forgot_email },
+          success: function (response) {
+            $('#msg').html(response);
+            if ($('#msg .alert-success').length) {
+              setTimeout(function () {
+                forgotPasswordForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                panelTitle.textContent = 'Sign In';
+              }, 2000);
+            }
+          },
+          error: function () {
+            $('#msg').html('<p class="text-danger">Error processing password reset. Please try again later.</p>');
+          }
+        });
+      }
     });
   </script>
 </body>
