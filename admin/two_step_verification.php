@@ -123,31 +123,32 @@ $('#emailForm').on('submit', function (e) {
 
 
         // Code Verification Form Submission
-        $('#codeForm').on('submit', function(e) {
-            e.preventDefault();
-            const email = $('#adminEmail').val().trim();Qx
-            const code = $('#verificationCode').val().trim();
+        // Code Verification Form Submission
+$('#codeForm').on('submit', function (e) {
+    e.preventDefault();
 
-            $.ajax({
-                type: 'POST',
-                url: 'verify_admin_code.php',
-                data: { 
-                    email: email, 
-                    verification_code: code 
-                },
-                success: function(response) {
-                    if (response.status === 'success') {
-                        // Redirect to admin dashboard
-                        window.location.href = 'admin_dashboard.php';
-                    } else {
-                        $('#errorMsg2').text(response.message || 'Invalid verification code');
-                    }
-                },
-                error: function() {
-                    $('#errorMsg2').text('Error verifying code. Please try again.');
-                }
-            });
-        });
+    const email = $('#adminEmail').val().trim();
+    const code = $('#verificationCode').val().trim();
+
+    $.ajax({
+        type: 'POST',
+        url: 'verify_admin_code.php',
+        data: { email: email, verification_code: code },
+        dataType: 'json',
+        success: function (response) {
+            if (response.status === 'success') {
+                // Redirect to the provided URL
+                window.location.href = response.redirect;
+            } else {
+                $('#errorMsg2').text(response.message || 'Invalid verification code.');
+            }
+        },
+        error: function () {
+            $('#errorMsg2').text('Error verifying code. Please try again.');
+        },
+    });
+});
+
 
         // Resend Code Feature
         $('#resendCode').on('click', function(e) {

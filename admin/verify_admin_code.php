@@ -24,12 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         }
 
-        // If matched, reset the code column (optional for security)
+        // Reset the code column for security
         $resetCodeStmt = $conn->prepare("UPDATE login_admin SET code = NULL WHERE email = ?");
         $resetCodeStmt->bind_param("s", $email);
         $resetCodeStmt->execute();
 
-        echo json_encode(['status' => 'success', 'message' => 'Verification successful.']);
+        // Respond with success and a redirection URL
+        echo json_encode(['status' => 'success', 'redirect' => 'index.php']);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
     } finally {
