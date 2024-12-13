@@ -1,48 +1,32 @@
 <?php
 // Include the database connection
-require_once 'connection/db_conn.php'; // Assuming your connection script is named db_connection.php
+require_once 'connection/db_conn.php';
 
-// SQL to add new columns to the admin table
-$columns_to_add = [
-    'token' => 'ALTER TABLE login_admin ADD COLUMN token VARCHAR(255) NULL',
-    'reset_token_at' => 'ALTER TABLE login_admin ADD COLUMN reset_token_at DATETIME NULL',
-    'code' => 'ALTER TABLE login_admin ADD COLUMN code VARCHAR(50) NULL',
-    'email' => 'ALTER TABLE login_admin ADD COLUMN email VARCHAR(50) NULL'
-];
-
-// Track successful and failed column additions
-$successful_columns = [];
-$failed_columns = [];
-
-// Add each column
-foreach ($columns_to_add as $column_name => $sql) {
-    // Check if column already exists to prevent duplicate column errors
-    $check_column_query = "SHOW COLUMNS FROM login_admin LIKE '$column_name'";
+try {
+    // First, check if the column already exists to prevent errors
+    $check_column_query = "SHOW COLUMNS FROM login_admin LIKE 'email'";
     $result = $conn->query($check_column_query);
     
+    // If the column doesn't exist, add it
     if ($result->num_rows == 0) {
-        // Column does not exist, so try to add it
-        if ($conn->query($sql) === TRUE) {
-            $successful_columns[] = $column_name;
+        $add_column_query = "ALTER TABLE login_admin ADD COLUMN email VARCHAR(255)";
+        if ($conn->query($add_column_query) === TRUE) {
+            echo "Email column added successfully. ";
         } else {
-            $failed_columns[] = $column_name;
+            throw new Exception("Error adding email column: " . $conn->error);
         }
-    } else {
-        // Column already exists
-        $successful_columns[] = $column_name;
     }
-}
 
-// Output results
-if (empty($failed_columns)) {
-    if (count($successful_columns) > 0) {
-        echo "Successfully added/verified columns: " . implode(', ', $successful_columns);
+    // Update the email for row with ID 1
+    $update_email_query = "UPDATE login_admin SET email = 'bsit.2s.maru.julius@gmail.com' WHERE id = 5";
+    
+    if ($conn->query($update_email_query) === TRUE) {
+        echo "Email updated successfully for admin with ID 1.";
     } else {
-        echo "All specified columns already exist in the admin table.";
+        throw new Exception("Error updating email: " . $conn->error);
     }
-} else {
-    echo "Failed to add columns: " . implode(', ', $failed_columns);
-    echo "\nError details: " . $conn->error;
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
 }
 
 // Close the connection
