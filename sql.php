@@ -1,99 +1,50 @@
 <?php
 // Include the database connection
-include 'connection/db_conn.php';  // Assuming the connection script you shared is saved as db_connection.php
+require_once 'db_connection.php'; // Assuming your connection script is named db_connection.php
 
-// Function to get all column names from the admin table
-function getTableColumns($conn, $tableName) {
-    $columns = [];
-    $result = $conn->query("SHOW COLUMNS FROM $tableName");
+// SQL to add new columns to the admin table
+$columns_to_add = [
+
+    'reset_token_at' => 'ALTER TABLE admin ADD COLUMN reset_token_at DATETIME NULL',
+    'code' => 'ALTER TABLE admin ADD COLUMN code VARCHAR(50) NULL',
+    'email' => 'ALTER TABLE admin ADD COLUMN code VARCHAR(50) NULL'
+];
+
+// Track successful and failed column additions
+$successful_columns = [];
+$failed_columns = [];
+
+// Add each column
+foreach ($columns_to_add as $column_name => $sql) {
+    // Check if column already exists to prevent duplicate column errors
+    $check_column_query = "SHOW COLUMNS FROM login_admin LIKE '$column_name'";
+    $result = $conn->query($check_column_query);
     
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $columns[] = $row['Field'];
+    if ($result->num_rows == 0) {
+        // Column does not exist, so try to add it
+        if ($conn->query($sql) === TRUE) {
+            $successful_columns[] = $column_name;
+        } else {
+            $failed_columns[] = $column_name;
         }
+    } else {
+        // Column already exists
+        $successful_columns[] = $column_name;
     }
-    
-    return $columns;
 }
 
-// Function to retrieve all data from the table
-function getAllTableData($conn, $tableName) {
-    $data = [];
-    $result = $conn->query("SELECT * FROM $tableName");
-    
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
+// Output results
+if (empty($failed_columns)) {
+    if (count($successful_columns) > 0) {
+        echo "Successfully added/verified columns: " . implode(', ', $successful_columns);
+    } else {
+        echo "All specified columns already exist in the admin table.";
     }
-    
-    return $data;
+} else {
+    echo "Failed to add columns: " . implode(', ', $failed_columns);
+    echo "\nError details: " . $conn->error;
 }
 
-try {
-    // Get columns of the admin table
-    $columns = getTableColumns($conn, 'login_admin');
-    
-    // Get all data from the admin table
-    $adminData = getAllTableData($conn, 'login_admin');
-    
-    // Start HTML output
-    echo "<!DOCTYPE html>
-    <html lang='en'>
-    <head>
-        <meta charset='UTF-8'>
-        <title>Admin Table Data</title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            table { 
-                width: 100%; 
-                border-collapse: collapse; 
-                margin-bottom: 20px; 
-            }
-            th, td { 
-                border: 1px solid #ddd; 
-                padding: 8px; 
-                text-align: left; 
-            }
-            th { 
-                background-color: #f2f2f2; 
-                font-weight: bold; 
-            }
-            h1 { color: #333; }
-        </style>
-    </head>
-    <body>
-        <h1>Admin Table Data</h1>
-        <table>
-            <thead>
-                <tr>";
-    
-    // Print table headers
-    foreach ($columns as $column) {
-        echo "<th>" . htmlspecialchars($column) . "</th>";
-    }
-    echo "</tr>
-            </thead>
-            <tbody>";
-    
-    // Print table rows
-    foreach ($adminData as $row) {
-        echo "<tr>";
-        foreach ($columns as $column) {
-            echo "<td>" . htmlspecialchars($row[$column] ?? 'NULL') . "</td>";
-        }
-        echo "</tr>";
-    }
-    
-    echo "</tbody>
-        </table>
-    </body>
-    </html>";
-    
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
-}
-
-// Close the database connection
+// Close the connection
 $conn->close();
 ?>
