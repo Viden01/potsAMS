@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Prepare SQL to check if email exists for admin with ID 1
-        $stmt = $conn->prepare("SELECT * FROM admin WHERE id = 1 AND email = ?");
+        $stmt = $conn->prepare("SELECT * FROM login_admin WHERE id = 5 AND email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $reset_token_at = date('Y-m-d H:i:s');
 
         // Update the database with the reset token
-        $update_stmt = $conn->prepare("UPDATE admin SET token = ?, reset_token_at = ? WHERE id = 1 AND email = ?");
+        $update_stmt = $conn->prepare("UPDATE login_admin SET token = ?, reset_token_at = ? WHERE id = 5 AND email = ?");
         $update_stmt->bind_param("sss", $reset_token, $reset_token_at, $email);
         
         if (!$update_stmt->execute()) {

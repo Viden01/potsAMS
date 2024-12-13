@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $token_stmt = $conn->prepare("
             SELECT id, email, reset_token_at 
             FROM admin 
-            WHERE token = ? AND id = 1
+            WHERE token = ? AND id = 5
         ");
         $token_stmt->bind_param("s", $reset_token);
         $token_stmt->execute();
@@ -52,11 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Update password and clear token
         $update_stmt = $conn->prepare("
-            UPDATE admin 
+            UPDATE login_admin 
             SET password = ?, 
                 token = '', 
                 reset_token_at = NULL 
-            WHERE id = 1 AND token = ?
+            WHERE id = 5 AND token = ?
         ");
         $update_stmt->bind_param("ss", $hashed_password, $reset_token);
         
