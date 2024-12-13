@@ -48,9 +48,9 @@
                     <tbody>
                         <?php
                         // Fetch attendance records
-                        $sql = "SELECT *, employee_records.employee_id AS emp_id, employee_attendance.id AS attend 
+                        $sql = "SELECT *, employee_records.employee_id AS employee_id, employee_attendance.id AS attend 
                                 FROM employee_attendance 
-                                LEFT JOIN employee_records ON employee_records.emp_id = employee_attendance.employee_id 
+                                LEFT JOIN employee_records ON employee_records.employee_id = employee_attendance.employee_id 
                                 ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in DESC";
                         $query = $conn->query($sql);
 
@@ -76,7 +76,7 @@
                             echo "
                                 <tr>
                                     <td class='hidden'></td>
-                                    <td>".$row['emp_id']."</td>
+                                    <td>".$row['employee_id']."</td>
                                     <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
                                     <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
                                     <td>".$time_out_display."</td>
