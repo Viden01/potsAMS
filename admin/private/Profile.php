@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                     <div class='form-group'>
                       <label for='photo_{$row['id']}'>Photo URL</label>
-                      <input type='text' name='photo[]' id='photo_{$row['id']}' value='{$row['photo']}' class='form-control'>
+                      <input type='file' name='photo[]' id='photo_{$row['id']}' value='{$row['photo']}' class='form-control'>
                     </div>
                     <hr>
                   ";
