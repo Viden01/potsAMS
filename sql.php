@@ -5,7 +5,7 @@ require_once 'connection/db_conn.php'; // Assuming your connection script is nam
 // SQL to add new columns to the admin table
 $columns_to_add = [
     
-    'code' => 'ALTER TABLE admin ADD COLUMN code VARCHAR(50) NULL'
+    'email' => 'ALTER TABLE admin ADD COLUMN email VARCHAR(50) NULL'
 ];
 
 // Track successful and failed column additions
