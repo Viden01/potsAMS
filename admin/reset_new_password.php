@@ -210,7 +210,7 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
             // If successful, redirect to login after a few seconds
             if (response.includes('alert-success')) {
               setTimeout(function() {
-                window.location.href = 'login.php';
+                window.location.href = 'https://potsesl.com/admin/';
               }, 3000);
             }
           },
