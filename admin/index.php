@@ -308,7 +308,7 @@ if (substr($request, -4) == '.php') {
 
         $.ajax({
           type: 'POST',
-          url: 'public/forgot_password_process.php',
+          url: 'forgot_password_process.php',
           data: { email_address: forgot_email },
           success: function (response) {
             $('#msg').html(response);
