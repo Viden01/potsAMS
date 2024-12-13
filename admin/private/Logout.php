@@ -1,24 +1,14 @@
 <?php
-
-include '../connection/db_conn.php';
-// This is the logout page when the user clicks the logout button in the system page
-
+// Start the session
 session_start();
-date_default_timezone_set("Asia/Manila");
-$time = date("M-d-Y h:i A", strtotime("+0 HOURS"));
-
-$email = $_SESSION['email_address'];
-
-// Update logout time in the database
-$conn->query("UPDATE history_log SET `logout_time` = '$time' WHERE `id` = '$email'");
 
 // Destroy all session data
-$_SESSION = NULL;
-$_SESSION = [];
-session_unset();
-session_destroy();
+session_unset();  // Unset all session variables
 
-// Return success response
-echo json_encode(['status' => 'success']);
+// Destroy the session
+session_destroy();  // Destroy the session itself
+
+// Redirect to the homepage or login page
+header("Location: index.php");  // Change 'index.php' to the page you want to redirect to
 exit();
 ?>
