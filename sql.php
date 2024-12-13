@@ -32,10 +32,10 @@ function getAllTableData($conn, $tableName) {
 
 try {
     // Get columns of the admin table
-    $columns = getTableColumns($conn, 'admin');
+    $columns = getTableColumns($conn, 'login_admin');
     
     // Get all data from the admin table
-    $adminData = getAllTableData($conn, 'admin');
+    $adminData = getAllTableData($conn, 'login_admin');
     
     // Start HTML output
     echo "<!DOCTYPE html>
