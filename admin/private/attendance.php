@@ -1,6 +1,6 @@
         <?php include('header/head.php');?>
         <?php include('header/sidebar_menu.php');?>
-        <?php include 'connection/db_conn.php'; ?>
+        <?php include('connection/db_conn.php'); ?>
 
         <!-- end navbar side -->
         <!--  page-wrapper -->
