@@ -1,25 +1,24 @@
-
 <?php
 
 include '../connection/db_conn.php';
-// this is logout page when user click button logout in system page
+// This is the logout page when the user clicks the logout button in the system page
 
 session_start();
-  date_default_timezone_set("Asia/Manila");
-  $time = date("M-d-Y h:i A",strtotime("+0 HOURS"));
+date_default_timezone_set("Asia/Manila");
+$time = date("M-d-Y h:i A", strtotime("+0 HOURS"));
 
- $email = $_SESSION['email_address'];
-  
+$email = $_SESSION['email_address'];
 
-$conn->query("UPDATE history_log SET `logout_time` = '$time'  WHERE `id` = '$email'");
+// Update logout time in the database
+$conn->query("UPDATE history_log SET `logout_time` = '$time' WHERE `id` = '$email'");
 
+// Destroy all session data
 $_SESSION = NULL;
 $_SESSION = [];
 session_unset();
 session_destroy();
 
-echo "<script type='text/javascript'>alert('LogOut Successfully!');
-				  document.location='../index.php'</script>";
-
+// Return success response
+echo json_encode(['status' => 'success']);
+exit();
 ?>
-

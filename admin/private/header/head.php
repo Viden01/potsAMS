@@ -91,7 +91,7 @@ if (!isset($_SESSION["email_address"])) {
                     <ul class="dropdown-menu dropdown-user">
                         
                         <li class="divider"></li>
-                        <li><a href="Logout.php"><i class="fa fa-sign-out fa-fw"></i>Logout</a>
+                        <li><a href="Logout.php" onclick="logoutAllSessions()">Logout</button>><i class="fa fa-sign-out fa-fw"></i>Logout</a>
                         </li>
                     </ul>
                     <!-- end dropdown-user -->
