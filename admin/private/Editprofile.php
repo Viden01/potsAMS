@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Execute the update query
     if ($stmt->execute()) {
         // Redirect back to profile.php after a successful update
-        header("Location: profile.php");
+        header("Location: Profile.php");
         exit;  // Make sure to exit after the header redirect
     } else {
         echo "<div class='alert alert-danger'>Error updating admin information: " . $stmt->error . "</div>";
