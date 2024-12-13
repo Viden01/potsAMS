@@ -36,20 +36,20 @@
                     </thead>
                     <tbody>
                         <?php
-                        // Fetch attendance records
+                        // Corrected SQL query to fetch data
                         $sql = "SELECT 
+                                    employee_records.emp_id AS employee_id, 
                                     employee_records.first_name, 
                                     employee_records.last_name, 
-                                    employee_records.emp_id AS emp_id, 
                                     employee_attendance.time_in, 
                                     employee_attendance.time_out, 
                                     employee_attendance.status, 
                                     employee_attendance.date_attendance, 
                                     employee_attendance.photo_path, 
-                                    employee_attendance.id AS attend 
+                                    employee_attendance.id AS attend
                                 FROM employee_attendance 
                                 LEFT JOIN employee_records 
-                                    ON employee_records.emp_id = employee_attendance.employee_id 
+                                    ON employee_attendance.employee_id = employee_records.emp_id 
                                 ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in DESC";
 
                         $query = $conn->query($sql);
@@ -73,7 +73,7 @@
                                 echo "
                                     <tr>
                                         <td class='hidden'></td>
-                                        <td>".htmlentities($row['emp_id'])."</td>
+                                        <td>".htmlentities($row['employee_id'])."</td>
                                         <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
                                         <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
                                         <td>".$time_out_display."</td>
