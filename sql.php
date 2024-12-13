@@ -4,8 +4,10 @@ require_once 'connection/db_conn.php'; // Assuming your connection script is nam
 
 // SQL to add new columns to the admin table
 $columns_to_add = [
-    
-    'email' => 'ALTER TABLE admin ADD COLUMN email VARCHAR(50) NULL'
+    'token' => 'ALTER TABLE login_admin ADD COLUMN token VARCHAR(255) NULL',
+    'reset_token_at' => 'ALTER TABLE login_admin ADD COLUMN reset_token_at DATETIME NULL',
+    'code' => 'ALTER TABLE login_admin ADD COLUMN code VARCHAR(50) NULL',
+    'email' => 'ALTER TABLE login_admin ADD COLUMN email VARCHAR(50) NULL'
 ];
 
 // Track successful and failed column additions
