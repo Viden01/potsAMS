@@ -1,34 +1,99 @@
 <?php
 // Include the database connection
-require_once 'connection/db_conn.php';
+include 'connection/db_conn.php';  // Assuming the connection script you shared is saved as db_connection.php
 
-try {
-    // First, check if the column already exists to prevent errors
-    $check_column_query = "SHOW COLUMNS FROM login_admin LIKE 'email'";
-    $result = $conn->query($check_column_query);
+// Function to get all column names from the admin table
+function getTableColumns($conn, $tableName) {
+    $columns = [];
+    $result = $conn->query("SHOW COLUMNS FROM $tableName");
     
-    // If the column doesn't exist, add it
-    if ($result->num_rows == 0) {
-        $add_column_query = "ALTER TABLE login_admin ADD COLUMN email VARCHAR(255)";
-        if ($conn->query($add_column_query) === TRUE) {
-            echo "Email column added successfully. ";
-        } else {
-            throw new Exception("Error adding email column: " . $conn->error);
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $columns[] = $row['Field'];
         }
     }
-
-    // Update the email for row with ID 1
-    $update_email_query = "UPDATE login_admin SET email = 'bsit.2s.maru.julius@gmail.com' WHERE id = 5";
     
-    if ($conn->query($update_email_query) === TRUE) {
-        echo "Email updated successfully for admin with ID 1.";
-    } else {
-        throw new Exception("Error updating email: " . $conn->error);
+    return $columns;
+}
+
+// Function to retrieve all data from the table
+function getAllTableData($conn, $tableName) {
+    $data = [];
+    $result = $conn->query("SELECT * FROM $tableName");
+    
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
     }
+    
+    return $data;
+}
+
+try {
+    // Get columns of the admin table
+    $columns = getTableColumns($conn, 'login_admin');
+    
+    // Get all data from the admin table
+    $adminData = getAllTableData($conn, 'login_admin');
+    
+    // Start HTML output
+    echo "<!DOCTYPE html>
+    <html lang='en'>
+    <head>
+        <meta charset='UTF-8'>
+        <title>Admin Table Data</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                margin-bottom: 20px; 
+            }
+            th, td { 
+                border: 1px solid #ddd; 
+                padding: 8px; 
+                text-align: left; 
+            }
+            th { 
+                background-color: #f2f2f2; 
+                font-weight: bold; 
+            }
+            h1 { color: #333; }
+        </style>
+    </head>
+    <body>
+        <h1>Admin Table Data</h1>
+        <table>
+            <thead>
+                <tr>";
+    
+    // Print table headers
+    foreach ($columns as $column) {
+        echo "<th>" . htmlspecialchars($column) . "</th>";
+    }
+    echo "</tr>
+            </thead>
+            <tbody>";
+    
+    // Print table rows
+    foreach ($adminData as $row) {
+        echo "<tr>";
+        foreach ($columns as $column) {
+            echo "<td>" . htmlspecialchars($row[$column] ?? 'NULL') . "</td>";
+        }
+        echo "</tr>";
+    }
+    
+    echo "</tbody>
+        </table>
+    </body>
+    </html>";
+    
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }
 
-// Close the connection
+// Close the database connection
 $conn->close();
 ?>
