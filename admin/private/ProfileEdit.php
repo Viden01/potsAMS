@@ -80,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           </div>
 
           <div class="form-group">
-            <label for="photo">Photo URL</label>
-            <input type="text" name="photo" id="photo" value="<?= htmlspecialchars($adminData['photo']) ?>" class="form-control">
+            <label for="photo">Photo</label>
+            <input type="file" name="photo" id="photo" value="<?= htmlspecialchars($adminData['photo']) ?>" class="form-control">
           </div>
 
           <button type="submit" class="btn btn-primary">Update Admin Information</button>
