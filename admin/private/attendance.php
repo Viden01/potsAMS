@@ -1,7 +1,7 @@
      <?php
          include('header/head.php');
          include('header/sidebar_menu.php');
-         include ('connection/db_conn.php');
+        //  include ('connection/db_conn.php');
       
       ?>
 
