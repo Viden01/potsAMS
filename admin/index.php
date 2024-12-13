@@ -1,4 +1,6 @@
 <?php
+require_once '../connection/db_conn.php'; // Database connection
+
 // Security headers
 header("Strict-Transport-Security: max-age=31536000; includeSubDomains");
 header("X-Frame-Options: SAMEORIGIN");
@@ -6,6 +8,29 @@ header("X-Content-Type-Options: nosniff");
 header("Referrer-Policy: strict-origin-when-cross-origin");
 header("Permissions-Policy: geolocation=(self), microphone=()");
 
+// Check if the URL contains a token
+if (isset($_GET['token'])) {
+    $token = $_GET['token'];
+
+    // Validate token from the database for id = 5
+    $stmt = $conn->prepare("SELECT token FROM login_admin WHERE id = 5");
+    $stmt->execute();
+    $stmt->bind_result($dbToken);
+    $stmt->fetch();
+    $stmt->close();
+
+    // If token does not match or is empty, redirect to two_step_verification.php
+    if (empty($dbToken) || $dbToken !== $token) {
+        header("Location: two_step_verification.php");
+        exit();
+    }
+} else {
+    // If no token is provided in the URL, redirect to two_step_verification.php
+    header("Location: two_step_verification.php");
+    exit();
+}
+
+// Redirect .php URLs to clean URLs
 $request = $_SERVER['REQUEST_URI'];
 if (substr($request, -4) == '.php') {
     $new_url = substr($request, 0, -4);
@@ -13,6 +38,7 @@ if (substr($request, -4) == '.php') {
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>
