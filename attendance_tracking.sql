@@ -60,8 +60,6 @@ CREATE TABLE `employee_attendance` (
   `time_out` time NOT NULL,
   `number_of_hour` double NOT NULL,
   `photo_path` VARCHAR(255) NULL,  -- New column for photo path
-  `latitude` VARCHAR(20) NULL,
-   `longitude` VARCHAR(20) NULL;
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

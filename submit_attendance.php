@@ -1,5 +1,5 @@
 <?php
-include($_SERVER['DOCUMENT_ROOT'] . 'connection/db_conn.php'); // Adjust the path if necessary
+include($_SERVER['DOCUMENT_ROOT'] . '/connection/db_conn.php'); // Adjust the path if necessary
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the database connection exists
@@ -10,11 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Escape and sanitize input data
     $employee_id = $conn->real_escape_string(strip_tags($_POST['employee_id']));
     $photo_data = $_POST['photo'];
-    $latitude = $conn->real_escape_string(strip_tags($_POST['latitude']));
-    $longitude = $conn->real_escape_string(strip_tags($_POST['longitude']));
-    $date_attendance = date('Y-m-d'); // Use current date
-    $time_in = date('H:i:s'); // Use current time
-    $status = 1; // Assuming status = 1 for "present"
 
     // Decode and save the image
     if (!empty($photo_data)) {
@@ -34,14 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // Insert attendance data into the database
-        $sql = "INSERT INTO employee_attendance 
-                (employee_id, date_attendance, time_in, status, photo_path, latitude, longitude) 
-                VALUES 
-                ('$employee_id', '$date_attendance', '$time_in', '$status', '$file_name', '$latitude', '$longitude')";
+        // Store the photo path in the database
+        $sql = "INSERT INTO employee_attendance (employee_id, photo_path) VALUES ('$employee_id', '$file_name')";
 
         if ($conn->query($sql)) {
-            echo "Attendance with photo and location submitted successfully.";
+            echo "Attendance with photo submitted successfully.";
         } else {
             echo "Failed to submit attendance. Error: " . $conn->error;
         }
