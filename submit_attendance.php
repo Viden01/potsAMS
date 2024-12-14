@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($conn->query($sql)) {
             // Redirect to the home page after success
-            header("Location: /home.php");
+            header("Location: /index.php");
             exit();
         } else {
             echo "Failed to submit attendance. Error: " . $conn->error;
