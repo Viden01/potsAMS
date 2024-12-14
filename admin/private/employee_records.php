@@ -34,10 +34,6 @@ function generateEmployeeID($conn, $prefix = "EMP") {
     return $prefix . $new_numeric_part;
 }
 
-include '../connection/db_conn.php';
-
-// Generate the latest Employee ID
-$latestEmployeeID = generateEmployeeID($conn);
 ?>
 <!-- Page Content -->
 <div id="page-wrapper">
@@ -78,6 +74,8 @@ $latestEmployeeID = generateEmployeeID($conn);
                     </thead>
                     <tbody>
                         <?php
+                        include '../connection/db_conn.php';
+
                         $sql = "SELECT *, 
                                     employee_records.emp_id AS employee_id, 
                                     TIMESTAMPDIFF(YEAR, employee_records.birth_date, CURDATE()) AS age 
@@ -115,54 +113,6 @@ $latestEmployeeID = generateEmployeeID($conn);
                         ?>
                     </tbody>
                 </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Employee Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add New Employee</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form method="POST" action="add_employee.php" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="emp_id">Employee ID</label>
-                            <input type="text" class="form-control" id="emp_id" name="emp_id" value="<?php echo $latestEmployeeID; ?>" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="first_name">First Name</label>
-                            <input type="text" class="form-control" id="first_name" name="first_name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="last_name">Last Name</label>
-                            <input type="text" class="form-control" id="last_name" name="last_name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="position">Position</label>
-                            <select class="form-control" id="position" name="position_id" required>
-                                <option value="" disabled selected>Select Position</option>
-                                <?php
-                                $positionQuery = "SELECT * FROM employee_position";
-                                $positions = $conn->query($positionQuery);
-                                while ($position = $positions->fetch_assoc()) {
-                                    echo "<option value='" . $position['id'] . "'>" . $position['emp_position'] . "</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <!-- Additional fields here -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save Employee</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
