@@ -50,10 +50,10 @@ if (substr($request, -4) == '.php') {
       <!-- Employee -->
       <div class="col-lg-3">
         <a href="employee_records.php" style="text-decoration: none; display: block;">
-          <div class="alert-modern" style="background-color: #4caf50;">
-            <i class="fa fa-users"></i>
-            <div class="value"><?php echo $row1['emp_id']; ?></div>
-            <div>Employees</div>
+          <div class="alert alert-success text-center">
+            <i class="fa fa-users fa-3x"></i>
+            <h4><?php echo $row1['emp_id']; ?></h4>
+            <span>Employees</span>
           </div>
         </a>
       </div>
@@ -61,10 +61,10 @@ if (substr($request, -4) == '.php') {
       <!-- Attendance Records -->
       <div class="col-lg-3">
         <a href="attendance.php" style="text-decoration: none;">
-          <div class="alert-modern" style="background-color: #2196f3;">
-            <i class="fa fa-file"></i>
-            <div class="value"><?php echo $row2['id']; ?></div>
-            <div>Attendance Records</div>
+          <div class="alert alert-info text-center">
+            <i class="fa fa-file fa-3x"></i>
+            <h4><?php echo $row2['id']; ?></h4>
+            <span>Attendance Records</span>
           </div>
         </a>
       </div>
@@ -72,10 +72,10 @@ if (substr($request, -4) == '.php') {
       <!-- Schedule -->
       <div class="col-lg-3">
         <a href="schedule.php" style="text-decoration: none;">
-          <div class="alert-modern" style="background-color: #ff9800;">
-            <i class="fa fa-history"></i>
-            <div class="value"><?php echo $row3['ids']; ?></div>
-            <div>Schedule</div>
+          <div class="alert alert-warning text-center">
+            <i class="fa fa-calendar fa-3x"></i>
+            <h4><?php echo $row3['ids']; ?></h4>
+            <span>Schedule</span>
           </div>
         </a>
       </div>
@@ -83,10 +83,10 @@ if (substr($request, -4) == '.php') {
       <!-- Logged History -->
       <div class="col-lg-3">
         <a href="attendance.php" style="text-decoration: none;">
-          <div class="alert-modern" style="background-color: #f44336;">
-            <i class="fa fa-eye"></i>
-            <div class="value"><?php echo $row4['log_id']; ?></div>
-            <div>Log Activities</div>
+          <div class="alert alert-danger text-center">
+            <i class="fa fa-history fa-3x"></i>
+            <h4><?php echo $row4['log_id']; ?></h4>
+            <span>Log Activities</span>
           </div>
         </a>
       </div>
@@ -96,7 +96,7 @@ if (substr($request, -4) == '.php') {
       <div class="col-lg-6">
         <canvas id="dashboardBarChart"></canvas>
       </div>
-      <div class="col-lg-6 donut-chart-container">
+      <div class="col-lg-6">
         <canvas id="dashboardDonutChart"></canvas>
       </div>
     </div>
@@ -115,18 +115,8 @@ if (substr($request, -4) == '.php') {
           datasets: [{
             label: 'Count',
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: [
-              'rgba(72, 132, 239, 0.7)',  // Cool Blue
-              'rgba(120, 233, 177, 0.7)', // Mint Green
-              'rgba(255, 153, 122, 0.7)', // Soft Coral
-              'rgba(244, 67, 54, 0.7)'    // Soft Red
-            ],
-            hoverBackgroundColor: [
-              'rgba(72, 132, 239, 1)',
-              'rgba(120, 233, 177, 1)',
-              'rgba(255, 153, 122, 1)',
-              'rgba(244, 67, 54, 1)'
-            ]
+            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336'],
+            hoverBackgroundColor: ['#45a049', '#1e88e5', '#fb8c00', '#e53935']
           }]
         },
         options: {
@@ -165,12 +155,7 @@ if (substr($request, -4) == '.php') {
           labels: ['Members', 'Attendance Records', 'Schedule', 'Log Activities'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: [
-              'rgba(72, 132, 239, 0.7)',  // Cool Blue
-              'rgba(120, 233, 177, 0.7)', // Mint Green
-              'rgba(255, 153, 122, 0.7)', // Soft Coral
-              'rgba(244, 67, 54, 0.7)'    // Soft Red
-            ]
+            backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336']
           }]
         },
         options: {
