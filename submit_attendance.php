@@ -33,7 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sql = "INSERT INTO employee_attendance (employee_id, photo_path) VALUES ('$employee_id', '$file_name')";
 
         if ($conn->query($sql)) {
-            echo "Attendance with photo submitted successfully.";
+            // Redirect to the home page after success
+            header("Location: /home.php");
+            exit();
         } else {
             echo "Failed to submit attendance. Error: " . $conn->error;
         }
