@@ -12,6 +12,8 @@ $row2 = $query2->fetch_array();
 $query3 = $conn->query("SELECT COUNT(*) AS ids FROM employee_schedule") or die(mysqli_error($conn));
 $row3 = $query3->fetch_array();
 
+$query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysqli_error($conn));
+$row4 = $query4->fetch_array();
 
 $total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
 
@@ -160,6 +162,15 @@ if (substr($request, -4) == '.php') {
     </a>
   </div>
 
+  <!-- Logged History -->
+ <!-- <div class="col-lg-3">
+    <div class="alert-modern" style="background-color: #f44336;">
+      <i class="fa fa-eye"></i>
+      <div class="value"><?php echo $row4['log_id']; ?></div>
+      <div>Logged History</div>
+    </div>
+  </div>
+</div> -->
 
 
     <div class="col-lg-3">
