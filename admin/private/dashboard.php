@@ -216,14 +216,15 @@ if (substr($request, -4) == '.php') {
       'rgba(72, 132, 239, 0.7)',  // Cool Blue
       'rgba(120, 233, 177, 0.7)', // Mint Green
       'rgba(255, 153, 122, 0.7)', // Soft Coral
-      '#CCCCFF'                   // Light Purple (changed)
+      'rgb(255,0,255)', // Light Purple (changed)
     ];
 
     var hoverColors = [
       'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
       'rgba(120, 233, 177, 1)', // Hover effect Mint Green
       'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
-      '#CCCCFF'                 // Light Purple hover (changed)
+      'rgb(255,0,255)',
+ // Light Purple hover (changed)
     ];
 
     // Initialize Bar Chart
