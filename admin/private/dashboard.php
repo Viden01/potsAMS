@@ -216,14 +216,14 @@ if (substr($request, -4) == '.php') {
       'rgba(72, 132, 239, 0.7)',  // Cool Blue
       'rgba(120, 233, 177, 0.7)', // Mint Green
       'rgba(255, 153, 122, 0.7)', // Soft Coral
-      'rgba(244, 67, 54, 0.7)'    // Red
+      '#CCCCFF'                   // Light Purple (changed)
     ];
 
     var hoverColors = [
       'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
       'rgba(120, 233, 177, 1)', // Hover effect Mint Green
       'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
-      'rgba(244, 67, 54, 1)'    // Hover effect Red
+      '#CCCCFF'                 // Light Purple hover (changed)
     ];
 
     // Initialize Bar Chart
@@ -289,9 +289,7 @@ if (substr($request, -4) == '.php') {
               return ((value / totalValue) * 100).toFixed(2) + '%';
             },
             color: '#fff',
-            font: {
-              weight: 'bold'
-            },
+            font: { weight: 'bold' },
             anchor: 'end',
             align: 'center'
           },
@@ -309,6 +307,7 @@ if (substr($request, -4) == '.php') {
     });
   });
 </script>
+
 
 
   <script src="assets/plugins/jquery-1.10.2.js"></script>
