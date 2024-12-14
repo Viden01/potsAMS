@@ -15,11 +15,6 @@ $row3 = $query3->fetch_array();
 $query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysqli_error($conn));
 $row4 = $query4->fetch_array();
 
-$total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
-
-$query2 = $conn->query("SELECT COUNT(*) AS id FROM employee_attendance") or die(mysqli_error($conn));
-$row2 = $query2->fetch_array();
-
 $request = $_SERVER['REQUEST_URI'];
 if (substr($request, -4) == '.php') {
     $new_url = substr($request, 0, -4);
@@ -40,82 +35,6 @@ if (substr($request, -4) == '.php') {
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-  <style>
-    /* Adjust donut chart size */
-    #dashboardDonutChart {
-      width: 100%;
-      height: 350px;
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    /* Modern Card Style */
-    .dashboard-card {
-      background-color: #ffffff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease-in-out;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .dashboard-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .dashboard-card i {
-      font-size: 3rem;
-      color: #4caf50;
-    }
-
-    .dashboard-card b {
-      font-size: 1.5rem;
-      color: #333;
-    }
-
-    .alert-modern {
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
-      color: white;
-      border-radius: 10px;
-      padding: 15px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .alert-modern i {
-      font-size: 2rem;
-    }
-
-    .alert-modern .value {
-      font-size: 2.5rem;
-    }
-
-    .alert-modern:hover {
-      background: linear-gradient(135deg, #2575fc, #6a11cb);
-    }
-
-    .donut-chart-container {
-      transition: all 0.5s ease-in-out;
-    }
-
-    .donut-chart-container:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    /* Modern Bar Chart */
-    .bar-chart {
-      border-radius: 10px;
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .bar-chart .bar {
-      border: none;
-      border-radius: 5px;
-    }
-  </style>
 </head>
 <body>
   <?php include('header/sidebar_menu.php'); ?>
@@ -128,67 +47,57 @@ if (substr($request, -4) == '.php') {
     </div>
 
     <div class="row">
-  <!-- Employee -->
- <div class="col-lg-3">
-  <a href="employee_records.php" style="text-decoration: none; display: block;">
-    <div class="alert-modern" style="background-color: #4caf50;">
-      <i class="fa fa-users"></i>
-      <div class="value"><?php echo $row1['emp_id']; ?></div>
-      <div>Employees</div>
+      <!-- Employee -->
+      <div class="col-lg-3">
+        <a href="employee_records.php" style="text-decoration: none; display: block;">
+          <div class="alert-modern" style="background-color: #4caf50;">
+            <i class="fa fa-users"></i>
+            <div class="value"><?php echo $row1['emp_id']; ?></div>
+            <div>Employees</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Attendance Records -->
+      <div class="col-lg-3">
+        <a href="attendance.php" style="text-decoration: none;">
+          <div class="alert-modern" style="background-color: #2196f3;">
+            <i class="fa fa-file"></i>
+            <div class="value"><?php echo $row2['id']; ?></div>
+            <div>Attendance Records</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Schedule -->
+      <div class="col-lg-3">
+        <a href="schedule.php" style="text-decoration: none;">
+          <div class="alert-modern" style="background-color: #ff9800;">
+            <i class="fa fa-history"></i>
+            <div class="value"><?php echo $row3['ids']; ?></div>
+            <div>Schedule</div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Logged History -->
+      <div class="col-lg-3">
+        <a href="attendance.php" style="text-decoration: none;">
+          <div class="alert-modern" style="background-color: #f44336;">
+            <i class="fa fa-eye"></i>
+            <div class="value"><?php echo $row4['log_id']; ?></div>
+            <div>Log Activities</div>
+          </div>
+        </a>
+      </div>
     </div>
-  </a>
-</div>
-
-
-  <!-- Attendance Records -->
-  <div class="col-lg-3">
-    <a href="attendance.php" style="text-decoration: none;">
-      <div class="alert-modern" style="background-color: #2196f3;">
-        <i class="fa fa-file"></i>
-        <div class="value"><?php echo $row2['id']; ?></div>
-        <div>Attendance Records</div>
-      </div>
-    </a>
-  </div>
-
-  <!-- Schedule -->
-  <div class="col-lg-3">
-    <a href="schedule.php" style="text-decoration: none;">
-      <div class="alert-modern" style="background-color: #ff9800;">
-        <i class="fa fa-history"></i>
-        <div class="value"><?php echo $row3['ids']; ?></div>
-        <div>Schedule</div>
-      </div>
-    </a>
-  </div>
-
-  <!-- Logged History -->
- <!-- <div class="col-lg-3">
-    <div class="alert-modern" style="background-color: #f44336;">
-      <i class="fa fa-eye"></i>
-      <div class="value"><?php echo $row4['log_id']; ?></div>
-      <div>Logged History</div>
-    </div>
-  </div>
-</div> -->
-
-
-    <div class="col-lg-3">
-    <a href="attendance.php" style="text-decoration: none;">
-    <div class="alert-modern" style="background-color: #2196f3;">
-          <i class="fa fa-eye"></i>
-          <div class="value"><?php echo $row2['id']; ?></div>
-          <div>Log Activities</div>
-        </div>
-      </div>
-
 
     <div class="row">
       <div class="col-lg-6">
         <canvas id="dashboardBarChart"></canvas>
       </div>
       <div class="col-lg-6 donut-chart-container">
-        <canvas id="dashboardDonutChart"></canvas> <!-- Donut Chart -->
+        <canvas id="dashboardDonutChart"></canvas>
       </div>
     </div>
   </div>
@@ -198,10 +107,11 @@ if (substr($request, -4) == '.php') {
       var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
       var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
 
+      // Bar Chart
       var barChart = new Chart(barCtx, {
         type: 'bar',
         data: {
-          labels: ['Members', 'Attendance Records', 'Schedule',],
+          labels: ['Members', 'Attendance Records', 'Schedule', 'Log Activities'],
           datasets: [{
             label: 'Count',
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
@@ -209,15 +119,14 @@ if (substr($request, -4) == '.php') {
               'rgba(72, 132, 239, 0.7)',  // Cool Blue
               'rgba(120, 233, 177, 0.7)', // Mint Green
               'rgba(255, 153, 122, 0.7)', // Soft Coral
+              'rgba(244, 67, 54, 0.7)'    // Soft Red
             ],
-            borderColor: 'transparent',
-            borderWidth: 0,
             hoverBackgroundColor: [
-              'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
-              'rgba(120, 233, 177, 1)', // Hover effect Mint Green
-              'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
-            ],
-            hoverBorderWidth: 0
+              'rgba(72, 132, 239, 1)',
+              'rgba(120, 233, 177, 1)',
+              'rgba(255, 153, 122, 1)',
+              'rgba(244, 67, 54, 1)'
+            ]
           }]
         },
         options: {
@@ -234,34 +143,34 @@ if (substr($request, -4) == '.php') {
             },
             tooltip: {
               callbacks: {
-                label: function(tooltipItem) {
-                  var dataset = tooltipItem.dataset;
-                  var currentValue = dataset.data[tooltipItem.dataIndex];
-                  var total = dataset.data.reduce(function(a, b) {
-                    return a + b;
-                  }, 0);
-                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
-                  return tooltipItem.label + ': ' + percentage;
+                label: function(context) {
+                  var value = context.raw;
+                  return `${context.label}: ${value}`;
                 }
               }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true
             }
           }
         }
       });
 
+      // Donut Chart
       var donutChart = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-          labels: ['Members', 'Attendance Records', 'Schedule',],
+          labels: ['Members', 'Attendance Records', 'Schedule', 'Log Activities'],
           datasets: [{
             data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
             backgroundColor: [
               'rgba(72, 132, 239, 0.7)',  // Cool Blue
               'rgba(120, 233, 177, 0.7)', // Mint Green
               'rgba(255, 153, 122, 0.7)', // Soft Coral
- 
-            ],
-            borderWidth: 0
+              'rgba(244, 67, 54, 0.7)'    // Soft Red
+            ]
           }]
         },
         options: {
@@ -270,29 +179,21 @@ if (substr($request, -4) == '.php') {
           plugins: {
             datalabels: {
               formatter: function(value, context) {
-                var total = context.chart.data.datasets[0].data.reduce(function(a, b) {
-                  return a + b;
-                }, 0);
-                var percentage = ((value / total) * 100).toFixed(2) + '%';
-                return percentage;
+                var total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                return ((value / total) * 100).toFixed(2) + '%';
               },
               color: '#fff',
               font: {
                 weight: 'bold'
-              },
-              anchor: 'end',
-              align: 'end'
+              }
             },
             tooltip: {
               callbacks: {
-                label: function(tooltipItem) {
-                  var dataset = tooltipItem.dataset;
-                  var currentValue = dataset.data[tooltipItem.dataIndex];
-                  var total = dataset.data.reduce(function(a, b) {
-                    return a + b;
-                  }, 0);
-                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
-                  return tooltipItem.label + ': ' + percentage;
+                label: function(context) {
+                  var value = context.raw;
+                  var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  var percentage = ((value / total) * 100).toFixed(2);
+                  return `${context.label}: ${value} (${percentage}%)`;
                 }
               }
             }
