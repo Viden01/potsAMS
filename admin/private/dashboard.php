@@ -195,11 +195,11 @@ if (substr($request, -4) == '.php') {
 
   <script>
   document.addEventListener('DOMContentLoaded', function() {
-    // Get canvas contexts
+    // Bar Chart Configuration
     var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
     var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
 
-    // Define chart data and labels
+    // Chart labels and data
     var chartLabels = ['Members', 'Attendance Records', 'Schedule', 'Log Activities'];
     var chartData = [
       <?php echo $row1['emp_id']; ?>, 
@@ -208,31 +208,54 @@ if (substr($request, -4) == '.php') {
       <?php echo $row4['log_id']; ?>
     ];
 
-    // Total value for percentage calculation
+    // Calculate total for percentage calculations
     var totalValue = chartData.reduce(function(acc, value) { return acc + value; }, 0);
 
-    // Bar Chart
-    new Chart(barCtx, {
+    // Colors for the charts
+    var colors = [
+      'rgba(72, 132, 239, 0.7)',  // Cool Blue
+      'rgba(120, 233, 177, 0.7)', // Mint Green
+      'rgba(255, 153, 122, 0.7)', // Soft Coral
+      'rgba(244, 67, 54, 0.7)'    // Red
+    ];
+
+    var hoverColors = [
+      'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
+      'rgba(120, 233, 177, 1)', // Hover effect Mint Green
+      'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
+      'rgba(244, 67, 54, 1)'    // Hover effect Red
+    ];
+
+    // Initialize Bar Chart
+    var barChart = new Chart(barCtx, {
       type: 'bar',
       data: {
         labels: chartLabels,
         datasets: [{
           label: 'Count',
           data: chartData,
-          backgroundColor: [
-            'rgba(72, 132, 239, 0.7)',  // Cool Blue
-            'rgba(120, 233, 177, 0.7)', // Mint Green
-            'rgba(255, 153, 122, 0.7)', // Soft Coral
-            'rgba(244, 67, 54, 0.7)'    // Red
-          ],
+          backgroundColor: colors,
           borderColor: 'transparent',
-          borderWidth: 0
+          borderWidth: 0,
+          hoverBackgroundColor: hoverColors,
+          hoverBorderWidth: 0
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+          datalabels: {
+            color: '#fff',
+            font: {
+              weight: 'bold'
+            },
+            anchor: 'end',
+            align: 'end',
+            formatter: function(value) {
+              return ((value / totalValue) * 100).toFixed(2) + '%';
+            }
+          },
           tooltip: {
             callbacks: {
               label: function(context) {
@@ -240,34 +263,20 @@ if (substr($request, -4) == '.php') {
                 var percentage = ((value / totalValue) * 100).toFixed(2);
                 return `${context.label}: ${value} (${percentage}%)`;
               }
-            }
-          },
-          datalabels: {
-            color: '#fff',
-            font: { weight: 'bold' },
-            anchor: 'end',
-            align: 'end',
-            formatter: function(value) {
-              return ((value / totalValue) * 100).toFixed(2) + '%';
             }
           }
         }
       }
     });
 
-    // Doughnut Chart
-    new Chart(donutCtx, {
+    // Initialize Doughnut Chart
+    var donutChart = new Chart(donutCtx, {
       type: 'doughnut',
       data: {
         labels: chartLabels,
         datasets: [{
           data: chartData,
-          backgroundColor: [
-            'rgba(72, 132, 239, 0.7)',  // Cool Blue
-            'rgba(120, 233, 177, 0.7)', // Mint Green
-            'rgba(255, 153, 122, 0.7)', // Soft Coral
-            'rgba(244, 67, 54, 0.7)'    // Red
-          ],
+          backgroundColor: colors,
           borderWidth: 0
         }]
       },
@@ -275,6 +284,17 @@ if (substr($request, -4) == '.php') {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+          datalabels: {
+            formatter: function(value) {
+              return ((value / totalValue) * 100).toFixed(2) + '%';
+            },
+            color: '#fff',
+            font: {
+              weight: 'bold'
+            },
+            anchor: 'end',
+            align: 'center'
+          },
           tooltip: {
             callbacks: {
               label: function(context) {
@@ -283,15 +303,6 @@ if (substr($request, -4) == '.php') {
                 return `${context.label}: ${value} (${percentage}%)`;
               }
             }
-          },
-          datalabels: {
-            formatter: function(value, context) {
-              return ((value / totalValue) * 100).toFixed(2) + '%';
-            },
-            color: '#fff',
-            font: { weight: 'bold' },
-            anchor: 'end',
-            align: 'center'
           }
         }
       }
