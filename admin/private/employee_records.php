@@ -9,10 +9,10 @@ if (substr($request, -4) == '.php') {
 
 include('header/head.php');
 include('header/sidebar_menu.php');
-include '../connection/db_conn.php'; // Database connection
 
 // Function to generate a new Employee ID
 function generateEmployeeID($conn, $prefix = "EMP") {
+    // Find the last employee ID with the given prefix
     $sql = "SELECT emp_id FROM employee_records WHERE emp_id LIKE '$prefix%' ORDER BY emp_id DESC LIMIT 1";
     $result = $conn->query($sql);
 
@@ -20,117 +20,69 @@ function generateEmployeeID($conn, $prefix = "EMP") {
         $row = $result->fetch_assoc();
         $last_id = $row['emp_id'];
 
-        // Extract numeric part of last ID
+        // Extract the numeric part of the last ID
         $numeric_part = (int)filter_var($last_id, FILTER_SANITIZE_NUMBER_INT);
 
-        // Increment and format the numeric part
+        // Increment the numeric part for the new ID
         $new_numeric_part = str_pad($numeric_part + 1, 3, '0', STR_PAD_LEFT);
     } else {
-        // If no previous ID exists, start with 001
+        // Start with 001 if no previous ID exists
         $new_numeric_part = "001";
     }
 
+    // Combine the prefix and new numeric part
     return $prefix . $new_numeric_part;
 }
 
-// Generate the new Employee ID
-$latestEmployeeID = generateEmployeeID($conn);
 ?>
 <!-- Page Content -->
 <div id="page-wrapper">
 
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="page-header">Employee Management</h1>
         </div>
     </div>
 
     <div class="row">
         <div class="col-lg-12">
             <div class="alert alert-info">
-                Use the "Add Employee" button to add a new employee.
             </div>
         </div>
     </div>
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <button type="button" data-toggle="modal" data-target="#addEmployeeModal" class="btn btn-primary btn-sm btn-flat">
+            <button type="button" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary btn-sm btn-flat">
                 <i class="fa fa-plus"></i> Add Employee
             </button>
         </div>
 
-        <!-- Add Employee Modal -->
-        <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form method="POST" action="add_employee.php">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addEmployeeModalLabel">Add New Employee</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="emp_id">Employee ID</label>
-                                <input type="text" class="form-control" id="emp_id" name="emp_id" value="<?php echo $latestEmployeeID; ?>" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label for="first_name">First Name</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="last_name">Last Name</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="position">Position</label>
-                                <select class="form-control" id="position" name="position_id" required>
-                                    <option value="" disabled selected>Select Position</option>
-                                    <?php
-                                    $positionQuery = "SELECT * FROM employee_position";
-                                    $positions = $conn->query($positionQuery);
-                                    while ($position = $positions->fetch_assoc()) {
-                                        echo "<option value='" . $position['id'] . "'>" . $position['emp_position'] . "</option>";
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Employee</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <?php include('modal/employee_modal.php'); ?>
 
-        <!-- Employee Table -->
         <div class="panel-body">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                     <thead>
-                        <tr>
-                            <th>Employee ID</th>
-                            <th>Full Name</th>
-                            <th>Age</th>
-                            <th>Position</th>
-                            <th>Time Schedule</th>
-                            <th>Member Start</th>
-                            <th>Profile</th>
-                            <th>Action</th>
-                        </tr>
+                        <th>Employee ID</th>
+                        <th>Full Name</th>
+                        <th>Age</th>
+                        <th>Position</th>
+                        <th>Time Schedule</th>
+                        <th>Member Start</th>
+                        <th>Profile</th>
+                        <th>Action</th>
                     </thead>
                     <tbody>
                         <?php
+                        include '../connection/db_conn.php';
+
                         $sql = "SELECT *, 
                                     employee_records.emp_id AS employee_id, 
                                     TIMESTAMPDIFF(YEAR, employee_records.birth_date, CURDATE()) AS age 
                                 FROM employee_records 
                                 LEFT JOIN employee_position ON employee_position.id = employee_records.position_id 
                                 LEFT JOIN employee_schedule ON employee_schedule.id = employee_records.schedule_id";
+
                         $query = $conn->query($sql);
 
                         while ($row = $query->fetch_assoc()) {
@@ -143,7 +95,9 @@ $latestEmployeeID = generateEmployeeID($conn);
                                 <td><?php echo date('h:i A', strtotime(htmlentities($row['time_in']))) . ' - ' . date('h:i A', strtotime(htmlentities($row['time_out']))); ?></td>
                                 <td><?php echo date('M d, Y', strtotime(htmlentities($row['date_created']))); ?></td>
                                 <td>
-                                    <img src="<?php echo !empty(htmlentities($row['profile_pic'])) ? htmlentities($row['profile_pic']) : 'profile.jpg'; ?>" width="35px" height="35px">
+                                    <div class="zoomin">
+                                        <img id="img" src="<?php echo (!empty(htmlentities($row['profile_pic']))) ? substr(htmlentities($row['profile_pic']), 3) : 'profile.jpg'; ?>" width="35px" height="35px">
+                                    </div>
                                 </td>
                                 <td>
                                     <button class="btn btn-success btn-sm edit btn-flat" data-id="<?php echo htmlentities($row['employee_id']); ?>">
@@ -162,10 +116,80 @@ $latestEmployeeID = generateEmployeeID($conn);
             </div>
         </div>
     </div>
+
+    <?php include('modal/employee_edit_modal.php'); ?>
+    <?php include('modal/employee_del_modal.php'); ?>
+
+    <script>
+        $(function(){
+            // Edit Employee
+            $('.edit').click(function(e){
+                e.preventDefault();
+                $('#edit').modal('show');
+                var id = $(this).data('id');
+                editID(id);
+            });
+
+            // Delete Employee
+            $('.delete').click(function(e){
+                e.preventDefault();
+                $('#delete').modal('show');
+                var id = $(this).data('id');
+                deleteID(id);
+            });
+        });
+
+        function editID(emp_id){
+            $.ajax({
+                type: 'POST',
+                url: 'employee_row.php',
+                data: {emp_id: emp_id},
+                dataType: 'json',
+                success: function(response){
+                    $('#emp_id').val(response.emp_id);
+                    $('#edit_firstname').val(response.first_name);
+                    $('#edit_middlename').val(response.middle_name);
+                    $('#edit_lastname').val(response.last_name);
+                    $('#edit_address').val(response.complete_address);
+                    $('#edit_birthdate').val(response.birth_date);
+                    $('#edit_mobilenumber').val(response.Mobile_number);
+                    $('#edit_gender').val(response.gender);
+                    $('#edit_positionid').val(response.position_id);
+                    $('#edit_maritalstatus').val(response.marital_status);
+                    $('#edit_scheduleid').val(response.schedule_id);
+                    $('#edit_profilepic').attr("src", response.profile_pic.slice(3));
+                }
+            });
+        }
+
+        function deleteID(emp_id){
+            $.ajax({
+                type: 'POST',
+                url: 'employee_row2.php',
+                data: {emp_id: emp_id},
+                dataType: 'json',
+                success: function(response2){
+                    $('#del_empid').val(response2.emp_id);
+                    $('#del_employeename').html(response2.first_name + ' ' + response2.last_name);
+                }
+            });
+        }
+    </script>
 </div>
+
+<script src="assets/plugins/jquery-1.10.2.js"></script>
+<script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="assets/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="assets/plugins/pace/pace.js"></script>
+<script src="assets/scripts/siminta.js"></script>
+<script src="assets/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="assets/plugins/dataTables/dataTables.bootstrap.js"></script>
 
 <script>
     $(document).ready(function () {
         $('#dataTables-example').dataTable();
     });
 </script>
+
+</body>
+</html>
