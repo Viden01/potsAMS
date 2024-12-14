@@ -194,113 +194,111 @@ if (substr($request, -4) == '.php') {
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
-      var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get canvas contexts
+    var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
+    var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
 
-      var barChart = new Chart(barCtx, {
-        type: 'bar',
-        data: {
-          labels: ['Members', 'Attendance Records', 'Schedule',],
-          datasets: [{
-            label: 'Count',
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: [
-              'rgba(72, 132, 239, 0.7)',  // Cool Blue
-              'rgba(120, 233, 177, 0.7)', // Mint Green
-              'rgba(255, 153, 122, 0.7)', // Soft Coral
-            ],
-            borderColor: 'transparent',
-            borderWidth: 0,
-            hoverBackgroundColor: [
-              'rgba(72, 132, 239, 1)',  // Hover effect Cool Blue
-              'rgba(120, 233, 177, 1)', // Hover effect Mint Green
-              'rgba(255, 153, 122, 1)', // Hover effect Soft Coral
-            ],
-            hoverBorderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              color: '#fff',
-              font: {
-                weight: 'bold'
-              },
-              anchor: 'end',
-              align: 'end'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(tooltipItem) {
-                  var dataset = tooltipItem.dataset;
-                  var currentValue = dataset.data[tooltipItem.dataIndex];
-                  var total = dataset.data.reduce(function(a, b) {
-                    return a + b;
-                  }, 0);
-                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
-                  return tooltipItem.label + ': ' + percentage;
-                }
+    // Define chart data and labels
+    var chartLabels = ['Members', 'Attendance Records', 'Schedule', 'Log Activities'];
+    var chartData = [
+      <?php echo $row1['emp_id']; ?>, 
+      <?php echo $row2['id']; ?>, 
+      <?php echo $row3['ids']; ?>, 
+      <?php echo $row4['log_id']; ?>
+    ];
+
+    // Total value for percentage calculation
+    var totalValue = chartData.reduce(function(acc, value) { return acc + value; }, 0);
+
+    // Bar Chart
+    new Chart(barCtx, {
+      type: 'bar',
+      data: {
+        labels: chartLabels,
+        datasets: [{
+          label: 'Count',
+          data: chartData,
+          backgroundColor: [
+            'rgba(72, 132, 239, 0.7)',  // Cool Blue
+            'rgba(120, 233, 177, 0.7)', // Mint Green
+            'rgba(255, 153, 122, 0.7)', // Soft Coral
+            'rgba(244, 67, 54, 0.7)'    // Red
+          ],
+          borderColor: 'transparent',
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                var value = context.raw;
+                var percentage = ((value / totalValue) * 100).toFixed(2);
+                return `${context.label}: ${value} (${percentage}%)`;
               }
+            }
+          },
+          datalabels: {
+            color: '#fff',
+            font: { weight: 'bold' },
+            anchor: 'end',
+            align: 'end',
+            formatter: function(value) {
+              return ((value / totalValue) * 100).toFixed(2) + '%';
             }
           }
         }
-      });
-
-      var donutChart = new Chart(donutCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Members', 'Attendance Records', 'Schedule',],
-          datasets: [{
-            data: [<?php echo $row1['emp_id']; ?>, <?php echo $row2['id']; ?>, <?php echo $row3['ids']; ?>, <?php echo $row4['log_id']; ?>],
-            backgroundColor: [
-              'rgba(72, 132, 239, 0.7)',  // Cool Blue
-              'rgba(120, 233, 177, 0.7)', // Mint Green
-              'rgba(255, 153, 122, 0.7)', // Soft Coral
- 
-            ],
-            borderWidth: 0
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            datalabels: {
-              formatter: function(value, context) {
-                var total = context.chart.data.datasets[0].data.reduce(function(a, b) {
-                  return a + b;
-                }, 0);
-                var percentage = ((value / total) * 100).toFixed(2) + '%';
-                return percentage;
-              },
-              color: '#fff',
-              font: {
-                weight: 'bold'
-              },
-              anchor: 'end',
-              align: 'end'
-            },
-            tooltip: {
-              callbacks: {
-                label: function(tooltipItem) {
-                  var dataset = tooltipItem.dataset;
-                  var currentValue = dataset.data[tooltipItem.dataIndex];
-                  var total = dataset.data.reduce(function(a, b) {
-                    return a + b;
-                  }, 0);
-                  var percentage = ((currentValue / total) * 100).toFixed(2) + '%';
-                  return tooltipItem.label + ': ' + percentage;
-                }
-              }
-            }
-          }
-        }
-      });
+      }
     });
-  </script>
+
+    // Doughnut Chart
+    new Chart(donutCtx, {
+      type: 'doughnut',
+      data: {
+        labels: chartLabels,
+        datasets: [{
+          data: chartData,
+          backgroundColor: [
+            'rgba(72, 132, 239, 0.7)',  // Cool Blue
+            'rgba(120, 233, 177, 0.7)', // Mint Green
+            'rgba(255, 153, 122, 0.7)', // Soft Coral
+            'rgba(244, 67, 54, 0.7)'    // Red
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                var value = context.raw;
+                var percentage = ((value / totalValue) * 100).toFixed(2);
+                return `${context.label}: ${value} (${percentage}%)`;
+              }
+            }
+          },
+          datalabels: {
+            formatter: function(value, context) {
+              return ((value / totalValue) * 100).toFixed(2) + '%';
+            },
+            color: '#fff',
+            font: { weight: 'bold' },
+            anchor: 'end',
+            align: 'center'
+          }
+        }
+      }
+    });
+  });
+</script>
+
 
   <script src="assets/plugins/jquery-1.10.2.js"></script>
   <script src="assets/plugins/bootstrap/bootstrap.min.js"></script>
