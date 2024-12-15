@@ -17,12 +17,7 @@ if (isset($_POST['recaptcha_token'])) {
     $response_data = json_decode($verify_response);
 
     if (!$response_data->success || $response_data->score < 0.5) {
-        echo '<div class="alert alert-danger">
-            <strong>Failed reCAPTCHA verification. Please try again.</strong>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>';
+        echo 'recaptcha_failed'; // Response for failed reCAPTCHA verification
         exit;
     }
 }
@@ -41,9 +36,7 @@ if (isset($_POST['email_address'])) {
     // Check if user has exceeded the maximum number of failed attempts
     if ($_SESSION['failed_attempts'] >= $max_attempts && time() - $_SESSION['last_failed_attempt'] < $lockout_time) {
         $remaining_time = $lockout_time - (time() - $_SESSION['last_failed_attempt']);
-        echo "<div class='alert alert-warning'>
-            <strong>You have reached the maximum number of login attempts. Please try again in {$remaining_time} seconds.</strong>
-        </div>";
+        echo "locked_out,{$remaining_time}"; // Return lockout message
         exit;
     }
 
@@ -65,36 +58,20 @@ if (isset($_POST['email_address'])) {
                 $_SESSION["email_address"] = $row["email_address"];
                 $_SESSION['failed_attempts'] = 0; // Reset failed attempts on success
 
-                echo '<div class="alert alert-success">
-                    <strong>Login Successfully!</strong>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                    <script> setTimeout(function() { window.location.href = "private/dashboard.php" }, 1000); </script>
-                </div>';
+                echo 'login_successful'; // Response for successful login
             } else {
                 // Increment failed attempts
                 $_SESSION['failed_attempts']++;
                 $_SESSION['last_failed_attempt'] = time();
 
-                echo '<div class="alert alert-danger">
-                    <strong>Invalid Email Address or Password</strong>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>';
+                echo 'invalid_credentials'; // Invalid credentials response
             }
         } else {
             // No user found
             $_SESSION['failed_attempts']++;
             $_SESSION['last_failed_attempt'] = time();
 
-            echo '<div class="alert alert-danger">
-                <strong>Invalid Email Address or Password</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>';
+            echo 'invalid_credentials'; // Invalid credentials response
         }
 
         // Close the statement

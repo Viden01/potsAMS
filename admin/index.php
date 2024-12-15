@@ -287,56 +287,81 @@ if (substr($request, -4) == '.php') {
       panelTitle.textContent = 'Sign In';
     });
 
-    // Login Form Submission
-    $('.submit').click(function (e) {
-      e.preventDefault();
-      // Check if we're on the login form or forgot password form
-      if ($(this).closest('#loginForm').length) {
-        const email_address = $('input[alt="email_address"]').val().trim();
-        const user_password = $('input[alt="user_password"]').val().trim();
-        const termsCheckbox = $('#termsCheckbox').is(':checked');
+    let loginAttempts = 0;
 
-        if (!email_address || !user_password) {
-          $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
-          return;
+$('.submit').click(function (e) {
+  e.preventDefault();
+  
+  if ($(this).closest('#loginForm').length) {
+    const email_address = $('input[alt="email_address"]').val().trim();
+    const user_password = $('input[alt="user_password"]').val().trim();
+    const termsCheckbox = $('#termsCheckbox').is(':checked');
+
+    if (!email_address || !user_password) {
+      $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
+      return;
+    }
+
+    if (!termsCheckbox) {
+      $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
+      return;
+    }
+
+    // If login fails three times, alert the user
+    if (loginAttempts >= 3) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Maximum Attempts Reached',
+        text: 'You have reached the maximum number of login attempts. Please try again later.',
+      }).then(() => {
+        // Optionally, you can disable the form or other actions here
+      });
+      return;
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: 'public/login_process.php',
+      data: { email_address, user_password },
+      success: function (response) {
+        $('#msg').html(response);
+        
+        if (response.includes('locked_out')) {
+          // Extract remaining time and show lockout alert
+          const remainingTime = response.split(',')[1];
+          Swal.fire({
+            icon: 'warning',
+            title: 'Too Many Attempts',
+            text: `Please try again in ${remainingTime} seconds.`,
+          });
+        } else if (response === 'login_successful') {
+          loginAttempts = 0; // Reset login attempts on success
+          Swal.fire({
+            icon: 'success',
+            title: 'Login Successful',
+            text: 'Redirecting...',
+          }).then(() => {
+            window.location.href = 'private/dashboard.php';
+          });
+        } else if (response === 'invalid_credentials') {
+          loginAttempts++;
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid Credentials',
+            text: 'Please check your email and password.',
+          });
+        } else if (response === 'recaptcha_failed') {
+          Swal.fire({
+            icon: 'error',
+            title: 'reCAPTCHA Failed',
+            text: 'Please complete the reCAPTCHA verification.',
+          });
         }
-
-        if (!termsCheckbox) {
-          $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
-          return;
-        }
-
-        $.ajax({
-          type: 'POST',
-          url: 'public/login_process.php',
-          data: { email_address, user_password },
-          success: function (response) {
-            $('#msg').html(response);
-            if ($('#msg .alert-danger').length) {
-              setTimeout(function () {
-                $('#msg .alert-danger').fadeOut();
-              }, 2000);
-            }
-
-            // Use SweetAlert for login success or failure
-            if ($('#msg .alert-danger').length) {
-              Swal.fire({
-                icon: 'error',
-                title: 'Login Failed',
-                text: 'Please check your credentials.',
-              });
-            } else {
-              Swal.fire({
-                icon: 'success',
-                title: 'Login Successful',
-                text: 'You have successfully logged in!',
-              });
-            }
-          },
-          error: function () {
-            $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
-          }
-        });
+      },
+      error: function () {
+        $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
+      }
+    });
       } 
       // Forgot Password Form Submission
       else if ($(this).closest('#forgotPasswordForm').length) {
