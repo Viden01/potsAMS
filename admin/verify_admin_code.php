@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $resetCodeStmt->execute();
 
         // Respond with success and a redirection URL
-        echo json_encode(['status' => 'success', 'redirect' => "index.php?token=$token"]);
+        echo json_encode(['status' => 'success', 'redirect' => "index?token=$token"]);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
     } finally {
