@@ -287,111 +287,71 @@ if (substr($request, -4) == '.php') {
       panelTitle.textContent = 'Sign In';
     });
 
-// Login Form Submission
-$('.submit').click(function (e) {
-  e.preventDefault();
-  
-  // Check if we're on the login form or forgot password form
-  if ($(this).closest('#loginForm').length) {
-    const email_address = $('input[alt="email_address"]').val().trim();
-    const user_password = $('input[alt="user_password"]').val().trim();
-    const termsCheckbox = $('#termsCheckbox').is(':checked');
+    // Login Form Submission
+    $('.submit').click(function (e) {
+      e.preventDefault();
+      // Check if we're on the login form or forgot password form
+      if ($(this).closest('#loginForm').length) {
+        const email_address = $('input[alt="email_address"]').val().trim();
+        const user_password = $('input[alt="user_password"]').val().trim();
+        const termsCheckbox = $('#termsCheckbox').is(':checked');
 
-    if (!email_address || !user_password) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please fill in both fields.',
-      });
-      return;
-    }
-
-    if (!termsCheckbox) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'You must agree to the terms and conditions.',
-      });
-      return;
-    }
-
-    $.ajax({
-      type: 'POST',
-      url: 'public/login_process.php',
-      data: { email_address, user_password },
-      success: function (response) {
-        if (response.includes('success')) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Login Successful!',
-            text: 'Welcome back!',
-          }).then(() => {
-            window.location.href = 'dashboard.php'; // Redirect to the dashboard or other page
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Login Failed',
-            text: response,
-          });
+        if (!email_address || !user_password) {
+          $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
+          return;
         }
-      },
-      error: function () {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error logging in. Please try again later.',
+
+        if (!termsCheckbox) {
+          $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
+          return;
+        }
+
+        $.ajax({
+          type: 'POST',
+          url: 'public/login_process.php',
+          data: { email_address, user_password },
+          success: function (response) {
+            $('#msg').html(response);
+            if ($('#msg .alert-danger').length) {
+              setTimeout(function () {
+                $('#msg .alert-danger').fadeOut();
+              }, 2000);
+            }
+          },
+          error: function () {
+            $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
+          }
+        });
+      } 
+      // Forgot Password Form Submission
+      else if ($(this).closest('#forgotPasswordForm').length) {
+        const forgot_email = $('input[alt="forgot_email"]').val().trim();
+
+        if (!forgot_email) {
+          $('#msg').html('<p class="text-danger">Please enter your email address.</p>');
+          return;
+        }
+
+        $.ajax({
+          type: 'POST',
+          url: 'forgot_password_process.php',
+          data: { email_address: forgot_email },
+          success: function (response) {
+            $('#msg').html(response);
+            if ($('#msg .alert-success').length) {
+              setTimeout(function () {
+                forgotPasswordForm.style.display = 'none';
+                loginForm.style.display = 'block';
+                panelTitle.textContent = 'Sign In';
+              }, 2000);
+            }
+          },
+          error: function () {
+            $('#msg').html('<p class="text-danger">Error processing password reset. Please try again later.</p>');
+          }
         });
       }
     });
-  } 
-  // Forgot Password Form Submission
-  else if ($(this).closest('#forgotPasswordForm').length) {
-    const forgot_email = $('input[alt="forgot_email"]').val().trim();
-
-    if (!forgot_email) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Please enter your email address.',
-      });
-      return;
-    }
-
-    $.ajax({
-      type: 'POST',
-      url: 'forgot_password_process.php',
-      data: { email_address: forgot_email },
-      success: function (response) {
-        if (response.includes('success')) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Password Reset',
-            text: 'An email with instructions has been sent.',
-          }).then(() => {
-            forgotPasswordForm.style.display = 'none';
-            loginForm.style.display = 'block';
-            panelTitle.textContent = 'Sign In';
-          });
-        } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Error processing password reset. Please try again later.',
-          });
-        }
-      },
-      error: function () {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Error processing password reset. Please try again later.',
-        });
-      }
-    });
-  }
-});
-
   </script>
 </body>
 
