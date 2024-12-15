@@ -224,7 +224,7 @@ if (substr($request, -4) == '.php') {
               title: 'Login Successful',
               text: 'You will be redirected shortly!',
             }).then(() => {
-              window.location.href = 'private/dashboard.php'; // Redirect to the dashboard
+              window.location.href = 'admin/dashboard.php'; // Redirect to the dashboard
             });
           } else {
             loginAttempts--;
