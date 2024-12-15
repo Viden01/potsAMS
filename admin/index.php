@@ -53,8 +53,6 @@ if (substr($request, -4) == '.php') {
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <!-- reCAPTCHA v3 -->
-  <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Disable right-click -->
@@ -138,41 +136,6 @@ if (substr($request, -4) == '.php') {
       text-align: center;
       margin-top: 15px;
     }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 15% auto;
-      padding: 20px;
-      border-radius: 8px;
-      width: 80%;
-      max-width: 500px;
-    }
-
-    .close {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: black;
-      text-decoration: none;
-      cursor: pointer;
-    }
   </style>
 </head>
 
@@ -186,33 +149,23 @@ if (substr($request, -4) == '.php') {
           </div>
           <div class="panel-body">
             <div id="msg"></div>
-            <div id="loginForm">
-              <form role="form" id="form_action" method="POST">
-                <fieldset>
-                  <div class="form-group">
-                    <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
-                  </div>
-                  <div class="form-group">
-                    <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
-                  </div>
-                  <div class="form-group">
-                    <label>
-                      <input type="checkbox" id="termsCheckbox" required>
-                      I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
-                    </label>
-                  </div>
-                  <div class="form-options">
-                    <div class="checkbox">
-                      <label>
-                        <input name="remember" type="checkbox" value="Remember Me"> Remember Me
-                      </label>
-                    </div>
-                    <a href="#" id="forgotPasswordLink">Forgot Password?</a>
-                  </div>
-                  <button type="button" class="btn submit" id="loginBtn">Login</button>
-                </fieldset>
-              </form>
-            </div>
+            <form role="form" id="form_action" method="POST">
+              <fieldset>
+                <div class="form-group">
+                  <input class="form-control" placeholder="E-mail" alt="email_address" type="email" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <input class="form-control" placeholder="Password" alt="user_password" type="password" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" id="termsCheckbox" required>
+                    I agree to the <a href="#" id="viewTerms">Terms and Conditions</a>.
+                  </label>
+                </div>
+                <button type="button" class="btn submit" id="loginBtn">Login</button>
+              </fieldset>
+            </form>
           </div>  
         </div>
       </div>
@@ -220,17 +173,25 @@ if (substr($request, -4) == '.php') {
   </div>
 
   <script>
-    const termsModal = document.getElementById('termsModal');
-    const termsLink = document.getElementById('viewTerms');
-    const closeModal = document.querySelector('.close');
+    let loginAttempts = 3;
 
-    // Login Form Submission
     $('#loginBtn').click(function (e) {
       e.preventDefault();
 
       const email = $('input[alt="email_address"]').val().trim();
       const password = $('input[alt="user_password"]').val().trim();
       const termsAccepted = $('#termsCheckbox').is(':checked');
+
+      // Check for remaining login attempts
+      if (loginAttempts <= 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Account Locked',
+          text: 'You have used all login attempts. Please try again later.',
+        });
+        $('#loginBtn').prop('disabled', true);
+        return;
+      }
 
       // Validation
       if (!email || !password) {
@@ -266,11 +227,17 @@ if (substr($request, -4) == '.php') {
               window.location.href = 'dashboard.php'; // Redirect to the dashboard
             });
           } else {
+            loginAttempts--;
             Swal.fire({
               icon: 'error',
               title: 'Login Failed',
-              text: 'Invalid credentials. Please try again.',
+              text: `Invalid credentials. You have ${loginAttempts} attempt(s) remaining.`,
             });
+
+            // Disable button if attempts are exhausted
+            if (loginAttempts <= 0) {
+              $('#loginBtn').prop('disabled', true);
+            }
           }
         },
         error: function () {
