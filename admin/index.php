@@ -39,7 +39,6 @@ if (substr($request, -4) == '.php') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
 
@@ -54,6 +53,7 @@ if (substr($request, -4) == '.php') {
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert2 -->
   <!-- reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
 
@@ -317,6 +317,21 @@ if (substr($request, -4) == '.php') {
                 $('#msg .alert-danger').fadeOut();
               }, 2000);
             }
+
+            // Use SweetAlert for login success or failure
+            if ($('#msg .alert-danger').length) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Login Failed',
+                text: 'Please check your credentials.',
+              });
+            } else {
+              Swal.fire({
+                icon: 'success',
+                title: 'Login Successful',
+                text: 'You have successfully logged in!',
+              });
+            }
           },
           error: function () {
             $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
@@ -345,6 +360,13 @@ if (substr($request, -4) == '.php') {
                 panelTitle.textContent = 'Sign In';
               }, 2000);
             }
+
+            // Use SweetAlert for password reset success
+            Swal.fire({
+              icon: 'success',
+              title: 'Password Reset Request Sent',
+              text: 'Please check your email for further instructions.',
+            });
           },
           error: function () {
             $('#msg').html('<p class="text-danger">Error processing password reset. Please try again later.</p>');
