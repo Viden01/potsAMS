@@ -15,7 +15,7 @@ $row3 = $query3->fetch_array();
 $query4 = $conn->query("SELECT COUNT(*) AS log_id FROM history_log") or die(mysqli_error($conn));
 $row4 = $query4->fetch_array();
 
-$total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['log_id'];
+$total = $row1['emp_id'] + $row2['id'] + $row3['ids'] + $row4['id'];
 
 $query2 = $conn->query("SELECT COUNT(*) AS id FROM employee_attendance") or die(mysqli_error($conn));
 $row2 = $query2->fetch_array();
