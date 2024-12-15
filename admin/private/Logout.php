@@ -9,6 +9,6 @@ session_unset();  // Unset all session variables
 session_destroy();  // Destroy the session itself
 
 // Redirect to the homepage or login page
-header("Location: ../../index.php");  // Change 'index.php' to the page you want to redirect to
+header("Location: ../index.php");  // Change 'index.php' to the page you want to redirect to
 exit();
 ?>
