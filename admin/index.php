@@ -54,9 +54,6 @@ if (substr($request, -4) == '.php') {
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.js"></script>
-
   <!-- reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
 
@@ -68,7 +65,118 @@ if (substr($request, -4) == '.php') {
   </script>
 
   <style>
-    /* Your existing CSS remains unchanged */
+    body {
+      background-image: url('picture1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      height: 100vh;
+    }
+
+    .custom-offset {
+      margin-left: 63%;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-options a {
+      font-size: 0.9em;
+    }
+
+    .login-panel {
+      position: absolute;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      margin: 10% auto;
+      padding: 30px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      border-radius: 8px;
+    }
+
+    .panel-heading {
+      text-align: center;
+    }
+
+    .panel-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-control {
+      border-radius: 5px;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      width: 100%;
+    }
+
+    .submit {
+      background-color: #28a745;
+      border: none;
+      padding: 15px;
+      font-size: 18px;
+      color: white;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .submit:hover {
+      background-color: #218838;
+    }
+
+    .back-to-login {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -81,6 +189,7 @@ if (substr($request, -4) == '.php') {
             <h3 class="panel-title" id="panelTitle">Sign In</h3>
           </div>
           <div class="panel-body">
+            <div id="msg"></div>
             <div id="loginForm">
               <form role="form" id="form_action" method="POST">
                 <fieldset>
@@ -127,8 +236,15 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
 
+  <div id="termsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Terms and Conditions</h2>
+      <p>[Insert your terms and conditions here.]</p>
+    </div>
+  </div>
+
   <script>
-    // Terms Modal Functionality
     const termsModal = document.getElementById('termsModal');
     const termsLink = document.getElementById('viewTerms');
     const closeModal = document.querySelector('.close');
@@ -139,7 +255,7 @@ if (substr($request, -4) == '.php') {
     const backToLoginLink = document.getElementById('backToLoginLink');
     const panelTitle = document.getElementById('panelTitle');
 
-    // Terms Modal
+    // Terms Modal Functionality
     termsLink.addEventListener('click', function (e) {
       e.preventDefault();
       termsModal.style.display = 'block';
@@ -181,20 +297,12 @@ if (substr($request, -4) == '.php') {
         const termsCheckbox = $('#termsCheckbox').is(':checked');
 
         if (!email_address || !user_password) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Please fill in both fields.',
-          });
+          $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
           return;
         }
 
         if (!termsCheckbox) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'You must agree to the terms and conditions.',
-          });
+          $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
           return;
         }
 
@@ -203,28 +311,15 @@ if (substr($request, -4) == '.php') {
           url: 'public/login_process.php',
           data: { email_address, user_password },
           success: function (response) {
-            if (response.includes('Success')) {
-              Swal.fire({
-                icon: 'success',
-                title: 'Login Successful!',
-                text: 'You are successfully logged in.',
-              }).then(() => {
-                window.location.href = "dashboard.php"; // Redirect to dashboard
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Login Failed',
-                text: response,
-              });
+            $('#msg').html(response);
+            if ($('#msg .alert-danger').length) {
+              setTimeout(function () {
+                $('#msg .alert-danger').fadeOut();
+              }, 2000);
             }
           },
           error: function () {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Error logging in. Please try again later.',
-            });
+            $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
           }
         });
       } 
@@ -233,11 +328,7 @@ if (substr($request, -4) == '.php') {
         const forgot_email = $('input[alt="forgot_email"]').val().trim();
 
         if (!forgot_email) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Please enter your email address.',
-          });
+          $('#msg').html('<p class="text-danger">Please enter your email address.</p>');
           return;
         }
 
@@ -246,30 +337,17 @@ if (substr($request, -4) == '.php') {
           url: 'forgot_password_process.php',
           data: { email_address: forgot_email },
           success: function (response) {
-            if (response.includes('Success')) {
-              Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: 'A reset link has been sent to your email.',
-              }).then(function () {
+            $('#msg').html(response);
+            if ($('#msg .alert-success').length) {
+              setTimeout(function () {
                 forgotPasswordForm.style.display = 'none';
                 loginForm.style.display = 'block';
                 panelTitle.textContent = 'Sign In';
-              });
-            } else {
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: response,
-              });
+              }, 2000);
             }
           },
           error: function () {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'Error processing password reset. Please try again later.',
-            });
+            $('#msg').html('<p class="text-danger">Error processing password reset. Please try again later.</p>');
           }
         });
       }
