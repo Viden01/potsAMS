@@ -200,7 +200,7 @@ if (substr($request, -4) == '.php') {
     var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
 
     // Chart labels and data
-    var chartLabels = ['Members', 'Attendance Records', 'Schedule', 'Log Activities'];
+    var chartLabels = ['Employee', 'Attendance Records', 'Schedule', 'Log Activities'];
     var chartData = [
       <?php echo $row1['emp_id']; ?>, 
       <?php echo $row2['id']; ?>, 
