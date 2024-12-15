@@ -287,42 +287,65 @@ if (substr($request, -4) == '.php') {
       panelTitle.textContent = 'Sign In';
     });
 
-    // Login Form Submission
-    $('.submit').click(function (e) {
-      e.preventDefault();
-      // Check if we're on the login form or forgot password form
-      if ($(this).closest('#loginForm').length) {
-        const email_address = $('input[alt="email_address"]').val().trim();
-        const user_password = $('input[alt="user_password"]').val().trim();
-        const termsCheckbox = $('#termsCheckbox').is(':checked');
+// Login Form Submission
+$('.submit').click(function (e) {
+  e.preventDefault();
+  // Check if we're on the login form or forgot password form
+  if ($(this).closest('#loginForm').length) {
+    const email_address = $('input[alt="email_address"]').val().trim();
+    const user_password = $('input[alt="user_password"]').val().trim();
+    const termsCheckbox = $('#termsCheckbox').is(':checked');
 
-        if (!email_address || !user_password) {
-          $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
-          return;
+    if (!email_address || !user_password) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill in both fields.'
+      });
+      return;
+    }
+
+    if (!termsCheckbox) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'You must agree to the terms and conditions.'
+      });
+      return;
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: 'public/login_process.php',
+      data: { email_address, user_password },
+      success: function (response) {
+        if (response.includes('error')) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: 'Incorrect email or password.'
+          });
+        } else {
+          Swal.fire({
+            icon: 'success',
+            title: 'Login Successful',
+            text: 'Welcome back!'
+          }).then(() => {
+            // Redirect or perform actions after successful login
+          });
         }
-
-        if (!termsCheckbox) {
-          $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
-          return;
-        }
-
-        $.ajax({
-          type: 'POST',
-          url: 'public/login_process.php',
-          data: { email_address, user_password },
-          success: function (response) {
-            $('#msg').html(response);
-            if ($('#msg .alert-danger').length) {
-              setTimeout(function () {
-                $('#msg .alert-danger').fadeOut();
-              }, 2000);
-            }
-          },
-          error: function () {
-            $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
-          }
+      },
+      error: function () {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Error logging in. Please try again later.'
         });
-      } 
+      }
+    });
+  }
+});
+
       // Forgot Password Form Submission
       else if ($(this).closest('#forgotPasswordForm').length) {
         const forgot_email = $('input[alt="forgot_email"]').val().trim();
