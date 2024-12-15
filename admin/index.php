@@ -57,9 +57,6 @@ if (substr($request, -4) == '.php') {
   <!-- reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
 
-  <!-- SweetAlert2 CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
   <!-- Disable right-click -->
   <script>
     document.addEventListener('contextmenu', function (e) {
@@ -300,20 +297,12 @@ if (substr($request, -4) == '.php') {
         const termsCheckbox = $('#termsCheckbox').is(':checked');
 
         if (!email_address || !user_password) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Please fill in both fields.'
-          });
+          $('#msg').html('<p class="text-danger">Please fill in both fields.</p>');
           return;
         }
 
         if (!termsCheckbox) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'You must agree to the terms and conditions.'
-          });
+          $('#msg').html('<p class="text-danger">You must agree to the terms and conditions.</p>');
           return;
         }
 
@@ -330,11 +319,7 @@ if (substr($request, -4) == '.php') {
             }
           },
           error: function () {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'Error logging in. Please try again later.'
-            });
+            $('#msg').html('<p class="text-danger">Error logging in. Please try again later.</p>');
           }
         });
       } 
@@ -343,11 +328,7 @@ if (substr($request, -4) == '.php') {
         const forgot_email = $('input[alt="forgot_email"]').val().trim();
 
         if (!forgot_email) {
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Please enter your email address.'
-          });
+          $('#msg').html('<p class="text-danger">Please enter your email address.</p>');
           return;
         }
 
@@ -366,11 +347,7 @@ if (substr($request, -4) == '.php') {
             }
           },
           error: function () {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error!',
-              text: 'Error processing password reset. Please try again later.'
-            });
+            $('#msg').html('<p class="text-danger">Error processing password reset. Please try again later.</p>');
           }
         });
       }
