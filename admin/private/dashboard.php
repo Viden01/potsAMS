@@ -205,7 +205,7 @@ if (substr($request, -4) == '.php') {
       <?php echo $row1['emp_id']; ?>, 
       <?php echo $row2['id']; ?>, 
       <?php echo $row3['ids']; ?>, 
-      <?php echo $row4['log_id']; ?>
+      <?php echo $row4['id']; ?>
     ];
 
     // Calculate total for percentage calculations
