@@ -53,6 +53,8 @@ if (substr($request, -4) == '.php') {
   <link href="private/assets/css/style.css" rel="stylesheet" />
   <link href="private/assets/css/main-style.css" rel="stylesheet" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  <!-- reCAPTCHA v3 -->
+  <script src="https://www.google.com/recaptcha/api.js?render=6Le4KpUqAAAAAEvYzCj1R_cz4IMSvMGdPpQ9vmy9"></script>
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <!-- Disable right-click -->
@@ -173,25 +175,13 @@ if (substr($request, -4) == '.php') {
   </div>
 
   <script>
-    let loginAttempts = 3;
-
+    // Login Form Submission
     $('#loginBtn').click(function (e) {
       e.preventDefault();
 
       const email = $('input[alt="email_address"]').val().trim();
       const password = $('input[alt="user_password"]').val().trim();
       const termsAccepted = $('#termsCheckbox').is(':checked');
-
-      // Check for remaining login attempts
-      if (loginAttempts <= 0) {
-        Swal.fire({
-          icon: 'error',
-          title: 'Account Locked',
-          text: 'You have used all login attempts. Please try again later.',
-        });
-        $('#loginBtn').prop('disabled', true);
-        return;
-      }
 
       // Validation
       if (!email || !password) {
@@ -222,22 +212,16 @@ if (substr($request, -4) == '.php') {
             Swal.fire({
               icon: 'success',
               title: 'Login Successful',
-              text: 'You will be redirected shortly!',
+              text: 'Redirecting to your dashboard...',
             }).then(() => {
-              window.location.href = 'dashboard.php'; // Redirect to the dashboard
+              window.location.href = 'dashboard.php'; // Ensure correct path
             });
           } else {
-            loginAttempts--;
             Swal.fire({
               icon: 'error',
               title: 'Login Failed',
-              text: `Invalid credentials. You have ${loginAttempts} attempt(s) remaining.`,
+              text: 'Invalid credentials. Please try again.',
             });
-
-            // Disable button if attempts are exhausted
-            if (loginAttempts <= 0) {
-              $('#loginBtn').prop('disabled', true);
-            }
           }
         },
         error: function () {
