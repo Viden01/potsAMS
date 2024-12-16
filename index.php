@@ -213,14 +213,26 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
         document.getElementById('attendanceForm').addEventListener('submit', (event) => {
     // Check if Employee ID is provided
     if (!employeeIdInput.value.trim()) {
-        alert('Please enter your Employee ID.');
+        // Display SweetAlert2 alert
+        Swal.fire({
+            title: 'Error!',
+            text: 'Please enter your Employee ID.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
         event.preventDefault();  // Prevent form submission
         return;
     }
 
     // Check if the photo is captured
     if (!photoInput.value.trim()) {
-        alert('Please capture a photo before submitting.');
+        // Display SweetAlert2 alert
+        Swal.fire({
+            title: 'Error!',
+            text: 'Please capture a photo before submitting.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
         event.preventDefault();  // Prevent form submission
         return;
     }
@@ -236,6 +248,7 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
         timeOutInput.value = ''; // Clear time-out if time-in is selected
     }
 });
+
 
     </script>
 </body>
