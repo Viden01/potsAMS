@@ -11,7 +11,7 @@ include('header/head.php');
 include('header/sidebar_menu.php');
 
 // Function to generate a new Employee ID
-function generateEmployeeID($conn, $prefix = "EMP") {
+function generateEmployeeID($conn, $prefix = "POTS") {
     // Find the last employee ID with the given prefix
     $sql = "SELECT emp_id FROM employee_records WHERE emp_id LIKE '$prefix%' ORDER BY emp_id DESC LIMIT 1";
     $result = $conn->query($sql);
@@ -24,14 +24,14 @@ function generateEmployeeID($conn, $prefix = "EMP") {
         $numeric_part = (int)filter_var($last_id, FILTER_SANITIZE_NUMBER_INT);
 
         // Increment the numeric part for the new ID
-        $new_numeric_part = str_pad($numeric_part + 1, 3, '0', STR_PAD_LEFT);
+        $new_numeric_part = str_pad($numeric_part + 1, 2, '0', STR_PAD_LEFT); // 2 digits
     } else {
-        // Start with 001 if no previous ID exists
-        $new_numeric_part = "001";
+        // Start with 01 if no previous ID exists
+        $new_numeric_part = "01";
     }
 
     // Combine the prefix and new numeric part
-    return $prefix . $new_numeric_part;
+    return $prefix . "-" . $new_numeric_part;
 }
 
 ?>
