@@ -11,7 +11,7 @@ include('header/head.php');
 include('header/sidebar_menu.php');
 
 // Function to generate a new Employee ID
-function generateEmployeeID($conn, $prefix = "POTS") {
+function generateEmployeeID($conn, $prefix = "EMP") {
     // Find the last employee ID with the given prefix
     $sql = "SELECT emp_id FROM employee_records WHERE emp_id LIKE '$prefix%' ORDER BY emp_id DESC LIMIT 1";
     $result = $conn->query($sql);
