@@ -1,30 +1,6 @@
 <?php
 include '../../connection/db_conn.php';
 
-// Include the function to generate employee ID
-function generateEmployeeID($conn, $prefix = "POTS") {
-    // Find the last employee ID with the given prefix
-    $sql = "SELECT emp_id FROM employee_records WHERE emp_id LIKE '$prefix%' ORDER BY emp_id DESC LIMIT 1";
-    $result = $conn->query($sql);
-
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $last_id = $row['emp_id'];
-
-        // Extract the numeric part of the last ID
-        $numeric_part = (int)filter_var($last_id, FILTER_SANITIZE_NUMBER_INT);
-
-        // Increment the numeric part for the new ID
-        $new_numeric_part = str_pad($numeric_part + 1, 2, '0', STR_PAD_LEFT); // 2 digits
-    } else {
-        // Start with 01 if no previous ID exists
-        $new_numeric_part = "01";
-    }
-
-    // Combine the prefix and new numeric part
-    return $prefix . "-" . $new_numeric_part;
-}
-
 // Retrieve input data from the form
 $first_name = ucfirst(trim($_POST['first_name']));
 $middle_name = ucfirst(trim($_POST['middle_name']));
@@ -81,10 +57,10 @@ if ($stmt->get_result()->num_rows > 0) {
 }
 
 // Generate unique employee ID
-$employee_id = generateEmployeeID($conn, "POTS");
+$employee_id = strtoupper(substr(md5(uniqid()), 0, 6));
 
 // Insert the new employee record into the database
-$sql = "INSERT INTO employee_records (emp_id, first_name, middle_name, last_name, complete_address, birth_date, Mobile_number, gender, position_id, marital_status, schedule_id, profile_pic, date_created)
+$sql = "INSERT INTO employee_records (employee_id, first_name, middle_name, last_name, complete_address, birth_date, Mobile_number, gender, position_id, marital_status, schedule_id, profile_pic, date_created)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
 $stmt = $conn->prepare($sql);

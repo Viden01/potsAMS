@@ -24,14 +24,14 @@ function generateEmployeeID($conn, $prefix = "POTS") {
         $numeric_part = (int)filter_var($last_id, FILTER_SANITIZE_NUMBER_INT);
 
         // Increment the numeric part for the new ID
-        $new_numeric_part = str_pad($numeric_part + 1, 2, '0', STR_PAD_LEFT); // 2 digits
+        $new_numeric_part = str_pad($numeric_part + 1, 3, '0', STR_PAD_LEFT);
     } else {
-        // Start with 01 if no previous ID exists
-        $new_numeric_part = "01";
+        // Start with 001 if no previous ID exists
+        $new_numeric_part = "001";
     }
 
     // Combine the prefix and new numeric part
-    return $prefix . "-" . $new_numeric_part;
+    return $prefix . $new_numeric_part;
 }
 
 ?>
