@@ -56,27 +56,11 @@ if ($stmt->get_result()->num_rows > 0) {
     exit();
 }
 
-// Generate unique employee ID using the new format
-function generateEmployeeID($conn, $prefix = "AWG") {
-    $sql = "SELECT emp_id FROM employee_records WHERE emp_id LIKE '$prefix%' ORDER BY emp_id DESC LIMIT 1";
-    $result = $conn->query($sql);
-
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $last_id = $row['emp_id'];
-        $numeric_part = (int)substr($last_id, strlen($prefix));
-        $new_numeric_part = str_pad($numeric_part + 1, 3, '0', STR_PAD_LEFT);
-    } else {
-        $new_numeric_part = "001";
-    }
-
-    return $prefix . $new_numeric_part;
-}
-
-$employee_id = generateEmployeeID($conn);
+// Generate unique employee ID
+$employee_id = strtoupper(substr(md5(uniqid()), 0, 6));
 
 // Insert the new employee record into the database
-$sql = "INSERT INTO employee_records (emp_id, first_name, middle_name, last_name, complete_address, birth_date, Mobile_number, gender, position_id, marital_status, schedule_id, profile_pic, date_created)
+$sql = "INSERT INTO employee_records (employee_id, first_name, middle_name, last_name, complete_address, birth_date, Mobile_number, gender, position_id, marital_status, schedule_id, profile_pic, date_created)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
 $stmt = $conn->prepare($sql);
