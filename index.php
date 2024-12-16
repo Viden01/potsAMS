@@ -210,19 +210,33 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
             submitAttendanceButton.disabled = true; // Disable the submit button until a new photo is taken
         });
 
-        // When the form is submitted, record the selected attendance type
         document.getElementById('attendanceForm').addEventListener('submit', (event) => {
-            // Check if the user selects Time-In or Time-Out
-            const selectedAttendanceType = attendanceTypeSelect.value;
+    // Check if Employee ID is provided
+    if (!employeeIdInput.value.trim()) {
+        alert('Please enter your Employee ID.');
+        event.preventDefault();  // Prevent form submission
+        return;
+    }
 
-            if (selectedAttendanceType === 'time_out') {
-                // If Time-Out is selected, record time-out
-                timeOutInput.value = new Date().toISOString();
-            } else {
-                // If Time-In is selected, ensure time-out is not sent
-                timeOutInput.value = ''; // Clear time-out if time-in is selected
-            }
-        });
+    // Check if the photo is captured
+    if (!photoInput.value.trim()) {
+        alert('Please capture a photo before submitting.');
+        event.preventDefault();  // Prevent form submission
+        return;
+    }
+
+    // Check if the attendance type is selected
+    const selectedAttendanceType = attendanceTypeSelect.value;
+
+    if (selectedAttendanceType === 'time_out') {
+        // If Time-Out is selected, record time-out
+        timeOutInput.value = new Date().toISOString();
+    } else {
+        // If Time-In is selected, ensure time-out is not sent
+        timeOutInput.value = ''; // Clear time-out if time-in is selected
+    }
+});
+
     </script>
 </body>
 
