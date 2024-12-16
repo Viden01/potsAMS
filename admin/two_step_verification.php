@@ -26,7 +26,9 @@ if (substr($request, -4) == '.php') {
 
     <style>
         body {
-            background-color: #f4f4f4;
+            background-image: url('private/images/background5.jpg');
+            background-size: cover;
+            background-position: center;
             display: flex;
             justify-content: center;
             align-items: center;
