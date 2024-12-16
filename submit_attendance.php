@@ -11,6 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $employee_id = $conn->real_escape_string(strip_tags($_POST['employee_id']));
     $photo_data = $_POST['photo'];
 
+    // Validate employee ID
+    if (empty($employee_id)) {
+        echo "Employee ID is required.";
+        exit();
+    }
+
     // Decode and save the image
     if (!empty($photo_data)) {
         $folderPath = "../../uploads/";
