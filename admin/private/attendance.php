@@ -46,8 +46,7 @@ $sql = "SELECT
             employee_attendance.time_out, 
             employee_attendance.status, 
             employee_attendance.date_attendance, 
-            employee_attendance.photo_path,
-         
+            employee_attendance.photo_path, 
             employee_attendance.id AS attend
         FROM employee_attendance 
         LEFT JOIN employee_records 
@@ -91,7 +90,6 @@ if ($query === FALSE) {
                 <td>".$status."</td>
                 <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
                 <td>".$photo_display."</td>
-               
                 <td>
                     <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
                         <i class='fa fa-trash'></i> Delete
