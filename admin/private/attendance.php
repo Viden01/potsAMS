@@ -35,7 +35,6 @@
                         <th>Action</th>
                     </thead>
                     <tbody>
-           
                     <?php
 $sql = "SELECT 
             employee_records.emp_id AS employee_id, 
@@ -66,10 +65,7 @@ if ($query === FALSE) {
             continue; // Skip rows with no matching employee record
         }
 
-        // Use 24-hour time format (H:i:s)
-        $time_in_display = !empty($row['time_in']) ? date('H:i:s', strtotime(htmlentities($row['time_in']))) : '00:00:00';
-        $time_out_display = !empty($row['time_out']) ? date('H:i:s', strtotime(htmlentities($row['time_out']))) : '00:00:00';
-
+        $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '00:00';
         $status = ($row['status']) 
             ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
             : '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
@@ -84,8 +80,9 @@ if ($query === FALSE) {
                 <td class='hidden'></td>
                 <td>".htmlentities($row['employee_id'])."</td>
                 <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
-              <td>".htmlentities($time_in_display)."</td>
-                <td>".htmlentities($time_out_display)."</td>
+                <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
+              
+                <td>".date('h:i A', strtotime(htmlentities($row['time_out'])))."</td>
                 <td>".$status."</td>
                 <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
                 <td>".$photo_display."</td>
@@ -99,7 +96,6 @@ if ($query === FALSE) {
     }
 }
 ?>
-
 
                     </tbody>
                 </table>
