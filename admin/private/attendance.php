@@ -99,7 +99,7 @@
                 <td>".$status."</td>
                 <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
                 <td>".$photo_display."</td>
-                     <td>".htmlentities($row['lattitude'])."</td>
+                     <td>".htmlentities($row['latitude'])."</td>
                 <td>
                     <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
                         <i class='fa fa-trash'></i> Delete
