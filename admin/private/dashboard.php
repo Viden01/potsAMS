@@ -177,7 +177,7 @@ if (substr($request, -4) == '.php') {
     <a href="attendance.php" style="text-decoration: none;">
     <div class="alert-modern" style="background-color: #2196f3;">
           <i class="fa fa-eye"></i>
-          <div class="value"><?php echo $row2['log_id']; ?></div>
+          <div class="value"><?php echo $row2['id']; ?></div>
           <div>Log Activities</div>
         </div>
       </div>
