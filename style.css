@@ -85,12 +85,23 @@ button:disabled {
     width: 100%;
     max-width: 300px;
 }
-
 .action-buttons {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;     /* Centers vertically */
+    margin-top: 20px;        /* Optional: adds space above the button */
 }
+
+#capture {
+    padding: 10px 20px;      /* Adds padding inside the button */
+    font-size: 16px;         /* Adjusts the font size */
+    cursor: pointer;        /* Changes the cursor to a pointer when hovering */
+    border: none;            /* Optional: removes border */
+    background-color: #4CAF50; /* Optional: sets button color */
+    color: white;            /* Optional: changes text color */
+    border-radius: 5px;      /* Optional: adds rounded corners */
+}
+
 
 .action-buttons button {
     width: 48%;
