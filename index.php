@@ -18,7 +18,7 @@ include "header/security.php";
 </head>
 
 <body>
-    <div class="container">
+    <div class="container text-center">
         <h3>Attendance Tracker</h3>
 
         <div>
