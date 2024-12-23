@@ -26,16 +26,15 @@ include "header/security.php";
             <canvas id="canvas"></canvas>
         </div>
 
-        <div class="action-buttons">
-            <button id="capture">Capture Photo</button>
-            <button id="submitPhoto">Submit Photo</button>
-        </div>
+      <div class="form-group">
+         <button id="capture">Capture Photo</button>
+      </div>
 
         <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <input type="text" name="employee_id" placeholder="Employee ID" id="employee_id" required>
             </div>
-            <input type="hidden" name="photo" id="photo">
+            <input type="hidden" name="photo" id="photo" type="image/png">
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
             <!-- Hidden inputs for latitude and longitude -->
