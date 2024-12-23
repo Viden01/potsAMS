@@ -20,6 +20,10 @@ include "header/security.php";
 <body>
     <div class="container">
         <h3>Attendance Tracker</h3>
+        <br>
+        <input type="text" name="latitude" id="latitude">
+            <input type="text" name="longitude" id="longitude">
+
 
         <div>
             <video id="video" autoplay></video>
@@ -35,13 +39,16 @@ include "header/security.php";
             <div class="form-group">
                 <input type="text" name="employee_id" placeholder="Employee ID" id="employee_id" required>
             </div>
-            <input type="hidden" name="photo" id="photo">
+            
+            <div class="form-group">
+                <label for="photo">Upload Photo</label>
+                <input type="file" name="photo" id="photo" accept="image/*" required>
+            </div>
+
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
             <!-- Hidden inputs for latitude and longitude -->
-            <input type="text" name="latitude" id="latitude">
-            <input type="text" name="longitude" id="longitude">
-
+            
             <!-- Dropdown for Attendance Type -->
             <div class="form-group">
                 <label for="attendance_type">Select Attendance Type: </label>
@@ -52,7 +59,7 @@ include "header/security.php";
             </div>
 
             <div class="form-group">
-                <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
+                <button type="submit" id="submitAttendance">Submit Attendance</button>
             </div>
         </form>
 

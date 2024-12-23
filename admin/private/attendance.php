@@ -76,7 +76,7 @@
 
             // Display photo if available
             $photo_display = !empty($row['photo_path']) 
-            ? "<img src='uploads/" . htmlentities($row['photo_path']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
+            ? "<img src='images/" . htmlentities($row['photo_path']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
             : "No Photo";
 
             // Generate the Google Maps link for the location
