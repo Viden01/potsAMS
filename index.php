@@ -26,12 +26,8 @@ include "header/security.php";
             <canvas id="canvas"></canvas>
         </div>
 
-       <center>
-       <div class="action-buttons">
-            <button id="capture">Capture Photo</button>
-           
-        </div>
-       </center>
+    <div class="form-group"> <button id="capture">Capture Photo</button>
+    </div>
 
         <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
