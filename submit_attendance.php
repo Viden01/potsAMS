@@ -63,9 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // If "time_in" is selected, insert time_in and photo path
         if ($attendance_type === 'time_in') {
+            // Add 8 hours to date_attendance and time_in
             $sql = "
                 INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
-                VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), 'null', '$file_name')
+                VALUES ('$employee_id', DATE_ADD(CURDATE(), INTERVAL 8 HOUR), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), 'null', '$file_name')
             ";
 
             if ($conn->query($sql)) {
@@ -82,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         // If "time_out" is selected, update time_out only
         elseif ($attendance_type === 'time_out') {
+            // Add 8 hours to time_out
             $sql = "
                 UPDATE employee_attendance 
                 SET time_out = DATE_ADD(CURTIME(), INTERVAL 8 HOUR), photo_path = '$file_name' 
@@ -112,5 +114,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: index.php");
     exit();
 }
-
 ?>
