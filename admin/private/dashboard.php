@@ -208,9 +208,9 @@ $conn->close(); // Close the database connection
       <div class="col-md-12">
         <div class="card">
           <div class="card-header">
-            <div class="card-title">
+            <!-- <div class="card-title">
               Monthly Attendance Report
-            </div>
+            </div> -->
           </div>
           <div class="card-body">
               <div id="chart"></div>
