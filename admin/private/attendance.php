@@ -67,8 +67,8 @@ continue;
 }
 
 // Use 24-hour time format (H:i:s)
-$time_in_display = !empty($row['time_in']) ? date('H:i:s', strtotime(htmlentities($row['time_in']))) : '00:00:00';
-$time_out_display = !empty($row['time_out']) ? date('H:i:s', strtotime(htmlentities($row['time_out']))) : '00:00:00';
+$time_in_display = !empty($row['time_in']) ? date('H:i:s', strtotime(htmlentities($row['time_in']))) : 'n/a';
+$time_out_display = !empty($row['time_out']) ? date('H:i:s', strtotime(htmlentities($row['time_out']))) : 'n/a';
 
 $status = ($row['status']) 
 ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
