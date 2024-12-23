@@ -81,9 +81,9 @@ $name = "Julius Maru";
                 <li>
                     <a href="payroll.php"><i class="fa fa-file fa-fw"></i> Payroll</a>
                 </li>
-                <!--<li>
+                <li>
                     <a href="user_monitor.php"><i class="fa fa-eye fa-fw"></i> Admin logged</a>
-                </li> -->
+                </li> 
                 <li>
                     <a href="payroll.php?show=generate"><i class="fa fa-file fa-fw"></i> Reports</a>
                 </li>
