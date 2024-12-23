@@ -46,7 +46,8 @@ $sql = "SELECT
             employee_attendance.time_out, 
             employee_attendance.status, 
             employee_attendance.date_attendance, 
-            employee_attendance.photo_path, 
+            employee_attendance.photo_path,
+             employee_attendance.location, 
             employee_attendance.id AS attend
         FROM employee_attendance 
         LEFT JOIN employee_records 
