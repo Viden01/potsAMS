@@ -25,6 +25,30 @@ if (substr($request, -4) == '.php') {
     exit();
 }
 ?>
+
+<?php
+include('../connection/db_conn.php'); // Including your DB connection
+
+// SQL query to get the count of attendance by month for the current year
+$sql = "SELECT MONTHNAME(date_attendance) AS month, COUNT(*) AS attendance_count
+        FROM employee_attendance
+        WHERE YEAR(date_attendance) = YEAR(CURDATE())
+        GROUP BY MONTH(date_attendance)
+        ORDER BY MONTH(date_attendance)";
+
+$result = $conn->query($sql);
+
+// Initialize arrays to store months and attendance count
+$months = [];
+$attendanceCounts = [];
+
+while ($row = $result->fetch_assoc()) {
+    $months[] = $row['month']; // Store month names
+    $attendanceCounts[] = $row['attendance_count']; // Store attendance count for each month
+}
+
+$conn->close(); // Close the database connection
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -196,45 +220,44 @@ if (substr($request, -4) == '.php') {
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
-   var options = {
-          series: [{
-            name: "Desktops",
-            data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-        }],
-          chart: {
-          height: 350,
-          type: 'line',
-          zoom: {
-            enabled: false
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          curve: 'straight'
-        },
-        title: {
-          text: 'Product Trends by Month',
-          align: 'left'
-        },
-        grid: {
-          row: {
-            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-            opacity: 0.5
-          },
-        },
-        xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-        }
+  <script>
+        var options = {
+            series: [{
+                name: "Attendance Count",
+                data: <?php echo json_encode($attendanceCounts); ?> // PHP to JavaScript variable
+            }],
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'straight'
+            },
+            title: {
+                text: 'Monthly Attendance Report',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'], // Alternating row colors
+                    opacity: 0.5
+                },
+            },
+            xaxis: {
+                categories: <?php echo json_encode($months); ?> // PHP to JavaScript variable
+            }
         };
 
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
-      
-      
-</script>
+    </script>
+
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     // Bar Chart Configuration
