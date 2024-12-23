@@ -27,7 +27,7 @@ include "header/security.php";
         </div>
 
        <center>
-       <div class="action-buttons text-center d-flex ms-auto">
+       <div class="action-buttons">
             <button id="capture">Capture Photo</button>
            
         </div>
