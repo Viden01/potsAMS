@@ -69,8 +69,8 @@ if ($query === FALSE) {
         }
 
          // Use 12-hour time format (h:i A)
-         $time_in_display = !empty($row['time_in']) ? date('h:i A', strtotime(htmlentities($row['time_in']))) : '12:00 AM';
-         $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '12:00 AM';
+         $time_in_display = !empty($row['time_in']) ? date('h:i A', strtotime(htmlentities($row['time_in']))) : '00:00:00';
+         $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) :'00:00:00';
  
       
         $status = ($row['status']) 
