@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Security headers
 header("Strict-Transport-Security: max-age=31536000; includeSubDomains");
 header("X-Frame-Options: SAMEORIGIN");
@@ -15,6 +16,8 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Capture and Submit Photo</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -155,6 +158,23 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
             </div>
         </form>
     </div>
+
+    <!-- crud sweetalerts  this is included inside all the pages below uaing include-->
+<?php
+if (isset($_SESSION['status']) && $_SESSION['status'] != '') {
+?>
+<script>
+Swal.fire({
+    icon: "<?php echo $_SESSION['status_icon']; ?>",
+    title: "<?php echo $_SESSION['status']; ?>",
+    confirmButtonText: "Ok"
+});
+</script>
+<?php
+unset($_SESSION['status']);
+unset($_SESSION['status_icon']);
+}
+?>
 
     <script>
         const video = document.getElementById('video');

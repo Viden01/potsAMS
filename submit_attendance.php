@@ -1,4 +1,6 @@
 <?php
+session_start(); // Start the session to store messages
+
 include($_SERVER['DOCUMENT_ROOT'] . '/connection/db_conn.php'); // Adjust the path if necessary
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,7 +16,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate employee ID
     if (empty($employee_id)) {
-        echo json_encode(['status' => 'error', 'message' => 'Employee ID is required.']);
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_icon'] = 'error';
+        $_SESSION['message'] = 'Employee ID is required.';
+        header("Location: index.php");
+        exit();
+    }
+
+    // Check if the employee has already clocked in today
+    $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()";
+    $result = $conn->query($checkSql);
+
+    if ($result->num_rows > 0) {
+        // Employee has already clocked in today
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_icon'] = 'error';
+        $_SESSION['message'] = 'You have already clocked in today.';
+        header("Location: index.php");
         exit();
     }
 
@@ -36,21 +54,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // Store the photo path, current date, time, and default timeout in the database
+        // Store the photo path, current date, time (with 8 hours added), and default timeout in the database
         $sql = "
             INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
-            VALUES ('$employee_id', CURDATE(), CURTIME(), '00:00:00', '$file_name')
+            VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), '00:00:00', '$file_name')
         ";
 
         if ($conn->query($sql)) {
-            echo json_encode(['status' => 'success', 'message' => 'Attendance recorded successfully.']);
+            $_SESSION['status'] = 'success';
+            $_SESSION['status_icon'] = 'success';
+            $_SESSION['message'] = 'Attendance recorded successfully.';
+            header("Location: index.php");
+            exit();
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Failed to submit attendance. Error: ' . $conn->error]);
+            $_SESSION['status'] = 'error';
+            $_SESSION['status_icon'] = 'error';
+            $_SESSION['message'] = 'Failed to submit attendance. Error: ' . $conn->error;
+            header("Location: index.php");
+            exit();
         }
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'No photo captured.']);
+        $_SESSION['status'] = 'error';
+        $_SESSION['status_icon'] = 'error';
+        $_SESSION['message'] = 'No photo captured.';
+        header("Location: index.php");
+        exit();
     }
 } else {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
+    $_SESSION['status'] = 'error';
+    $_SESSION['status_icon'] = 'error';
+    $_SESSION['message'] = 'Invalid request method.';
+    header("Location: index.php");
+    exit();
 }
 ?>
