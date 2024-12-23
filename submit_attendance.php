@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $sql = "
                 INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path, latitude, longitude) 
-                VALUES ('$employee_id', '$adjusted_date', '$adjusted_time', NULL, '$file_name', '$latitude', '$longitude')
+                VALUES ('$employee_id', '$adjusted_date', '$adjusted_time', 'NULL', '$file_name', '$latitude', '$longitude')
             ";
 
             if ($conn->query($sql)) {
