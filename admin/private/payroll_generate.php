@@ -137,6 +137,7 @@ $content .= '
     <br><br>
     <table border="0" cellspacing="5" cellpadding="3" align="center">
         <tr>
+        <h2> Vincent Bayawa <h2>
             <td align="center" style="border-top: 1px solid #000;">
                 <b>Prepared By</b><br>
                 <i>HR Manager</i>
