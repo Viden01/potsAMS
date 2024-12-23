@@ -122,6 +122,32 @@ $content .= '
 $content .= generateRow($from, $to, $conn, $deduction);  
 $content .= '</table>';  
 
+// Add signatories section
+$content .= '
+    <br><br>
+    <div style="text-align:center;">
+        <h4>Signatories</h4>
+    </div>
+    <br><br>
+    <table border="0" cellspacing="5" cellpadding="3" align="center">
+        <tr>
+            <td align="center" style="border-top: 1px solid #000;">
+                <b>Prepared By</b><br>
+                <i>HR Manager</i>
+            </td>
+            <td align="center" style="border-top: 1px solid #000;">
+                <b>Checked By</b><br>
+                <i>Finance Manager</i>
+            </td>
+            <td align="center" style="border-top: 1px solid #000;">
+                <b>Approved By</b><br>
+                <i>General Manager</i>
+            </td>
+        </tr>
+    </table>
+    <br><br>
+';
+
 $pdf->writeHTML($content);  
 $pdf->Output('payroll.pdf', 'I');
 ?>
