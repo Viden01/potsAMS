@@ -14,3 +14,6 @@ unset($_SESSION['status']);
 unset($_SESSION['status_icon']);
 }
 ?>
+
+  $_SESSION['status'] = "Invalid file type. Only JPG, JPEG, PNG, and GIF files are allowed.";
+          $_SESSION['status_icon'] = "error";
