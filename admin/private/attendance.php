@@ -22,7 +22,7 @@
         <?php include 'modal/attendance_modal.php'; ?>
         <div class="panel-body">
             <div class="table-responsive">
-            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+              <table class="table table-striped table-bordered table-hover" id="dataTables-example">
     <thead>
         <th class="hidden"></th>
         <th>Employee ID</th>
@@ -99,7 +99,7 @@
                 <td>".$status."</td>
                 <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
                 <td>".$photo_display."</td>
-                     <td>".htmlentities($row['latitude'])."</td>
+                <td>".$location_display."</td>
                 <td>
                     <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
                         <i class='fa fa-trash'></i> Delete
