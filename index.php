@@ -28,7 +28,7 @@ include "header/security.php";
 
         <div class="action-buttons">
             <button id="capture">Capture Photo</button>
-          
+            <button id="submitPhoto">Submit Photo</button>
         </div>
 
         <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
@@ -40,8 +40,8 @@ include "header/security.php";
             <input type="hidden" name="time_out" id="time_out">
             <!-- Hidden inputs for latitude and longitude -->
              <br>
-            <input type="text" name="latitude" id="latitude" readonly>
-            <input type="text" name="longitude" id="longitude"readonly>
+            <input type="text" name="latitude" id="latitude">
+            <input type="text" name="longitude" id="longitude">
 
             <!-- Dropdown for Attendance Type -->
             <div class="form-group">
