@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($attendance_type === 'time_in') {
             $sql = "
                 INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path, latitude, longitude) 
-                VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), '00:00:00', '$file_name', '$latitude', '$longitude')
+                VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), 'null', '$file_name', '$latitude', '$longitude')
             ";
 
             if ($conn->query($sql)) {
