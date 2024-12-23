@@ -53,8 +53,13 @@ include "header/security.php";
                 <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
             </div>
         </form>
+
+        <!-- Display the retrieved location here -->
+        <div id="locationDisplay"></div>
     </div>
+
     <?php include "footer/sweetalert.php";?>
+    
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -67,6 +72,7 @@ include "header/security.php";
         const attendanceTypeSelect = document.getElementById('attendance_type');
         const employeeIdInput = document.getElementById('employee_id');
         const locationInput = document.getElementById('location'); // Location input field
+        const locationDisplay = document.getElementById('locationDisplay'); // Location display field
 
         // Access the user's camera
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -116,6 +122,9 @@ include "header/security.php";
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const location = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
                     locationInput.value = location;
+
+                    // Display the location in the #locationDisplay div
+                    locationDisplay.innerHTML = `Your location: ${location}`;
                 }, function() {
                     alert("Unable to retrieve your location.");
                 });
