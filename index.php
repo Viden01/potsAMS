@@ -39,7 +39,7 @@ include "header/security.php";
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
             <!-- Hidden inputs for latitude and longitude -->
-            <input type="hidden" name="latitude" id="latitude">
+            <input type="text" name="latitude" id="latitude">
             <input type="hidden" name="longitude" id="longitude">
 
             <!-- Dropdown for Attendance Type -->
