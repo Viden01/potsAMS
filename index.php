@@ -158,7 +158,9 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
             </div>
         </form>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    
     <!-- crud sweetalerts  this is included inside all the pages below uaing include-->
 <?php
 if (isset($_SESSION['status']) && $_SESSION['status'] != '') {
