@@ -81,7 +81,8 @@ if ($query === FALSE) {
                 <td>".htmlentities($row['employee_id'])."</td>
                 <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
                 <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
-                <td>".$time_out_display."</td>
+              
+                <td>".date('h:i A', strtotime(htmlentities($row['time_out'])))."</td>
                 <td>".$status."</td>
                 <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
                 <td>".$photo_display."</td>
