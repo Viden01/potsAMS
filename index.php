@@ -1,11 +1,7 @@
 <?php
 session_start();
 // Security headers
-header("Strict-Transport-Security: max-age=31536000; includeSubDomains");
-header("X-Frame-Options: SAMEORIGIN");
-header("X-Content-Type-Options: nosniff");
-header("Referrer-Policy: strict-origin-when-cross-origin");
-header("Permissions-Policy: geolocation=(self), microphone=()");
+include "footer/security.php";
 ?>
 
 <!DOCTYPE html>
@@ -59,23 +55,7 @@ header("Permissions-Policy: geolocation=(self), microphone=()");
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    
-    <!-- crud sweetalerts  this is included inside all the pages below uaing include-->
-<?php
-if (isset($_SESSION['status']) && $_SESSION['status'] != '') {
-?>
-<script>
-Swal.fire({
-    icon: "<?php echo $_SESSION['status_icon']; ?>",
-    title: "<?php echo $_SESSION['status']; ?>",
-    confirmButtonText: "Ok"
-});
-</script>
-<?php
-unset($_SESSION['status']);
-unset($_SESSION['status_icon']);
-}
-?>
+<?php include "footer/sweetalert.php";?>
 
     <script>
         const video = document.getElementById('video');
