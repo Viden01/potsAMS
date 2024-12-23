@@ -35,8 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // Store the photo path in the database
-        $sql = "INSERT INTO employee_attendance (employee_id, photo_path) VALUES ('$employee_id', '$file_name')";
+        // Store the photo path, current date, and time in the database
+        $sql = "
+            INSERT INTO employee_attendance (employee_id, date_attendance, time_in, photo_path) 
+            VALUES ('$employee_id', CURDATE(), CURTIME(), '$file_name')
+        ";
 
         if ($conn->query($sql)) {
             // Redirect to the home page after success
