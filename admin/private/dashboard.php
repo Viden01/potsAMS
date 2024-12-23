@@ -25,14 +25,16 @@ if (substr($request, -4) == '.php') {
     exit();
 }
 ?>
+
 <?php
 include('../connection/db_conn.php'); // Include your DB connection
 
 // Get the current month and year
 $currentMonth = date('m');
 $currentYear = date('Y');
+$currentDay = date('d'); // Get the current day of the month
 
-// SQL query to get the attendance count for the current month
+// SQL query to get the attendance count for the current month and each day
 $sql = "SELECT DAY(date_attendance) AS day, COUNT(*) AS attendance_count
         FROM employee_attendance
         WHERE MONTH(date_attendance) = ? AND YEAR(date_attendance) = ?
@@ -45,17 +47,19 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 // Initialize arrays to store days and attendance count
-$days = [];
-$attendanceCounts = [];
+$days = range(1, $currentDay); // Array of days from 1 to current day
+$attendanceCounts = array_fill(0, $currentDay, 0); // Initialize all attendance counts to 0
 
+// Populate the attendance counts for the days with records
 while ($row = $result->fetch_assoc()) {
-    $days[] = $row['day']; // Store day of the month
-    $attendanceCounts[] = $row['attendance_count']; // Store attendance count for each day
+    $day = $row['day'];
+    $attendanceCounts[$day - 1] = $row['attendance_count']; // Adjust index for 0-based array
 }
 
 $stmt->close(); // Close the statement
 $conn->close(); // Close the database connection
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -268,6 +272,7 @@ $conn->close(); // Close the database connection
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
     </script>
+
 
   <script>
   document.addEventListener('DOMContentLoaded', function() {
