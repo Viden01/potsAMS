@@ -1,9 +1,3 @@
-<?php
-session_start();
-// Security headers
-include "header/security.php";
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,12 +14,10 @@ include "header/security.php";
 <body>
     <div class="container">
         <h3>Attendance Tracker</h3>
-
         <div>
             <video id="video" autoplay></video>
             <canvas id="canvas"></canvas>
         </div>
-
         <div class="action-buttons">
             <button id="capture">Capture Photo</button>
             <button id="submitPhoto">Submit Photo</button>
@@ -38,9 +30,9 @@ include "header/security.php";
             <input type="hidden" name="photo" id="photo">
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
-            <input type="hidden" name="location" id="location"> <!-- Hidden input for location -->
+            <input type="hidden" name="latitude" id="latitude">
+            <input type="hidden" name="longitude" id="longitude">
 
-            <!-- Dropdown for Attendance Type -->
             <div class="form-group">
                 <label for="attendance_type">Select Attendance Type: </label>
                 <select name="attendance_type" id="attendance_type">
@@ -53,13 +45,10 @@ include "header/security.php";
                 <button type="submit" disabled id="submitAttendance">Submit Attendance</button>
             </div>
         </form>
-
-        <!-- Display the retrieved location here -->
-        <div id="locationDisplay"></div>
     </div>
 
     <?php include "footer/sweetalert.php";?>
-    
+
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -71,10 +60,9 @@ include "header/security.php";
         const timeOutInput = document.getElementById('time_out');
         const attendanceTypeSelect = document.getElementById('attendance_type');
         const employeeIdInput = document.getElementById('employee_id');
-        const locationInput = document.getElementById('location'); // Location input field
-        const locationDisplay = document.getElementById('locationDisplay'); // Location display field
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
 
-        // Access the user's camera
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => {
                 video.srcObject = stream;
@@ -83,11 +71,10 @@ include "header/security.php";
                 console.error("Error accessing camera: ", err);
             });
 
-        // Capture and freeze the photo
         captureButton.addEventListener('click', () => {
             if (!employeeIdInput.value.trim()) {
                 alert('Please enter your Employee ID first.');
-                return; // Prevent capturing the photo if Employee ID is not entered
+                return;
             }
 
             const context = canvas.getContext('2d');
@@ -96,35 +83,32 @@ include "header/security.php";
             video.style.display = 'none';
             submitButton.style.display = 'inline';
 
-            // Convert the image to a base64 string
             const imageData = canvas.toDataURL('image/png');
             photoInput.value = imageData;
 
-            // Record time-in when the photo is captured
             const currentTime = new Date().toISOString();
             timeInInput.value = currentTime;
 
-            // Enable submit attendance button
             submitAttendanceButton.disabled = false;
+
+            getLocation();
         });
 
-        // Show video again for retake
         submitButton.addEventListener('click', () => {
             video.style.display = 'block';
             canvas.style.display = 'none';
             submitButton.style.display = 'none';
-            submitAttendanceButton.disabled = true; // Disable the submit button until a new photo is taken
+            submitAttendanceButton.disabled = true;
         });
 
-        // Get user's location and store it in the hidden input
         function getLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
-                    const location = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
-                    locationInput.value = location;
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
 
-                    // Display the location in the #locationDisplay div
-                    locationDisplay.innerHTML = `Your location: ${location}`;
+                    latitudeInput.value = latitude;
+                    longitudeInput.value = longitude;
                 }, function() {
                     alert("Unable to retrieve your location.");
                 });
@@ -133,49 +117,29 @@ include "header/security.php";
             }
         }
 
-        // Call the function to get location when the page loads
-        getLocation();
-
-        // Form submission validation
         document.getElementById('attendanceForm').addEventListener('submit', (event) => {
-            // Check if Employee ID is provided
             if (!employeeIdInput.value.trim()) {
-                // Display SweetAlert2 alert
                 Swal.fire({
                     title: 'Error!',
                     text: 'Please enter your Employee ID.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
-                event.preventDefault();  // Prevent form submission
+                event.preventDefault();
                 return;
             }
 
-            // Check if the photo is captured
             if (!photoInput.value.trim()) {
-                // Display SweetAlert2 alert
                 Swal.fire({
                     title: 'Error!',
                     text: 'Please capture a photo before submitting.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
-                event.preventDefault();  // Prevent form submission
+                event.preventDefault();
                 return;
             }
-
-            // Check if the attendance type is selected
-            const selectedAttendanceType = attendanceTypeSelect.value;
-
-            if (selectedAttendanceType === 'time_out') {
-                // If Time-Out is selected, record time-out
-                timeOutInput.value = new Date().toISOString();
-            } else {
-                // If Time-In is selected, ensure time-out is not sent
-                timeOutInput.value = ''; // Clear time-out if time-in is selected
-            }
         });
-
     </script>
 </body>
 </html>
