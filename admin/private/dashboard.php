@@ -25,30 +25,38 @@ if (substr($request, -4) == '.php') {
     exit();
 }
 ?>
-
 <?php
-include('../connection/db_conn.php'); // Including your DB connection
+include('../connection/db_conn.php'); // Include your DB connection
 
-// SQL query to get the count of attendance by month for the current year
-$sql = "SELECT MONTHNAME(date_attendance) AS month, COUNT(*) AS attendance_count
+// Get the current month and year
+$currentMonth = date('m');
+$currentYear = date('Y');
+
+// SQL query to get the attendance count for the current month
+$sql = "SELECT DAY(date_attendance) AS day, COUNT(*) AS attendance_count
         FROM employee_attendance
-        WHERE YEAR(date_attendance) = YEAR(CURDATE())
-        GROUP BY MONTH(date_attendance)
-        ORDER BY MONTH(date_attendance)";
+        WHERE MONTH(date_attendance) = ? AND YEAR(date_attendance) = ?
+        GROUP BY DAY(date_attendance)
+        ORDER BY DAY(date_attendance)";
 
-$result = $conn->query($sql);
+$stmt = $conn->prepare($sql);
+$stmt->bind_param('ii', $currentMonth, $currentYear); // Bind current month and year
+$stmt->execute();
+$result = $stmt->get_result();
 
-// Initialize arrays to store months and attendance count
-$months = [];
+// Initialize arrays to store days and attendance count
+$days = [];
 $attendanceCounts = [];
 
 while ($row = $result->fetch_assoc()) {
-    $months[] = $row['month']; // Store month names
-    $attendanceCounts[] = $row['attendance_count']; // Store attendance count for each month
+    $days[] = $row['day']; // Store day of the month
+    $attendanceCounts[] = $row['attendance_count']; // Store attendance count for each day
 }
 
+$stmt->close(); // Close the statement
 $conn->close(); // Close the database connection
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -237,10 +245,10 @@ $conn->close(); // Close the database connection
                 enabled: false
             },
             stroke: {
-                curve: 'straight'
+                curve: 'smooth'
             },
             title: {
-                text: 'Monthly Attendance Report',
+                text: 'Current Month Attendance Report',
                 align: 'left'
             },
             grid: {
@@ -250,7 +258,10 @@ $conn->close(); // Close the database connection
                 },
             },
             xaxis: {
-                categories: <?php echo json_encode($months); ?> // PHP to JavaScript variable
+                categories: <?php echo json_encode($days); ?>, // PHP to JavaScript variable for day labels
+                title: {
+                    text: 'Day of the Month'
+                }
             }
         };
 
