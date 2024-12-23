@@ -82,13 +82,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         }
-        // If "time_out" is selected, update time_out, latitude, longitude, and photo path
-        elseif ($attendance_type === 'time_out') {
-            $sql = "
-                UPDATE employee_attendance 
-                SET time_out = DATE_ADD(CURTIME(), INTERVAL 8 HOUR), photo_path = '$file_name', latitude = '$latitude', longitude = '$longitude' 
-                WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()
-            ";
+       // If "time_out" is selected, update time_out, latitude, longitude, and photo path
+            elseif ($attendance_type === 'time_out') {
+                $sql = "
+                    UPDATE employee_attendance 
+                    SET 
+                        time_out = DATE_ADD(CURTIME(), INTERVAL 8 HOUR), 
+                        photo_path = '$file_name', 
+                        latitude = '$latitude', 
+                        longitude = '$longitude' 
+                    WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()
+                ";
+            }
+
 
             if ($conn->query($sql)) {
                 $_SESSION['status'] = 'Time out recorded successfully.';
