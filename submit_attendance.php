@@ -14,6 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $employee_id = $conn->real_escape_string(strip_tags($_POST['employee_id']));
     $photo_data = $_POST['photo'];
     $attendance_type = $_POST['attendance_type']; // Get the attendance type from the form
+    $latitude = $conn->real_escape_string(strip_tags($_POST['latitude']));  // Get latitude
+    $longitude = $conn->real_escape_string(strip_tags($_POST['longitude'])); // Get longitude
 
     // Validate employee ID
     if (empty($employee_id)) {
@@ -49,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $adjusted_date = $current_date_time->format('Y-m-d');
         $adjusted_time = $current_date_time->format('H:i:s');
 
-        // If "time_in" is selected, insert time_in and photo path
+        // If "time_in" is selected, insert time_in, latitude, longitude, and photo path
         if ($attendance_type === 'time_in') {
             // Check if employee has already clocked in today with adjusted date
             $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'";
@@ -64,8 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             $sql = "
-                INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
-                VALUES ('$employee_id', '$adjusted_date', '$adjusted_time', 'null', '$file_name')
+                INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path, latitude, longitude) 
+                VALUES ('$employee_id', '$adjusted_date', '$adjusted_time', 'null', '$file_name', '$latitude', '$longitude')
             ";
 
             if ($conn->query($sql)) {
@@ -81,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // If "time_out" is selected, update time_out and add 8 hours to date_attendance
+        // If "time_out" is selected, update time_out, latitude, longitude, and add 8 hours to date_attendance
         elseif ($attendance_type === 'time_out') {
             // Check if employee has already clocked in today with adjusted date
             $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'";
@@ -99,6 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 UPDATE employee_attendance 
                 SET time_out = '$adjusted_time', 
                     photo_path = '$file_name', 
+                    latitude = '$latitude', 
+                    longitude = '$longitude', 
                     date_attendance = '$adjusted_date' 
                 WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'
             ";
