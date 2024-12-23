@@ -57,61 +57,60 @@ ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in D
 $query = $conn->query($sql);
 
 if ($query === FALSE) {
-    echo "<tr><td colspan='9'>Error fetching records: " . $conn->error . "</td></tr>";
+echo "<tr><td colspan='9'>Error fetching records: " . $conn->error . "</td></tr>";
 } elseif ($query->num_rows == 0) {
-    echo "<tr><td colspan='9'>No attendance records found.</td></tr>";
+echo "<tr><td colspan='9'>No attendance records found.</td></tr>";
 } else {
-    while ($row = $query->fetch_assoc()) {
-        if (empty($row['first_name']) || empty($row['last_name'])) {
-            error_log("Unmatched employee_id in attendance: " . htmlentities($row['employee_id']));
-            continue;
-        }
-
-        // Convert time_in and time_out to 12-hour format with AM/PM
-        $time_in_display = !empty($row['time_in']) ? date('g:i A', strtotime($row['time_in'])) : 'n/a';
-        $time_out_display = !empty($row['time_out']) ? date('g:i A', strtotime($row['time_out'])) : 'n/a';
-
-        $status = ($row['status']) 
-        ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
-        : '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
-
-        // Display photo if available
-        $photo_display = !empty($row['photo_path']) 
-        ? "<img src='uploads/" . htmlentities($row['photo_path']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
-        : "No Photo";
-
-        // Generate the Google Maps link for the location
-        $location_display = '';
-        if (!empty($row['latitude']) && !empty($row['longitude'])) {
-            $latitude = htmlentities($row['latitude']);
-            $longitude = htmlentities($row['longitude']);
-            $location_display = "<iframe width='100%' height='150' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=$latitude,$longitude' allowfullscreen></iframe>";
-        } else {
-            $location_display = "No Location Available";
-        }
-
-        echo "
-        <tr>
-            <td class='hidden'></td>
-            <td>".htmlentities($row['employee_id'])."</td>
-            <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
-            <td>".htmlentities($time_in_display)."</td>
-            <td>".htmlentities($time_out_display)."</td>
-            <td>".$status."</td>
-            <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
-            <td>".$photo_display."</td>
-            <td>".$location_display."</td>
-            <td>
-                <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
-                    <i class='fa fa-trash'></i> Delete
-                </button>
-            </td>
-        </tr>
-        ";
-    }
+while ($row = $query->fetch_assoc()) {
+if (empty($row['first_name']) || empty($row['last_name'])) {
+error_log("Unmatched employee_id in attendance: " . htmlentities($row['employee_id']));
+continue;
 }
-?>
 
+$time_in_display = !empty($row['time_in']) ? $row['time_in'] : 'n/a';
+$time_out_display = !empty($row['time_out']) ? $row['time_out'] : 'n/a';
+
+$status = ($row['status']) 
+? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
+: '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
+
+// Display photo if available
+$photo_display = !empty($row['photo_path']) 
+? "<img src='uploads/" . htmlentities($row['photo_path']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
+: "No Photo";
+
+// Generate the Google Maps link for the location
+$location_display = '';
+if (!empty($row['latitude']) && !empty($row['longitude'])) {
+$latitude = htmlentities($row['latitude']);
+$longitude = htmlentities($row['longitude']);
+$location_display = "<iframe width='100%' height='150' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=$latitude,$longitude' allowfullscreen></iframe>";
+} else {
+$location_display = "No Location Available";
+}
+
+echo "
+<tr>
+    <td class='hidden'></td>
+    <td>".htmlentities($row['employee_id'])."</td>
+    <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
+    <td>".htmlentities($time_in_display)."</td>
+    <td>".htmlentities($time_out_display)."</td>
+    <td>".$status."</td>
+    <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
+    <td>".$photo_display."</td>
+    <td>".$location_display."</td>
+    <td>
+        <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
+            <i class='fa fa-trash'></i> Delete
+        </button>
+    </td>
+</tr>
+";
+}
+}
+
+?>
 
 
                     </tbody>
