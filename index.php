@@ -26,7 +26,7 @@ include "header/security.php";
             <canvas id="canvas"></canvas>
         </div>
 
-        <div class="action-buttons">
+        <div class="action-buttons text-center">
             <button id="capture">Capture Photo</button>
            
         </div>
