@@ -32,7 +32,6 @@
                         <th>Status</th>
                         <th>Date</th>
                         <th>Photo</th>
-                        <th>Location</th>
                         <th>Action</th>
                     </thead>
                     <tbody>
@@ -86,7 +85,7 @@ if ($query === FALSE) {
                 <td>".htmlentities($row['employee_id'])."</td>
                 <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
                 <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
-                <td>".date('h:i A', strtotime(htmlentities($row['time_out'])))."</td>
+                <td>".htmlentities($time_out_display)."</td>
                 <td>".$status."</td>
                 <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
                 <td>".$photo_display."</td>
