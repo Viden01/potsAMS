@@ -54,7 +54,7 @@ include "header/security.php";
             </div>
         </form>
     </div>
-    
+    <?php include "footer/sweetalert.php";?>
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
