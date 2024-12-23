@@ -25,7 +25,6 @@ if (substr($request, -4) == '.php') {
     exit();
 }
 ?>
-
 <?php
 include('../connection/db_conn.php'); // Include your DB connection
 
@@ -33,6 +32,9 @@ include('../connection/db_conn.php'); // Include your DB connection
 $currentMonth = date('m');
 $currentYear = date('Y');
 $currentDay = date('d'); // Get the current day of the month
+
+// Get the full name of the current month (e.g., "December")
+$currentMonthName = date('F');
 
 // SQL query to get the attendance count for the current month and each day
 $sql = "SELECT DAY(date_attendance) AS day, COUNT(*) AS attendance_count
@@ -252,7 +254,7 @@ $conn->close(); // Close the database connection
                 curve: 'smooth'
             },
             title: {
-                text: 'Current Month Attendance Report',
+                text: '<?php echo $currentMonthName; ?> Attendance Report', // Dynamically set title with the current month name
                 align: 'left'
             },
             grid: {
@@ -272,7 +274,6 @@ $conn->close(); // Close the database connection
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
     </script>
-
 
   <script>
   document.addEventListener('DOMContentLoaded', function() {
