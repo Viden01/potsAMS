@@ -68,11 +68,9 @@ if ($query === FALSE) {
             continue; // Skip rows with no matching employee record
         }
 
-        // Use 12-hour time format (h:i A)
-        $time_in_display = !empty($row['time_in']) ? date('h:i A', strtotime(htmlentities($row['time_in']))) : '12:00 AM';
-        
-        // For time_out, only display in 12-hour format if not empty, else display 'Not Recorded'
-        $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : 'Not Recorded';
+        // Use 24-hour time format (H:i:s)
+        $time_in_display = !empty($row['time_in']) ? date('H:i:s', strtotime(htmlentities($row['time_in']))) : '00:00:00';
+        $time_out_display = !empty($row['time_out']) ? date('H:i:s', strtotime(htmlentities($row['time_out']))) : '00:00:00';
 
         $status = ($row['status']) 
             ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
@@ -98,8 +96,8 @@ if ($query === FALSE) {
                 <td class='hidden'></td>
                 <td>".htmlentities($row['employee_id'])."</td>
                 <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
-                <td>".htmlentities($time_in_display)."</td>
-                <td>".htmlentities($time_out_display)."</td>
+                <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
+                <td>".date('h:i A', strtotime(htmlentities($row['time_out'])))."</td>
                 <td>".$status."</td>
                 <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
                 <td>".$photo_display."</td>
