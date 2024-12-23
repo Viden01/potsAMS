@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ";
 
         if ($conn->query($sql)) {
-            $_SESSION['status'] = 'Attendance recorded successfully.';
+            $_SESSION['status'] = 'Time in recorded successfully.';
             $_SESSION['status_icon'] = 'success';
             header("Location: index.php");
             exit();
