@@ -14,7 +14,7 @@ include "header/security.php";
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -38,6 +38,7 @@ include "header/security.php";
             <input type="hidden" name="photo" id="photo">
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
+            <input type="hidden" name="location" id="location"> <!-- Hidden input for location -->
 
             <!-- Dropdown for Attendance Type -->
             <div class="form-group">
@@ -53,10 +54,7 @@ include "header/security.php";
             </div>
         </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-<?php include "footer/sweetalert.php";?>
-
+    
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -68,6 +66,7 @@ include "header/security.php";
         const timeOutInput = document.getElementById('time_out');
         const attendanceTypeSelect = document.getElementById('attendance_type');
         const employeeIdInput = document.getElementById('employee_id');
+        const locationInput = document.getElementById('location'); // Location input field
 
         // Access the user's camera
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -111,47 +110,63 @@ include "header/security.php";
             submitAttendanceButton.disabled = true; // Disable the submit button until a new photo is taken
         });
 
+        // Get user's location and store it in the hidden input
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const location = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+                    locationInput.value = location;
+                }, function() {
+                    alert("Unable to retrieve your location.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Call the function to get location when the page loads
+        getLocation();
+
+        // Form submission validation
         document.getElementById('attendanceForm').addEventListener('submit', (event) => {
-    // Check if Employee ID is provided
-    if (!employeeIdInput.value.trim()) {
-        // Display SweetAlert2 alert
-        Swal.fire({
-            title: 'Error!',
-            text: 'Please enter your Employee ID.',
-            icon: 'error',
-            confirmButtonText: 'OK'
+            // Check if Employee ID is provided
+            if (!employeeIdInput.value.trim()) {
+                // Display SweetAlert2 alert
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please enter your Employee ID.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                event.preventDefault();  // Prevent form submission
+                return;
+            }
+
+            // Check if the photo is captured
+            if (!photoInput.value.trim()) {
+                // Display SweetAlert2 alert
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please capture a photo before submitting.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                event.preventDefault();  // Prevent form submission
+                return;
+            }
+
+            // Check if the attendance type is selected
+            const selectedAttendanceType = attendanceTypeSelect.value;
+
+            if (selectedAttendanceType === 'time_out') {
+                // If Time-Out is selected, record time-out
+                timeOutInput.value = new Date().toISOString();
+            } else {
+                // If Time-In is selected, ensure time-out is not sent
+                timeOutInput.value = ''; // Clear time-out if time-in is selected
+            }
         });
-        event.preventDefault();  // Prevent form submission
-        return;
-    }
-
-    // Check if the photo is captured
-    if (!photoInput.value.trim()) {
-        // Display SweetAlert2 alert
-        Swal.fire({
-            title: 'Error!',
-            text: 'Please capture a photo before submitting.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-        });
-        event.preventDefault();  // Prevent form submission
-        return;
-    }
-
-    // Check if the attendance type is selected
-    const selectedAttendanceType = attendanceTypeSelect.value;
-
-    if (selectedAttendanceType === 'time_out') {
-        // If Time-Out is selected, record time-out
-        timeOutInput.value = new Date().toISOString();
-    } else {
-        // If Time-In is selected, ensure time-out is not sent
-        timeOutInput.value = ''; // Clear time-out if time-in is selected
-    }
-});
-
 
     </script>
 </body>
-
 </html>
