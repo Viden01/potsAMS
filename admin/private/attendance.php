@@ -32,6 +32,7 @@
                         <th>Status</th>
                         <th>Date</th>
                         <th>Photo</th>
+                        <th>Location</th>
                         <th>Action</th>
                     </thead>
                     <tbody>
