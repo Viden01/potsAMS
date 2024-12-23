@@ -89,13 +89,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         // If "time_out" is selected, update time_out and add 8 hours to date_attendance
+                // If "time_out" is selected, update time_out and add 8 hours to date_attendance
         elseif ($attendance_type === 'time_out') {
             $sql = "
                 UPDATE employee_attendance 
                 SET time_out = '$adjusted_time', 
                     photo_path = '$file_name', 
                     date_attendance = '$adjusted_date' 
-                WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()
+                WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'
             ";
 
             if ($conn->query($sql)) {
@@ -110,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         }
+
     } else {
         $_SESSION['status'] = 'No photo captured.';
         $_SESSION['status_icon'] = 'error';
