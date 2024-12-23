@@ -14,8 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $employee_id = $conn->real_escape_string(strip_tags($_POST['employee_id']));
     $photo_data = $_POST['photo'];
     $attendance_type = $_POST['attendance_type']; // Get the attendance type from the form
-    $latitude = $conn->real_escape_string(strip_tags($_POST['latitude'])); // Latitude from the form
-    $longitude = $conn->real_escape_string(strip_tags($_POST['longitude'])); // Longitude from the form
 
     // Validate employee ID
     if (empty($employee_id)) {
@@ -63,11 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // If "time_in" is selected, insert time_in, latitude, longitude, and photo path
+        // If "time_in" is selected, insert time_in and photo path
         if ($attendance_type === 'time_in') {
             $sql = "
-                INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path, latitude, longitude) 
-                VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), '00:00:00', '$file_name', '$latitude', '$longitude')
+                INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
+                VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), '00:00:000', '$file_name')
             ";
 
             if ($conn->query($sql)) {
@@ -82,11 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         }
-        // If "time_out" is selected, update time_out, latitude, longitude, and photo path
+        // If "time_out" is selected, update time_out only
         elseif ($attendance_type === 'time_out') {
             $sql = "
                 UPDATE employee_attendance 
-                SET time_out = DATE_ADD(CURTIME(), INTERVAL 8 HOUR), photo_path = '$file_name', latitude = '$latitude', longitude = '$longitude' 
+                SET time_out = DATE_ADD(CURTIME(), INTERVAL 8 HOUR), photo_path = '$file_name' 
                 WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()
             ";
 
@@ -114,4 +112,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: index.php");
     exit();
 }
+
 ?>
