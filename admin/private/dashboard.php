@@ -178,6 +178,9 @@ if (substr($request, -4) == '.php') {
       <div class="col-lg-6 donut-chart-container">
         <canvas id="dashboardDonutChart"></canvas> <!-- Donut Chart -->
       </div>
+      <div class="row">
+  <div class="col-lg-12">
+    <canvas id="dashboardLineChart"></canvas> <!-- Line Chart -->
     </div>
   </div>
 
@@ -186,6 +189,8 @@ if (substr($request, -4) == '.php') {
     // Bar Chart Configuration
     var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
     var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
+    var lineCtx = document.getElementById('dashboardLineChart').getContext('2d');
+
 
     // Chart labels and data
     var chartLabels = ['Employee', 'Attendance Records', 'Schedule', 'Logged History'];
@@ -195,6 +200,11 @@ if (substr($request, -4) == '.php') {
       <?php echo $row3['ids']; ?>, 
       <?php echo $row4['log_id']; ?>
     ];
+
+    // Example data for line chart (Payroll over Time)
+    var lineChartLabels = ['January', 'February', 'March', 'April', 'May', 'June'];
+    var lineChartData = [10000, 15000, 20000, 18000, 21000, 23000]; // Replace with dynamic payroll data
+
 
     // Calculate total for percentage calculations
     var totalValue = chartData.reduce(function(acc, value) { return acc + value; }, 0);
@@ -295,6 +305,58 @@ if (substr($request, -4) == '.php') {
       }
     });
   });
+
+   // Line Chart Configuration
+   var lineChart = new Chart(lineCtx, {
+      type: 'line',
+      data: {
+        labels: lineChartLabels,
+        datasets: [{
+          label: 'Payroll (in $)',
+          data: lineChartData,
+          borderColor: 'rgba(72, 132, 239, 1)', // Blue Line
+          backgroundColor: 'rgba(72, 132, 239, 0.2)', // Fill under line
+          fill: true,
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: 'rgba(72, 132, 239, 1)',
+          pointHoverRadius: 5,
+          tension: 0.4 // Smooth line
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                return `$${context.raw}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Month'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Payroll Amount'
+            },
+            ticks: {
+              callback: function (value) {
+                return `$${value}`;
+              }
+            }
+          }
+        }
+      }
+    });
 </script>
 
 
