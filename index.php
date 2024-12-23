@@ -30,7 +30,7 @@
             <input type="hidden" name="photo" id="photo">
             <input type="hidden" name="time_in" id="time_in">
             <input type="hidden" name="time_out" id="time_out">
-            <input type="hidden" name="latitude" id="latitude">
+            <input type="text" name="latitude" id="latitude">
             <input type="hidden" name="longitude" id="longitude">
 
             <div class="form-group">
