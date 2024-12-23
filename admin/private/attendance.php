@@ -44,7 +44,9 @@ $sql = "SELECT
             employee_attendance.time_out, 
             employee_attendance.status, 
             employee_attendance.date_attendance, 
-            employee_attendance.photo_path, 
+            employee_attendance.photo_path,
+            employee_attendance.latitude, 
+            employee_attendance.longitude, 
             employee_attendance.id AS attend
         FROM employee_attendance 
         LEFT JOIN employee_records 
@@ -65,7 +67,10 @@ if ($query === FALSE) {
             continue; // Skip rows with no matching employee record
         }
 
-        $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '00:00';
+        // Use 12-hour time format (h:i A)
+        $time_in_display = !empty($row['time_in']) ? date('h:i A', strtotime(htmlentities($row['time_in']))) : '12:00 AM';
+        $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '12:00 AM';
+
         $status = ($row['status']) 
             ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
             : '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
@@ -75,17 +80,27 @@ if ($query === FALSE) {
             ? "<img src='uploads/" . htmlentities($row['photo_path']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
             : "No Photo";
 
+        // Generate the Google Maps link for the location
+        $location_display = '';
+        if (!empty($row['latitude']) && !empty($row['longitude'])) {
+            $latitude = htmlentities($row['latitude']);
+            $longitude = htmlentities($row['longitude']);
+            $location_display = "<iframe width='100%' height='150' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=$latitude,$longitude' allowfullscreen></iframe>";
+        } else {
+            $location_display = "No Location Available";
+        }
+
         echo "
             <tr>
                 <td class='hidden'></td>
                 <td>".htmlentities($row['employee_id'])."</td>
                 <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
-                <td>".date('h:i A', strtotime(htmlentities($row['time_in'])))."</td>
-              
-                <td>".date('h:i A', strtotime(htmlentities($row['time_out'])))."</td>
+                <td>".htmlentities($time_in_display)."</td>
+                <td>".htmlentities($time_out_display)."</td>
                 <td>".$status."</td>
                 <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
                 <td>".$photo_display."</td>
+                <td>".$location_display."</td>
                 <td>
                     <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
                         <i class='fa fa-trash'></i> Delete
@@ -96,6 +111,7 @@ if ($query === FALSE) {
     }
 }
 ?>
+
 
                     </tbody>
                 </table>
