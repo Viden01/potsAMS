@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Escape and sanitize input data
     $employee_id = $conn->real_escape_string(strip_tags($_POST['employee_id']));
     $photo_data = $_POST['photo'];
+    $attendance_type = $_POST['attendance_type']; // Get the attendance type from the form
 
     // Validate employee ID
     if (empty($employee_id)) {
@@ -26,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()";
     $result = $conn->query($checkSql);
 
-    if ($result->num_rows > 0) {
+    if ($attendance_type === 'time_in' && $result->num_rows > 0) {
         // Employee has already clocked in today
         $_SESSION['status'] = 'You have already time in today.';
         $_SESSION['status_icon'] = 'error';
@@ -34,7 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Decode and save the image
+    if ($attendance_type === 'time_out' && $result->num_rows === 0) {
+        // Employee hasn't clocked in, so can't clock out
+        $_SESSION['status'] = 'You need to clock in before you can clock out.';
+        $_SESSION['status_icon'] = 'error';
+        header("Location: index.php");
+        exit();
+    }
+
+    // Decode and save the image if photo data is provided
     if (!empty($photo_data)) {
         $folderPath = "../../uploads/";
         $image_parts = explode(";base64,", $photo_data);
@@ -52,22 +61,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // Store the photo path, current date, time (with 8 hours added), and default timeout in the database
-        $sql = "
-            INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
-            VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), 'null', '$file_name')
-        ";
+        // If "time_in" is selected, insert time_in and photo path
+        if ($attendance_type === 'time_in') {
+            $sql = "
+                INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
+                VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), 'null', '$file_name')
+            ";
 
-        if ($conn->query($sql)) {
-            $_SESSION['status'] = 'Time in recorded successfully.';
-            $_SESSION['status_icon'] = 'success';
-            header("Location: index.php");
-            exit();
-        } else {
-            $_SESSION['status'] = 'Failed to submit attendance. Error: ' . $conn->error;
-            $_SESSION['status_icon'] = 'error';
-            header("Location: index.php");
-            exit();
+            if ($conn->query($sql)) {
+                $_SESSION['status'] = 'Time in recorded successfully.';
+                $_SESSION['status_icon'] = 'success';
+                header("Location: index.php");
+                exit();
+            } else {
+                $_SESSION['status'] = 'Failed to submit attendance. Error: ' . $conn->error;
+                $_SESSION['status_icon'] = 'error';
+                header("Location: index.php");
+                exit();
+            }
+        }
+        // If "time_out" is selected, update time_out only
+        elseif ($attendance_type === 'time_out') {
+            $sql = "
+                UPDATE employee_attendance 
+                SET time_out = DATE_ADD(CURTIME(), INTERVAL 8 HOUR), photo_path = '$file_name' 
+                WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()
+            ";
+
+            if ($conn->query($sql)) {
+                $_SESSION['status'] = 'Time out recorded successfully.';
+                $_SESSION['status_icon'] = 'success';
+                header("Location: index.php");
+                exit();
+            } else {
+                $_SESSION['status'] = 'Failed to submit attendance. Error: ' . $conn->error;
+                $_SESSION['status_icon'] = 'error';
+                header("Location: index.php");
+                exit();
+            }
         }
     } else {
         $_SESSION['status'] = 'No photo captured.';
@@ -81,4 +112,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: index.php");
     exit();
 }
+
 ?>
