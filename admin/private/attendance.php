@@ -70,7 +70,9 @@ if ($query === FALSE) {
 
         // Use 12-hour time format (h:i A)
         $time_in_display = !empty($row['time_in']) ? date('h:i A', strtotime(htmlentities($row['time_in']))) : '12:00 AM';
-        $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '00:00:00';
+        
+        // For time_out, only display in 12-hour format if not empty, else display 'Not Recorded'
+        $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : 'Not Recorded';
 
         $status = ($row['status']) 
             ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
@@ -112,6 +114,7 @@ if ($query === FALSE) {
     }
 }
 ?>
+
 
 
                     </tbody>
