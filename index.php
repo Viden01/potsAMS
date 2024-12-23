@@ -28,7 +28,7 @@ include "header/security.php";
 
         <div class="action-buttons">
             <button id="capture">Capture Photo</button>
-            <button id="submitPhoto">Submit Photo</button>
+            <!-- <button id="submitPhoto">Submit Photo</button> -->
         </div>
 
         <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
