@@ -37,79 +37,79 @@
                     <tbody>
                     <?php
 $sql = "SELECT 
-            employee_records.emp_id AS employee_id, 
-            employee_records.first_name, 
-            employee_records.last_name, 
-            employee_attendance.time_in, 
-            employee_attendance.time_out, 
-            employee_attendance.status, 
-            employee_attendance.date_attendance, 
-            employee_attendance.photo_path,
-            employee_attendance.latitude, 
-            employee_attendance.longitude, 
-            employee_attendance.id AS attend
-        FROM employee_attendance 
-        LEFT JOIN employee_records 
-            ON employee_attendance.employee_id = employee_records.emp_id 
-        ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in DESC";
+employee_records.emp_id AS employee_id, 
+employee_records.first_name, 
+employee_records.last_name, 
+employee_attendance.time_in, 
+employee_attendance.time_out, 
+employee_attendance.status, 
+employee_attendance.date_attendance, 
+employee_attendance.photo_path,
+employee_attendance.latitude, 
+employee_attendance.longitude, 
+employee_attendance.id AS attend
+FROM employee_attendance 
+LEFT JOIN employee_records 
+ON employee_attendance.employee_id = employee_records.emp_id 
+ORDER BY employee_attendance.date_attendance DESC, employee_attendance.time_in DESC";
 
 $query = $conn->query($sql);
 
 if ($query === FALSE) {
-    echo "<tr><td colspan='9'>Error fetching records: " . $conn->error . "</td></tr>";
+echo "<tr><td colspan='9'>Error fetching records: " . $conn->error . "</td></tr>";
 } elseif ($query->num_rows == 0) {
-    echo "<tr><td colspan='9'>No attendance records found.</td></tr>";
+echo "<tr><td colspan='9'>No attendance records found.</td></tr>";
 } else {
-    while ($row = $query->fetch_assoc()) {
-        if (empty($row['first_name']) || empty($row['last_name'])) {
-            // Log unmatched employee ID for debugging
-            error_log("Unmatched employee_id in attendance: " . htmlentities($row['employee_id']));
-            continue; // Skip rows with no matching employee record
-        }
-
-        // Use 12-hour time format (h:i A)
-        $time_in_display = !empty($row['time_in']) ? date('h:i A', strtotime(htmlentities($row['time_in']))) : '12:00 AM';
-        $time_out_display = !empty($row['time_out']) ? date('h:i A', strtotime(htmlentities($row['time_out']))) : '12:00 AM';
-
-        $status = ($row['status']) 
-            ? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
-            : '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
-
-        // Display photo if available
-        $photo_display = !empty($row['photo_path']) 
-            ? "<img src='uploads/" . htmlentities($row['photo_path']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
-            : "No Photo";
-
-        // Generate the Google Maps link for the location
-        $location_display = '';
-        if (!empty($row['latitude']) && !empty($row['longitude'])) {
-            $latitude = htmlentities($row['latitude']);
-            $longitude = htmlentities($row['longitude']);
-            $location_display = "<iframe width='100%' height='150' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=$latitude,$longitude' allowfullscreen></iframe>";
-        } else {
-            $location_display = "No Location Available";
-        }
-
-        echo "
-            <tr>
-                <td class='hidden'></td>
-                <td>".htmlentities($row['employee_id'])."</td>
-                <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
-                <td>".htmlentities($time_in_display)."</td>
-                <td>".htmlentities($time_out_display)."</td>
-                <td>".$status."</td>
-                <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
-                <td>".$photo_display."</td>
-              
-                <td>
-                    <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
-                        <i class='fa fa-trash'></i> Delete
-                    </button>
-                </td>
-            </tr>
-        ";
-    }
+while ($row = $query->fetch_assoc()) {
+if (empty($row['first_name']) || empty($row['last_name'])) {
+error_log("Unmatched employee_id in attendance: " . htmlentities($row['employee_id']));
+continue;
 }
+
+// Use 24-hour time format (H:i:s)
+$time_in_display = !empty($row['time_in']) ? date('H:i:s', strtotime(htmlentities($row['time_in']))) : '00:00:00';
+$time_out_display = !empty($row['time_out']) ? date('H:i:s', strtotime(htmlentities($row['time_out']))) : '00:00:00';
+
+$status = ($row['status']) 
+? '<button class="btn btn-success btn-xs"><i class="fa fa-check"></i> On Time</button>' 
+: '<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Late</button>';
+
+// Display photo if available
+$photo_display = !empty($row['photo_path']) 
+? "<img src='uploads/" . htmlentities($row['photo_path']) . "' style='width: 50px; height: 50px;' alt='Photo'>" 
+: "No Photo";
+
+// Generate the Google Maps link for the location
+$location_display = '';
+if (!empty($row['latitude']) && !empty($row['longitude'])) {
+$latitude = htmlentities($row['latitude']);
+$longitude = htmlentities($row['longitude']);
+$location_display = "<iframe width='100%' height='150' frameborder='0' style='border:0' src='https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=$latitude,$longitude' allowfullscreen></iframe>";
+} else {
+$location_display = "No Location Available";
+}
+
+echo "
+<tr>
+    <td class='hidden'></td>
+    <td>".htmlentities($row['employee_id'])."</td>
+    <td>".htmlentities($row['first_name'].' '.$row['last_name'])."</td>
+    <td>".htmlentities($time_in_display)."</td>
+    <td>".htmlentities($time_out_display)."</td>
+    <td>".$status."</td>
+    <td>".date('M d, Y', strtotime(htmlentities($row['date_attendance'])))."</td>
+    <td>".$photo_display."</td>
+    <td>".$location_display."</td>
+    <td>
+        <button class='btn btn-danger btn-sm btn-flat delete' data-id='".htmlentities($row['attend'])."'>
+            <i class='fa fa-trash'></i> Delete
+        </button>
+    </td>
+</tr>
+";
+}
+}
+
 ?>
 
 
