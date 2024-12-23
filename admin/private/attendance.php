@@ -84,7 +84,7 @@
             if (!empty($row['latitude']) && !empty($row['longitude'])) {
                 $latitude = htmlentities($row['latitude']);
                 $longitude = htmlentities($row['longitude']);
-                $location_display = '<iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d62627.84334478038!2d' . $longitude . '!3d' . $latitude . '!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1734977097856!5m2!1sen!2sph" width="200" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
+                $location_display = '<iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d62627.84334478038!2d' . $longitude . '!3d' . $latitude . '!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1734977097856!5m2!1sen!2sph" width="200" height="150" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>';
             } else {
                 $location_display = "No Location Available";
             }
