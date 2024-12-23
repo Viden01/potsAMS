@@ -4,7 +4,8 @@ include($_SERVER['DOCUMENT_ROOT'] . '/connection/db_conn.php'); // Adjust the pa
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Check if the database connection exists
     if (!$conn) {
-        die("Database connection failed.");
+        echo json_encode(['status' => 'error', 'message' => 'Database connection failed.']);
+        exit();
     }
 
     // Escape and sanitize input data
@@ -13,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate employee ID
     if (empty($employee_id)) {
-        echo "Employee ID is required.";
+        echo json_encode(['status' => 'error', 'message' => 'Employee ID is required.']);
         exit();
     }
 
@@ -35,21 +36,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // Store the photo path, current date, and time in the database
+        // Store the photo path, current date, time, and default timeout in the database
         $sql = "
-            INSERT INTO employee_attendance (employee_id, date_attendance, time_in, photo_path) 
-            VALUES ('$employee_id', CURDATE(), CURTIME(), '$file_name')
+            INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
+            VALUES ('$employee_id', CURDATE(), CURTIME(), '00:00:00', '$file_name')
         ";
 
         if ($conn->query($sql)) {
-            // Redirect to the home page after success
-            header("Location: /index.php");
-            exit();
+            echo json_encode(['status' => 'success', 'message' => 'Attendance recorded successfully.']);
         } else {
-            echo "Failed to submit attendance. Error: " . $conn->error;
+            echo json_encode(['status' => 'error', 'message' => 'Failed to submit attendance. Error: ' . $conn->error]);
         }
     } else {
-        echo "No photo captured.";
+        echo json_encode(['status' => 'error', 'message' => 'No photo captured.']);
     }
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
 ?>
