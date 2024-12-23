@@ -25,6 +25,8 @@ if (substr($request, -4) == '.php') {
     exit();
 }
 ?>
+
+
 <?php
 include('../connection/db_conn.php'); // Include your DB connection
 
@@ -35,6 +37,9 @@ $currentDay = date('d'); // Get the current day of the month
 
 // Get the full name of the current month (e.g., "December")
 $currentMonthName = date('F');
+
+// Get the total number of days in the current month
+$daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear); // Get number of days in current month
 
 // SQL query to get the attendance count for the current month and each day
 $sql = "SELECT DAY(date_attendance) AS day, COUNT(*) AS attendance_count
@@ -48,9 +53,9 @@ $stmt->bind_param('ii', $currentMonth, $currentYear); // Bind current month and 
 $stmt->execute();
 $result = $stmt->get_result();
 
-// Initialize arrays to store days and attendance count
-$days = range(1, $currentDay); // Array of days from 1 to current day
-$attendanceCounts = array_fill(0, $currentDay, 0); // Initialize all attendance counts to 0
+// Initialize arrays to store days (1 to last day of the month) and attendance count
+$days = range(1, $daysInMonth); // Array of all days in the month (1 to 31)
+$attendanceCounts = array_fill(0, $daysInMonth, 0); // Initialize all attendance counts to 0
 
 // Populate the attendance counts for the days with records
 while ($row = $result->fetch_assoc()) {
@@ -264,7 +269,7 @@ $conn->close(); // Close the database connection
                 },
             },
             xaxis: {
-                categories: <?php echo json_encode($days); ?>, // PHP to JavaScript variable for day labels
+                categories: <?php echo json_encode($days); ?>, // PHP to JavaScript variable for day labels (1 to 31)
                 title: {
                     text: 'Day of the Month'
                 }
