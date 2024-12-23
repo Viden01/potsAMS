@@ -61,12 +61,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
+        // Get the current date and time
+        $current_date_time = new DateTime();
+        $current_date_time->modify('+8 hours'); // Add 8 hours to current time
+
+        // Format the date and time with 8-hour offset
+        $adjusted_date = $current_date_time->format('Y-m-d');
+        $adjusted_time = $current_date_time->format('H:i:s');
+
         // If "time_in" is selected, insert time_in and photo path
         if ($attendance_type === 'time_in') {
-            // Add 8 hours to date_attendance and time_in
             $sql = "
                 INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
-                VALUES ('$employee_id', DATE_ADD(CURDATE(), INTERVAL 8 HOUR), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), 'null', '$file_name')
+                VALUES ('$employee_id', '$adjusted_date', '$adjusted_time', 'null', '$file_name')
             ";
 
             if ($conn->query($sql)) {
@@ -81,12 +88,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         }
-        // If "time_out" is selected, update time_out only
+        // If "time_out" is selected, update time_out and add 8 hours to date_attendance
         elseif ($attendance_type === 'time_out') {
-            // Add 8 hours to time_out
             $sql = "
                 UPDATE employee_attendance 
-                SET time_out = DATE_ADD(CURTIME(), INTERVAL 8 HOUR), photo_path = '$file_name' 
+                SET time_out = '$adjusted_time', 
+                    photo_path = '$file_name', 
+                    date_attendance = '$adjusted_date' 
                 WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()
             ";
 
