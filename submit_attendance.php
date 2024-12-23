@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Store the photo path, current date, time (with 8 hours added), and default timeout in the database
         $sql = "
             INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
-            VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), '00:00:00', '$file_name')
+            VALUES ('$employee_id', CURDATE(), DATE_ADD(CURTIME(), INTERVAL 8 HOUR), 'null', '$file_name')
         ";
 
         if ($conn->query($sql)) {
