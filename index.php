@@ -28,7 +28,7 @@ include "header/security.php";
 
         <div class="action-buttons">
             <button id="capture">Capture Photo</button>
-            <button type="hidden" id="submitPhoto">Submit Photo</button>
+          
         </div>
 
         <form id="attendanceForm" action="submit_attendance.php" method="POST" enctype="multipart/form-data">
@@ -65,7 +65,7 @@ include "header/security.php";
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const captureButton = document.getElementById('capture');
-        const submitButton = document.getElementById('submitPhoto');
+      
         const photoInput = document.getElementById('photo');
         const submitAttendanceButton = document.getElementById('submitAttendance');
         const timeInInput = document.getElementById('time_in');
