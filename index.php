@@ -1,7 +1,7 @@
 <?php
 session_start();
 // Security headers
-include "footer/security.php";
+include "header/security.php";
 ?>
 
 <!DOCTYPE html>
