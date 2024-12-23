@@ -16,9 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Validate employee ID
     if (empty($employee_id)) {
-        $_SESSION['status'] = 'error';
+        $_SESSION['status'] = 'Employee ID is required.';
         $_SESSION['status_icon'] = 'error';
-        $_SESSION['message'] = 'Employee ID is required.';
         header("Location: index.php");
         exit();
     }
@@ -29,9 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result->num_rows > 0) {
         // Employee has already clocked in today
-        $_SESSION['status'] = 'error';
+        $_SESSION['status'] = 'You have already clocked in today.';
         $_SESSION['status_icon'] = 'error';
-        $_SESSION['message'] = 'You have already clocked in today.';
         header("Location: index.php");
         exit();
     }
@@ -61,29 +59,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ";
 
         if ($conn->query($sql)) {
-            $_SESSION['status'] = 'success';
+            $_SESSION['status'] = 'Attendance recorded successfully.';
             $_SESSION['status_icon'] = 'success';
-            $_SESSION['message'] = 'Attendance recorded successfully.';
             header("Location: index.php");
             exit();
         } else {
-            $_SESSION['status'] = 'error';
+            $_SESSION['status'] = 'Failed to submit attendance. Error: ' . $conn->error;
             $_SESSION['status_icon'] = 'error';
-            $_SESSION['message'] = 'Failed to submit attendance. Error: ' . $conn->error;
             header("Location: index.php");
             exit();
         }
     } else {
-        $_SESSION['status'] = 'error';
+        $_SESSION['status'] = 'No photo captured.';
         $_SESSION['status_icon'] = 'error';
-        $_SESSION['message'] = 'No photo captured.';
         header("Location: index.php");
         exit();
     }
 } else {
-    $_SESSION['status'] = 'error';
+    $_SESSION['status'] = 'Invalid request method.';
     $_SESSION['status_icon'] = 'error';
-    $_SESSION['message'] = 'Invalid request method.';
     header("Location: index.php");
     exit();
 }
