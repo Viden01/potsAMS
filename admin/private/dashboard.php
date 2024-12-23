@@ -183,21 +183,39 @@ if (substr($request, -4) == '.php') {
       </div>
 
 
-    <div class="row">
+      <div class="row">
       <div class="col-lg-6">
         <canvas id="dashboardBarChart"></canvas>
       </div>
-      <div class="col-lg-6 donut-chart-container">
-        <canvas id="dashboardDonutChart"></canvas> <!-- Donut Chart -->
+      <div class="col-lg-6">
+        <canvas id="dashboardDonutChart"></canvas>
       </div>
+    </div>
+
+    <div id="lineChartContainer">
+      <h2>Payroll Over Time</h2>
+      <canvas id="dashboardLineChart"></canvas>
     </div>
   </div>
 
   <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Bar Chart Configuration
-    var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
-    var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
+    document.addEventListener('DOMContentLoaded', function() {
+      var barCtx = document.getElementById('dashboardBarChart').getContext('2d');
+      var donutCtx = document.getElementById('dashboardDonutChart').getContext('2d');
+      var lineCtx = document.getElementById('dashboardLineChart').getContext('2d');
+
+      var chartLabels = ['Employee', 'Attendance Records', 'Schedule', 'Log Activities'];
+      var chartData = [
+        <?php echo $row1['emp_id']; ?>, 
+        <?php echo $row2['id']; ?>, 
+        <?php echo $row3['ids']; ?>, 
+        <?php echo $row4['log_id']; ?>
+      ];
+      var payrollLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']; // Example months
+      var payrollData = [12000, 15000, 14000, 16000, 17000, 18000]; // Example data
+      
+      var colors = ['#4caf50', '#2196f3', '#ff9800', '#f44336'];
+
 
     // Chart labels and data
     var chartLabels = ['Employee', 'Attendance Records', 'Schedule', 'Log Activities'];
