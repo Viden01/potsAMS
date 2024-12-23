@@ -23,26 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Check if the employee has already clocked in today
-    $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = CURDATE()";
-    $result = $conn->query($checkSql);
-
-    if ($attendance_type === 'time_in' && $result->num_rows > 0) {
-        // Employee has already clocked in today
-        $_SESSION['status'] = 'You have already time in today.';
-        $_SESSION['status_icon'] = 'error';
-        header("Location: index.php");
-        exit();
-    }
-
-    if ($attendance_type === 'time_out' && $result->num_rows === 0) {
-        // Employee hasn't clocked in, so can't clock out
-        $_SESSION['status'] = 'You need to clock in before you can clock out.';
-        $_SESSION['status_icon'] = 'error';
-        header("Location: index.php");
-        exit();
-    }
-
     // Decode and save the image if photo data is provided
     if (!empty($photo_data)) {
         $folderPath = "../../uploads/";
@@ -71,6 +51,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // If "time_in" is selected, insert time_in and photo path
         if ($attendance_type === 'time_in') {
+            // Check if employee has already clocked in today with adjusted date
+            $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'";
+            $result = $conn->query($checkSql);
+
+            if ($result->num_rows > 0) {
+                // Employee has already clocked in today
+                $_SESSION['status'] = 'You have already time in today.';
+                $_SESSION['status_icon'] = 'error';
+                header("Location: index.php");
+                exit();
+            }
+
             $sql = "
                 INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path) 
                 VALUES ('$employee_id', '$adjusted_date', '$adjusted_time', 'null', '$file_name')
@@ -88,9 +80,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         }
+
         // If "time_out" is selected, update time_out and add 8 hours to date_attendance
-                // If "time_out" is selected, update time_out and add 8 hours to date_attendance
         elseif ($attendance_type === 'time_out') {
+            // Check if employee has already clocked in today with adjusted date
+            $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'";
+            $result = $conn->query($checkSql);
+
+            if ($result->num_rows === 0) {
+                // Employee hasn't clocked in, so can't clock out
+                $_SESSION['status'] = 'You need to clock in before you can clock out.';
+                $_SESSION['status_icon'] = 'error';
+                header("Location: index.php");
+                exit();
+            }
+
             $sql = "
                 UPDATE employee_attendance 
                 SET time_out = '$adjusted_time', 
