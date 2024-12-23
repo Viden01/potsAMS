@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!empty($photo_data)) {
-        $folderPath = "../../admin/private/images/";  // Updated photo path
+        $folderPath = "../../admin/private/images/";
         $image_parts = explode(";base64,", $photo_data);
         $image_type_aux = explode("image/", $image_parts[0]);
         $image_type = $image_type_aux[1];
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $sql = "
                 INSERT INTO employee_attendance (employee_id, date_attendance, time_in, time_out, photo_path, latitude, longitude) 
-                VALUES ('$employee_id', '$adjusted_date', '$adjusted_time', 'null', '$file_name', '$latitude', '$longitude')
+                VALUES ('$employee_id', '$adjusted_date', '$adjusted_time', NULL, '$file_name', '$latitude', '$longitude')
             ";
 
             if ($conn->query($sql)) {
@@ -69,9 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: index.php");
                 exit();
             }
-        }
-
-        elseif ($attendance_type === 'time_out') {
+        } elseif ($attendance_type === 'time_out') {
             $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'";
             $result = $conn->query($checkSql);
 
@@ -87,8 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 SET time_out = '$adjusted_time', 
                     photo_path = '$file_name', 
                     latitude = '$latitude', 
-                    longitude = '$longitude', 
-                    date_attendance = '$adjusted_date' 
+                    longitude = '$longitude' 
                 WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'
             ";
 
@@ -104,7 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         }
-
     } else {
         $_SESSION['status'] = 'No photo captured.';
         $_SESSION['status_icon'] = 'error';
