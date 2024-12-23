@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result->num_rows > 0) {
         // Employee has already clocked in today
-        $_SESSION['status'] = 'You have already clocked in today.';
+        $_SESSION['status'] = 'You have already time in today.';
         $_SESSION['status_icon'] = 'error';
         header("Location: index.php");
         exit();
