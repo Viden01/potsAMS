@@ -1,6 +1,6 @@
 <?php
 // Include the database connection file
-include('connection.php');
+include('db_conn.php');
 
 // SQL query to add the location column
 $sql = "ALTER TABLE `employee_attendance` ADD COLUMN `location` VARCHAR(255) NULL";
