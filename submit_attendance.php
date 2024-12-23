@@ -1,23 +1,20 @@
 <?php
-session_start(); // Start the session to store messages
+session_start();
 
-include($_SERVER['DOCUMENT_ROOT'] . '/connection/db_conn.php'); // Adjust the path if necessary
+include($_SERVER['DOCUMENT_ROOT'] . '/connection/db_conn.php');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Check if the database connection exists
     if (!$conn) {
         echo json_encode(['status' => 'error', 'message' => 'Database connection failed.']);
         exit();
     }
 
-    // Escape and sanitize input data
     $employee_id = $conn->real_escape_string(strip_tags($_POST['employee_id']));
     $photo_data = $_POST['photo'];
-    $attendance_type = $_POST['attendance_type']; // Get the attendance type from the form
-    $latitude = $conn->real_escape_string(strip_tags($_POST['latitude']));  // Get latitude
-    $longitude = $conn->real_escape_string(strip_tags($_POST['longitude'])); // Get longitude
+    $attendance_type = $_POST['attendance_type'];
+    $latitude = $conn->real_escape_string(strip_tags($_POST['latitude']));
+    $longitude = $conn->real_escape_string(strip_tags($_POST['longitude']));
 
-    // Validate employee ID
     if (empty($employee_id)) {
         $_SESSION['status'] = 'Employee ID is required.';
         $_SESSION['status_icon'] = 'error';
@@ -25,9 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Decode and save the image if photo data is provided
     if (!empty($photo_data)) {
-        $folderPath = "../../uploads/";
+        $folderPath = "../../admin/private/images/";  // Updated photo path
         $image_parts = explode(";base64,", $photo_data);
         $image_type_aux = explode("image/", $image_parts[0]);
         $image_type = $image_type_aux[1];
@@ -35,30 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $file_name = uniqid() . '.' . $image_type;
         $file_path = $folderPath . $file_name;
 
-        // Create the directory if it doesn't exist
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0777, true);
         }
 
-        // Save the image to the server
         file_put_contents($file_path, $image_base64);
 
-        // Get the current date and time
         $current_date_time = new DateTime();
-        $current_date_time->modify('+8 hours'); // Add 8 hours to current time
-
-        // Format the date and time with 8-hour offset
+        $current_date_time->modify('+8 hours');
         $adjusted_date = $current_date_time->format('Y-m-d');
         $adjusted_time = $current_date_time->format('H:i:s');
 
-        // If "time_in" is selected, insert time_in, latitude, longitude, and photo path
         if ($attendance_type === 'time_in') {
-            // Check if employee has already clocked in today with adjusted date
             $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'";
             $result = $conn->query($checkSql);
 
             if ($result->num_rows > 0) {
-                // Employee has already clocked in today
                 $_SESSION['status'] = 'You have already time in today.';
                 $_SESSION['status_icon'] = 'error';
                 header("Location: index.php");
@@ -83,14 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // If "time_out" is selected, update time_out, latitude, longitude, and add 8 hours to date_attendance
         elseif ($attendance_type === 'time_out') {
-            // Check if employee has already clocked in today with adjusted date
             $checkSql = "SELECT * FROM employee_attendance WHERE employee_id = '$employee_id' AND date_attendance = '$adjusted_date'";
             $result = $conn->query($checkSql);
 
             if ($result->num_rows === 0) {
-                // Employee hasn't clocked in, so can't clock out
                 $_SESSION['status'] = 'You need to clock in before you can clock out.';
                 $_SESSION['status_icon'] = 'error';
                 header("Location: index.php");
